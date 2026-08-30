@@ -1,0 +1,522 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<title>Написать</title>
+<style media="all" type="text/css">
+	@import "/css/2007012402/skins/green/css/global.css";
+	@import "/css/2007012402/skins/green/css/compose-message.css";
+	@import "/autosuggest/autosuggest.css";
+</style>
+<!--[if lte IE 8]>
+<style media="all" type="text/css">
+	@import "/css/2007012402/skins/green/css/ie-fix.css";
+</style>
+<![endif]--> 
+<script src='/js/2007012402/prototype.compressed.js'></script>
+<script type="text/javascript" src="/hWPcWtbdDP/q/addressbook_data"></script> 
+<script src='/js/2007012402/rujs.js'></script>
+<script src="/js/2007012402/k2.js"></script>
+
+<script type="text/javascript" language="JavaScript">
+var errorMessage = '';
+</script>
+
+
+<script type="text/javascript" language="JavaScript" src="/tinymce__/jscripts/tiny_mce/tiny_mce.js"></script>
+
+
+<script language="JavaScript">
+
+
+
+var _disableHtmlEditor = "";
+
+if ( ! _disableHtmlEditor ) {
+	var tinyMCEoptions = {
+		oninit: "compose_loadSmileysAndBanners",
+		mode: "textareas",
+		theme: "advanced",
+		language: "ru",
+		preformatted: true,
+		convert_urls : false,
+		
+		convert_newlines_to_brs: true,
+		
+		
+		theme_advanced_fonts : "Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;Times=Times New Roman,serif",
+		theme_advanced_buttons1: "fontselect,fontsizeselect,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull",
+		theme_advanced_buttons2: "bullist,numlist,separator,outdent,indent,separator,undo,redo,separator,link,unlink,separator,forecolor,backcolor,separator,hr,separator,removeformat,separator,copy,paste",
+		theme_advanced_buttons3: "",
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		content_css : "/css/editor_content.css",
+		remove_linebreaks : false
+	}
+	if (!tinyMCE.isOpera) {
+		if (tinyMCE.isMSIE) {
+			tinyMCEoptions.force_br_newlines = true;
+		} else {
+			tinyMCEoptions.force_p_newlines = false;
+		}
+	}
+};
+
+
+
+</script>
+
+
+
+</head>
+<body onUnload="documentCleaner();" onload="enableAutoComplete();">
+
+	<!-- Error Dialog -->
+	<div id="errorDialog" class="errorDialog" style="z-index: 100">
+		<div class="errorDialogHeader">
+			<span class="errorTitle">Ошибка</span>
+		</div>
+		<div id="errorMessageContainer" class="errorDialogContent">
+			
+		</div>
+		<div class="errorDialogFooter">
+			<form action="javascript:void(0);">
+				<input type="button" class="submitButton" onclick="toggleErrorDialog(0);" value="Ok">
+			</form>
+		</div>
+	</div>
+	<!-- Error Dialog -->
+
+	<div class="mainContainer">
+		
+		<table class="cage" id="cage" border="0">
+<tr>
+	<td class="logo" style="white-space: nowrap"><img src="/skins/green/img/logo.gif" alt="FREEMAIL.ukr.net" /></td>
+	<td class="email"><nobr>sirov@ukr.net</nobr></td>
+	<!-- 
+	<td class="fonts">
+		<a id="smallFont" href="javascript:smallFont();"><img src="/skins/green/img/fontSmall.gif" alt="Маленький шрифт" border="0"></a>
+		<a id="normalFont" href="javascript:normalFont();"><img src="/skins/green/img/fontNormal.gif" alt="Средний шрифт" border="0"></a>
+		<a id="bigFont" href="javascript:bigFont();"><img src="/skins/green/img/fontBig.gif" alt="Большой шрифт" border="0"></a>
+	</td>
+	-->
+	<td class="cageRU">
+		<div class="cage">
+			<div class="head">
+				<div class="l"><div class="r"><div class="tl"><div class="tr">
+				<div class="content">
+					<ul>
+						<li><a href="javascript:globalRepage('start')"><img src="/skins/green/img/mail.gif" alt="" width="19" height="17" border="0" /><u><b>Письма</b></u></a></li>
+						<li><a href="javascript:globalRepage('addressbook')"><img src="/skins/green/img/contacts.gif" alt="" width="18" height="17" border="0" /><u>Контакты</u></a></li>
+						<li><a href="javascript:globalRepage('options')"><img src="/skins/green/img/settings.gif" alt="" width="16" height="17" border="0" /><u>Настройки</u></a></li>
+						<li><a href="http://wiki.ukr.net/%D0%9F%D0%BE%D1%87%D1%82%D0%B0"><img src="/skins/green/img/help.gif" alt="" width="17" height="17" border="0" /><u>Помощь</u></a></li>
+						<li><a href="javascript:globalRepage('logout')" class="logout"><img src="/skins/green/img/logout.gif" alt=""  width="18" height="17" border="0" /><u>Выход</u></a></li>
+					</ul>
+				</div>
+				</div></div></div></div>
+			</div>
+			
+			<div class="l"><div class="r"></div></div>
+			
+			<div class="foot">
+				<div class="l"><div class="r"><div class="br"><div class="bl">
+					<span></span>
+				</div></div></div></div>
+			</div>
+		</div>
+	</td>
+</tr>
+</table>
+
+
+
+<div class="stupidBanner">
+<div id='stupidBanner' style="height: 90px"> 
+&nbsp;
+</div>
+</div>
+
+	
+<script>
+fixGeckoWidth();
+</script>
+
+
+
+			<table class="toolBar">
+			<tr valign="center">
+			<td class="composeNewMail">
+			<div class="composeNewMailPadding">
+<div class="composeNewMailContainer" onClick="globalRepage('sendmsg?compose=1');">
+	<div class="composeNewMail">
+		<div class="tl"><div class="tr">
+			<div class="content">
+				<a href="javascript:globalRepage('sendmsg?compose=1')">Написать письмо</a>
+			</div>
+		</div></div>
+	</div>
+	<div class="r">
+		<div class="br"><div class="bl">
+			<span></span>
+		</div></div>
+	</div>
+</div>
+</div>
+
+
+ 
+			</td>
+			<td class="toolBarActions">
+			</td>
+			</tr>
+			</table>
+
+
+		<form id="composeMessageForm" method="post" action="/hWPcWtbdDP/q/sendmsg" enctype="multipart/form-data" name="mainForm">
+		<input type="hidden" name="toggle_editor" id="toggle_editor" value="">
+		<input type="hidden" name="message" value="38OCI5OR">
+
+		
+		
+		
+		
+			<input type="hidden" name="disableHtmlEditor" value="">
+		
+			
+
+		<div class="mainTable">
+	
+			<div class="mainRow">
+				<!-- Sidebar Column -->
+<div class="sideBar">
+<div class="foldersNav" style="margin-right: 10px;">
+
+	<div class="foldersNav-tl">
+	<div class="foldersNav-tr">
+
+
+		 
+
+		 
+		<div class="inboxFolder">
+			<div class="tl"><div class="tr">
+				<div class="count">
+					
+					18
+				</div>
+				<div class="title"><a href="/hWPcWtbdDP/q/msglist?folder=0">Входящие</a></div>
+			</div></div>
+		</div>
+		<div class="hr" ></div>
+		 
+
+
+		
+		
+		
+		
+
+		 
+		<div class="userFolder">
+				<div class="count">
+						
+						<b>38</b>&#160;/&#160;
+						
+						61
+				</div>
+				<div class="title"><a href="/hWPcWtbdDP/q/msglist?folder=1">Forex Ltd.: ..</a></div>
+		</div>
+		<div class="hr" ></div>
+		 
+
+		 
+
+		
+		
+		
+		
+		
+		 
+
+
+
+		 
+
+		 
+		<div class="draftsFolder">
+			<div class="count">
+				
+				0
+			</div>
+			<div class="title"><a href="/hWPcWtbdDP/q/msglist?folder=500001">Черновики</a></div>
+		</div>
+		<div class="hr" ></div>
+		 
+
+
+		 
+
+		 
+		<div class="sentFolder">
+			<div class="bl"><div class="br">
+				<div class="count">
+					
+					15
+				</div>
+				<div class="title"><a href="/hWPcWtbdDP/q/msglist?folder=500000">Отправленные</a></div>
+			</div></div>
+		</div>
+		 
+
+
+		<div class="manageFolders">
+			<a href="/hWPcWtbdDP/q/folders"><img src="/skins/green/img/manage-folders.gif" alt='Управление папками' width='16' height='18' 
+			/> <u>Управление папками</u></a>
+		</div>
+
+	</div>
+	</div>
+
+	<div class="feedbackToDevelopers">
+		<img width="17" height="17" src="/skins/green/img/help.gif" style="vertical-align: middle;  padding-left: 5px; padding-bottom: 4px; padding-right: 0px;"> <a href="javascript:openFeedback();"" style="color: #ff4e00">Написать разработчикам</a>
+	</div>
+	<br/>
+	 
+	<div id="dumbBanner">
+	</div>
+	 
+ <br/>
+ <br/>
+
+</div>
+</div>		
+<!-- /Sidebar Column -->
+ 
+			
+				<!-- Main Content Column -->
+				<div class="mainContent">
+					<div class="innerWrapper">
+					
+						<!-- Message -->
+						<div class="compose-message">
+							<div class="msg-line-l"><div class="msg-line-r">
+								<div class="hd-r"><div class="hd-l">
+									<table width="100%" cellpadding="0" cellspacing="0">
+										<tr class="row to">
+											<td class="name noblr">Кому:</td>
+											<td class="field"><input type="text" tabindex="1" name="To" id="toField" value=""/></td>
+											<td class="add-contact noblr"><a href="javascript:composeABPopup();">Из контактов</a></td>
+										</tr>
+										<script> composeFocusOnTo();</script>
+										<tr class="row cc">
+											<td class="name">Копия:</td>
+											<td class="field"><input type="text" tabindex="2" name="CC" id="ccField" value="" /></td>
+											<td class="add-contact"><a href="javascript:composeABPopup();">Из контактов</a></td>
+										</tr>
+										<tr class="row bcc">
+											<td class="name">Скрытая:</td>
+											<td class="field"><input type="text" tabindex="3" name="BCC" id="bccField" value="" /></td>
+											<td class="add-contact"><a href="javascript:composeABPopup();">Из контактов</a></td>
+										</tr>
+										<tr class="row subject">
+											<td class="name">Тема:</td>
+											<td class="field"><input type="text" tabindex="4" name="Subject" value=""/></td>
+											<td class="add-contact">&nbsp;</td>
+										</tr>
+										<tr class="row attachments">
+											<td class="name" align="left" style="vertical-align: top; padding: 10px 5px 10px 18px; ">
+											<input type="submit" value="Вложить файлы &raquo; " class="submit" />
+											</td>
+											<td class="field" style="padding-top: 10px; vertical-align: top" >
+										
+												<div id="attachmentList">
+												
+												<div id="firstAttachment">
+													<input type="file" class="file" name="File" id="File" />
+													<input type="button" class="submit" value=" + " id="extender" onClick="extendAttachmentList(this)"/>
+												</div>
+												
+												</div>
+											</td>
+											<td class="add-contact" style="padding-top: 10px; vertical-align: top;">
+												
+													<a href="javascript:openLocalizedKeyboard('ru');">Виртуальная клавиатура</a>
+												
+											</td>
+										</tr>
+										<tr class="row attachments-message">
+											<td class="name">&nbsp;</td>
+											<td class="field">
+												
+Вы можете вложить еще до 18044Кб.
+												
+												
+												
+
+										 
+											</td>
+											<td class="add-contact">&nbsp;</td>
+										</tr>
+										
+										<tr class="editor-header">
+											
+												<td class="current-mode">HTML</td>
+												<td></td>
+												<td class="available-modes"><a href="javascript:void(0);" onclick="return toggleEditor()">Текст&nbsp;<span class="arrow">&gt;&gt;</span></a></td>
+											
+											
+										</tr>
+										
+										<tr class="editor">
+											<td colspan="3" class="editor">
+												<textarea tabindex="5" id='body' name="Body" style="width: 98%; height: 255px;" rows="" cols="" wrap="physical" 
+												
+												
+													onfocus="this.blur();"
+												
+												
+												>
+
+
+-- 
+Все о вкусных ресторанах КОЗЫРНОЙ КАРТЫ:
+меню, скидки, адреса, новости на http://2k.com.ua/
+
+</textarea>
+											</td>
+										</tr>
+										
+										
+										<tr class="row smiles">
+											<td colspan="2" class="smiles-row">
+
+<div id="mainSmileys">
+</div>
+
+<div id="otherSmileys" style="display: none;">
+</div>
+											</td>
+											<td class="show-smiles-list" valign="top" align="right" style="text-align: right; padding-top: 14px; padding-right: 15px;">
+											<div id="showMoreSmileys"><a href="javascript:composeShowSmileys();">Больше смайликов &raquo;</a></div>
+											<div style="display: none;" id="hideMoreSmileys"><a href="javascript:composeHideSmileys();">&laquo; Спрятать смайлики</a></div>
+											</td>
+
+										</tr>
+										
+										
+										<tr>
+											<td colspan="3" class="tfoot">
+												<div class="msg-line-l"><div class="msg-line-r">
+													<input type="submit" style="width: 1px; height: 1px; display:none;" onClick="return false;">	
+													<div class="ft-r"><div class="ft-l">
+														<input type="submit" style="width: 1px; height: 1px; display:none;" onClick="return false;">
+														<div class="buttons">
+															<div class="send-message">
+																<input tabindex="6" type="button" class="submitButton" id='sendButton' name="send" value="Отправить письмо" 
+																	onClick="return composeSendMessage();" />
+															</div>
+															<div class="save-copy">
+																<input type="checkbox" id="save-copy-bottom" name="copy" value="yes" checked="checked" onclick="syncSave('bottom');"/>
+																<label for="save-copy">Сохранить в отправленных</label>
+															</div>
+															<div class="save-to-drafts">
+																<input tabindex="7" type="submit" class="submitButton" id="draftsButton" name="draft" value="Сохранить в черновиках" />
+															</div>
+															<div class="clear"></div>
+														</div>
+													</div></div>
+												</div></div>
+											</td>
+										</tr>
+									</table>
+								</div></div>
+							</div></div>
+						</div>
+						<!-- /Message -->
+
+					<table class="actions">
+						<tr>
+							<td class="actions" style="padding-left: 0px;">
+							</td>
+							<td></td>
+						</tr>
+					</table>
+						
+					</div>
+				</div>
+				
+				<!-- /Main Content Column -->
+			</div>
+			
+		</div>
+	
+		</form>
+		
+		<div class="footerCleaner"></div>
+	</div>
+	
+	<!-- Footer -->
+<div class="footer">
+	<div class="footnotes">
+		<div class="usingspace">
+
+Ваш почтовый ящик: <b>10Mb</b> (<span>7%</span>) из 
+	<b>135Mb</b>.
+
+ 
+	<br>
+<!-- COUNTER-->
+<script language="JavaScript" type="text/javascript"><!--
+d=document;
+n=navigator;var a='';a+='&r='+escape(d.referrer);
+a+='&p='+escape(window.location.href);
+d.cookie="co=1;path=/"; a+="&c="+(d.cookie?'y':'n');
+d.cookie="co=1; expires=Thu, 01-Jan-70 00:00:01 GMT";
+fr=(self!=top)?'y':'n';
+a+='&fr='+fr;
+tz=(new Date()).getTimezoneOffset();
+a+='&tz='+tz;
+a+='&j='+(n.javaEnabled()?'y':'n');
+s=screen;
+a+='&s='+s.width+'*'+s.height;
+a+='&d='+(s.colorDepth?s.colorDepth:s.pixelDepth);
+a+='&js=y';
+d.write('<a href="http://net-promoter.com/ru/" title="Оптимизация сайта | продвижение сайта | раскрутка сайта - NetPromoter"><img src="http://counter.ukr.net/netp/freemail/cnt.php?rand='+Math.random()+a+'" alt="Оптимизация сайта | продвижение сайта | раскрутка сайта - NetPromoter" width="1" height="1" border="0"/></a>')
+;
+//--></script>
+<noscript><a href="http://net-promoter.com/ru/" title="Оптимизация сайта | продвижение сайта | раскрутка сайта - NetPromoter"><img src="http://counter.ukr.net/netp/freemail/cnt.php?js=n" alt="Оптимизация сайта | продвижение сайта | раскрутка сайта - NetPromoter" width="1" height="1" border="0"/></a></noscript>
+<!--/COUNTER-->
+ 
+ 
+</div>
+ 
+		<div class="copy">
+			&copy; 1998-2007 ООО &quot;Укрнет&quot;
+			<br/>        
+			<a href="/q/sendmsg?To=freemail@ukr.net&Subject=feedback%20from%20freemail">Обратная связь</a> | <a href="/q/sendmsg?To=reklama@kiev.ukr.net&Subject=advertising">Реклама на портале ukr.net</a>
+		</div>			
+	</div>
+</div>
+<!-- /Footer -->
+
+<div id="autosuggest"><ul></ul></div>
+
+<script>
+// Error Message
+if (errorMessage != '') {
+	el = document.getElementById('errorMessageContainer');
+	el.innerHTML = errorMessage;
+	toggleErrorDialog(1);
+}
+
+
+	tinyMCE.init(tinyMCEoptions);
+
+
+
+
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,230 @@
+
+TABLE { FONT-SIZE: 10.8px; COLOR:#29476b; FONT-FAMILY: "Verdana"} 
+
+
+.body { background-color: #FFFFFF; list-style-type: square;}
+
+ A { color : #2a507e; font-family : Verdana; font-size : 11px; text-decoration : none; }
+A:Active { color : #FF9966; } A:Hover { color : #000000; } 
+
+input, select, button {
+	font-family: Tahoma, Arial, Verdana, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+body, form { margin:0; padding:0; }
+
+
+.leftCol { width: 238px; height:120}
+.leftColgra { width: 445px; padding:3;}
+.rightCol { width: 535px; padding:3;}
+.leftColgra0 { width: 445px; padding:0;}
+.rightCol0 { width: 535px; padding:0;}
+.rightCol505 { width: 515px; padding:0;}
+.rightCol1 { width: 950px; padding:0;}
+.rightCol2 { width: 983px; padding:0;}
+
+.titlesmup {font-family:Verdana; font-weight: bold; font-size: 12px; padding: 12px; }
+
+
+
+.map { width: 750px; padding:0;}
+
+.tl {background: url(http://1ua.com.ua/images/box-tbl-y2.bmp) top left no-repeat; }
+.tr {background: url(http://1ua.com.ua/images/box-tbr-y2.bmp) top right no-repeat; }
+.tbl {background: url(http://1ua.com.ua/images/box-tbl-y.png) top left no-repeat; }
+.tbr {background: url(http://1ua.com.ua/images/box-tbr-y.png) top right no-repeat; }
+.tbl2 {background: url(http://1ua.com.ua/images/box-tbl-y2.png) top left no-repeat; }
+.tbr2 {background: url(http://1ua.com.ua/images/box-tbr-y2.png) top right no-repeat; }
+.title { text-align: center; color: white; font-family: Tahoma,sans-serif;  font-weight: bold; font-size: 14px; padding: 8px; }
+.titlesm { text-align: center; color: white; font-family: Tahoma,sans-serif;  font-weight: bold; font-size: 12px; padding: 10px; 
+
+}
+
+
+ .l, .r, .t, .b { background-image: url(http://1ua.com.ua/images/box-dot.gif); }
+ .l, .r { background-repeat: repeat-y; }
+ .t, .b { background-repeat: repeat-x; }
+ .l, .t { background-position: left top; }
+ .r, .b { background-position: right bottom; }
+
+ .bl { background: url(http://1ua.com.ua/images/box-bl-n.gif) bottom left no-repeat; }
+ .br { background: url(http://1ua.com.ua/images/box-br-n.gif) bottom right no-repeat; }
+ .vl { background: url(http://1ua.com.ua/images/box-vl-n.gif) top left no-repeat; }
+ .vr { background: url(http://1ua.com.ua/images/box-vr-n.gif) top right no-repeat; }
+
+
+h6 {
+	font-size:70%;
+	font-family: Verdana, sans-serif;
+	color:#4a4a4a;
+	}
+h5 {
+	font-size:85%;
+	font-family: Verdana, sans-serif;
+	color:#4a4a4a;
+	}
+h4 {
+	font-size:70%;
+	font-family: Verdana, sans-serif;
+	color:#4a4a4a;
+	}
+h2 {
+	font-size:80%;
+	font-family: Verdana, sans-serif;
+	text-align: center;
+	color:#4a4a4a;
+}
+h3 {
+	color: #2a507e;
+	font-size: 12pt; font-family: Verdana, sans-serif;
+	padding-left: 10pt;
+}
+h1 {
+	color: #2a507e;
+	font-size: 7pt; font-family: Verdana, sans-serif;
+	padding-left: 10pt;
+}
+
+
+table.onfo tr.dark td {background-color:#f0f0f0;}
+
+table.members {background-color:yellow; FONT-SIZE: 12px;}
+table.members caption {font-family:verdana; font-size:16px;}
+table.members th {background-color:#CCCCCC;}
+table.members tr.light td {background-color:#ffffff;}
+table.members tr.dark td {background-color:#f0f0f0;}
+
+
+table.transparent caption {font-family:verdana; font-size:16px;}
+table.transparent {background-color:transparent;}
+table.transparent td {background-color:transparent;}
+
+table.mintcream caption {font-family:verdana; font-size:16px;}
+table.mintcream {background-color:mintcream;}
+table.mintcream td {background-color:mintcream;}
+
+table.lavender caption {font-family:verdana; font-size:16px;}
+table.lavender {background-color:lavender;}
+table.lavender td {background-color:lavender;}
+
+table.whitesmoke caption {font-family:verdana; font-size:16px;}
+table.whitesmoke {background-color:whitesmoke;}
+table.whitesmoke td {background-color:whitesmoke;}
+
+
+table.lightsteelblue caption {font-family:verdana; font-size:16px;}
+table.lightsteelblue {background-color:lightsteelblue;}
+table.lightsteelblue td {background-color:lightsteelblue;}
+
+table.bisque caption {font-family:verdana; font-size:16px;}
+table.bisque {background-color:bisque;}
+table.bisque td {background-color:bisque;}
+
+table.lightcyan caption {font-family:verdana; font-size:16px;}
+table.lightcyan {background-color:lightcyan;}
+table.lightcyan td {background-color:lightcyan;}
+
+table.honeydew caption {font-family:verdana; font-size:16px;}
+table.honeydew {background-color:honeydew;}
+table.honeydew td {background-color:honeydew;}
+
+table.seashell caption {font-family:verdana; font-size:16px;}
+table.seashell {background-color:seashell;}
+table.seashell td {background-color:seashell;}
+
+table.white caption {font-family:verdana; font-size:16px;}
+table.white {background-color:white;}
+table.white td {background-color:white;}
+
+table.lightyellow caption {font-family:verdana; font-size:16px;}
+table.lightyellow {background-color:lightyellow;}
+table.lightyellow td {background-color:lightyellow;}
+
+table.violet caption {font-family:verdana; font-size:16px;}
+table.violet {background-color:violet;}
+table.violet td {background-color:violet;}
+
+table.palegreen caption {font-family:verdana; font-size:16px;}
+table.palegreen {background-color:palegreen;}
+table.palegreen td {background-color:palegreen;}
+
+table.lightgoldenrodyellow caption {font-family:verdana; font-size:16px;}
+table.lightgoldenrodyellow {background-color:lightgoldenrodyellow;}
+table.lightgoldenrodyellow td {background-color:lightgoldenrodyellow;}
+
+table.gold caption {font-family:verdana; font-size:16px;}
+table.gold {background-color:gold;}
+table.gold td {background-color:gold;}
+
+.top { background: white url(http://1ua.com.ua/images/box-title-y.bmp) top left repeat-x; }
+.white { background: white url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+
+.lavender { background: lavender url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.whitesmoke { background: whitesmoke url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.violet { background: violet url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.lightsteelblue { background: lightsteelblue url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.bisque { background: bisque url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.lightcyan { background: lightcyan url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.honeydew { background: honeydew url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.seashell { background: seashell url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.lightgoldenrodyellow { background: lightgoldenrodyellow url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.gold { background: gold url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.lightyellow { background: lightyellow url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.mintcream { background: mintcream url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.transparent { background: transparent url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+.palegreen { background: palegreen url(http://1ua.com.ua/images/box-title-y2.bmp) top left repeat-x; }
+
+.topNav  {
+        text-align: center;
+        line-height: 10px; margin:0px;
+        list-style: none;
+        padding: 0px 0px 0px 0px; 
+
+
+}
+
+.topNam  {
+        text-align: center;
+        line-height: 20px; margin:0px;
+        list-style: none;
+        padding: 0px 0px 0px 0px; 
+
+
+}
+
+
+ul.topNav li {
+display: inline;
+width: 12.5em; 
+height: 36px;
+float: right; 
+padding-top:0px; margin:0px;
+
+background-repeat:no-repeat; 
+background-position: top left;
+}
+ul.topNav a {font-weight: bold; font-size:11px; height: 30px;display:block; margin: auto 0px; padding: 0px 10px; color: #DAE1E8;}
+ul.topNav a:hover {color: white; text-decoration:underline;}
+
+
+ul.topNam li {
+display: inline;
+width: 11em; 
+height: 10px;
+float: right; 
+padding-top:0px; margin:0px;
+
+background-repeat:no-repeat; 
+background-position: top left;
+}
+ul.topNam a {font-weight: bold; font-size:11px; height: 30px;display:block; margin: auto 0px; padding: 0px 10px; color: #DAE1E8;}
+ul.topNam a:hover {color: white; text-decoration:underline;}
+
+
+div#ent {padding:0px 0px 0px 0px; width: 45.5em; margin:0px 0px; float:right; text-align:right; color: white;}
+
+
+/* background-color: #4A556B;*/
+
+

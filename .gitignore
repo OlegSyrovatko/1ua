@@ -1,0 +1,78 @@
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+
+# Секрети: усі файли *.env (включно з нестандартними іменами копій),
+# крім шаблону .env.example, який навмисно без реальних значень
+*.env
+!.env.example
+
+# Приватні ключі DKIM для підпису вихідної пошти (реальні секрети,
+# не покриваються правилом /storage/*.key вище — інша тека й розширення)
+storage/app/dkim/*.key
+storage/app/dkim/*.private
+
+# Composer phar-бінарник не варто версіонувати (важить кілька МБ, не код)
+composer.phar
+
+# Файловий кеш "хто онлайн / остання сторінка" (last_visit) і черга
+# сповіщень (notice) — генеруються сайтом на кожен pageview, це дані,
+# не код; тримати теку в git, лишаючи вміст поза версіюванням
+storage/app/public/last_visit/*
+storage/app/public/notice/*
+!storage/app/public/last_visit/.gitkeep
+!storage/app/public/notice/.gitkeep
+
+# Завантажений юзерами контент (фото, аватари, карти тощо) — не код,
+# персональні дані, великий обсяг, регенерується/завантажується юзерами
+storage/app/public/Fotop/*
+storage/app/public/Photos/*
+storage/app/public/avatar/*
+storage/app/public/apps/*
+storage/app/public/karta/*
+storage/app/public/life_views/*
+storage/app/public/obl_news/*
+storage/app/public/sm/*
+storage/app/public/tmp/*
+!storage/app/public/Fotop/.gitkeep
+!storage/app/public/Photos/.gitkeep
+!storage/app/public/avatar/.gitkeep
+!storage/app/public/apps/.gitkeep
+!storage/app/public/karta/.gitkeep
+!storage/app/public/life_views/.gitkeep
+!storage/app/public/obl_news/.gitkeep
+!storage/app/public/sm/.gitkeep
+!storage/app/public/tmp/.gitkeep
+
+# GeoIP база — стороння бінарна БД, не проєктний код
+storage/app/geoip/*
+!storage/app/geoip/.gitkeep
+
+# Рантайм-кеш, сесії та логи Laravel (сесії можуть містити токени
+# авторизації користувачів — не мають потрапляти у git)
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*.log
+!storage/framework/cache/data/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/testing/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+
+# Файли зі списком IP-адрес відвідувачів (PII, накопичуються рантаймом)
+/ip.txt
+storage/app/public/ip.txt

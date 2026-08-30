@@ -1,0 +1,12 @@
+
+https://www.google.com/maps/@47.25,35.24,12z
+https://www.google.com/maps/@47.25,35.24,14z/data=!3m1!1e3
+
+https://www.google.com/maps/@47.28,35.22,14z/data=!3m1!1e3
+https://www.google.com/maps/@47.28,35.22,8z/data=!3m1!1e3
+
+
+
+https://www.google.com/maps/place/49°26'59.7"N+26°55'31.0"E/@49.449921,25.8046745,8z/
+https://www.google.com/maps/place/47°28'59.7"N+35°22'31.0"E/@47.28,35.22,8z/
+https://www.google.com/maps/place/47°28'35.7"N+35°22'31.0"E/@49.449921,25.8046745,8z/

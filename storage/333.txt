@@ -1,0 +1,5 @@
+
+https://www.google.com/maps/@47.25,35.24,12z
+https://www.google.com/maps/@47.25,35.24,14z/data=!3m1!1e3
+
+https://www.google.com/maps/@47.28,35.22,14z/data=!3m1!1e3
