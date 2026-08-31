@@ -558,50 +558,10 @@ if ($lan == "ru"){
 else {
 
 
-$filedefault = "storage/life_views/default.txt";
-$filename = "storage/life_views/$id.txt";
-if (file_exists($filename)) {
-if(filesize($filename) > 0){
-    $whattoread = @fopen($filename, "r");
-    $views= fread($whattoread, filesize($filename));
-    fclose($whattoread);
-}
-else{$views=0;}
-} else{ copy($filedefault,$filename); $views=0;}
-
-
-
-
-$filename = storage_path('app/public/delseeffile.txt');
-
-// $filename = "storage/delseeffile.txt";
-if(filesize($filename) > 0){
-    $whattoread = @fopen($filename, "r");
-    $memory_contents = fread($whattoread, filesize($filename));
-    fclose($whattoread);
-      $ip = getenv('REMOTE_ADDR');
-    if (strstr($ip,"66.249.")=="" && strstr($memory_contents,"lif$id")==""){
-
-        $newfile = @fopen($filename, "a");
-        // if ($newfile === false) {
-        //     dd($filename);
-        // }
-
-        // if ($newfile) {
-            @fwrite($newfile, "lif$id");
-            fclose($newfile);
-        // }
-
-        $views = (int)trim($views);
-        $viewsn = $views + 1;
-        $filename = "storage/life_views/$id.txt";
-        $fp = fopen($filename, 'a');
-        ftruncate($fp, 0);  fclose($fp);
-         $newfile = @fopen($filename, "a");
-         @fwrite($newfile, $viewsn);
-         fclose($newfile);
-
-    }
+$views = (int) \Illuminate\Support\Facades\Redis::get("life_views:$id");
+$ip = getenv('REMOTE_ADDR');
+if (strstr($ip,"66.249.")=="" && \Illuminate\Support\Facades\Redis::set("dedup:lif:$id", 1, 'EX', 60, 'NX')){
+    \Illuminate\Support\Facades\Redis::incr("life_views:$id");
 }
 
 

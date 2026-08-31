@@ -114,40 +114,10 @@ else if(isset($topic)){}else {$topic = "";}
 
 if($nrc>0){
 
-$filedefault = "storage/life_views/default.txt";
-$filename = "storage/life_views/all$id.txt";
-if (file_exists($filename)) {} else{ copy($filedefault,$filename);}
-
-		$filename = "storage/life_views/all$id.txt";
-		$whattoread = @fopen($filename, "r");
-		$views= fread($whattoread, filesize($filename));
-		fclose($whattoread);
-
-		$filename = "storage/delseeffile.txt";
-		$whattoread = @fopen($filename, "r");
-		$memory_contents = fread($whattoread, filesize($filename));
-		fclose($whattoread);
-
+		$views = (int) \Illuminate\Support\Facades\Redis::get("life_views:all$id");
 		$ip = getenv('REMOTE_ADDR');
-    if (strstr($ip,"66.249.")=="" && strstr($memory_contents,"lifall$id")==""){
-
-    $memory_contents.="lifall$id";
-
-		$fp = fopen($filename, 'a');
-		ftruncate($fp, 0);  fclose($fp);
-		 $newfile = @fopen($filename, "a");
-		 @fwrite($newfile, $memory_contents);
-		 fclose($newfile);
-
-
-		$viewsn=$views+1;
-		$filename = "storage/life_views/all$id.txt";
-		$fp = fopen($filename, 'a');
-		ftruncate($fp, 0);  fclose($fp);
-		 $newfile = @fopen($filename, "a");
-		 @fwrite($newfile, $viewsn);
-		 fclose($newfile);
-
+    if (strstr($ip,"66.249.")=="" && \Illuminate\Support\Facades\Redis::set("dedup:lifall:$id", 1, 'EX', 60, 'NX')){
+        \Illuminate\Support\Facades\Redis::incr("life_views:all$id");
     }
 
     $all_records = __('messages.all_records');
