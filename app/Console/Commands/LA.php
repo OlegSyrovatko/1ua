@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +45,9 @@ class LA extends Command
         $load = sys_getloadavg();
         $load1 = round($load[0], 1); $load5 = round($load[1], 1);$load15 = round($load[2], 1);
         $la = " $load1 $load5 $load15 ";
-        if($load15>5){
+        if($load15>5 && !Cache::has('la_alert_cooldown')){
+            Cache::put('la_alert_cooldown', true, now()->addMinutes(15));
+
             $details['email'] = "sirov@ukr.net";
             $details['subject'] = "LA";
             $details['blade'] = "emails.LA";
