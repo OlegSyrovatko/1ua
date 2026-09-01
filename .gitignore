@@ -35,6 +35,9 @@ storage/app/public/notice/*
 !storage/app/public/last_visit/.gitkeep
 !storage/app/public/notice/.gitkeep
 
+# Локальні знімки Redis (redis:backup) — великі бінарні файли, не код
+storage/app/redis-backups/*
+
 # Завантажений юзерами контент (фото, аватари, карти тощо) — не код,
 # персональні дані, великий обсяг, регенерується/завантажується юзерами
 storage/app/public/Fotop/*
