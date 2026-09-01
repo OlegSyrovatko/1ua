@@ -199,9 +199,9 @@ $fill="#111";
                 }
                 */
                 $group_fr['friend'][$a_fr]=$Numfr;
-                $filename = "storage/last_visit/$Numfr.txt";
-                if (file_exists($filename) && filesize($filename) > 0) {
-                    $time_file=filemtime($filename); $t=$time_sec-$time_file;
+                $lv = last_visit_read($Numfr);
+                if ($lv) {
+                    $t = last_visit_ts_diff($lv);
                 }
                 if ($t<=500){
                      $group_onl['friend'][$a_onl]=$Numfr;
@@ -467,32 +467,26 @@ $index_go="index,follow";
                              if($question_n==3){$q_ip="";} else {$q_ip=$question[4];}
 
                             if((int)$q_avt>0){
-                                $filename = "storage/last_visit/$q_avt.txt";
                                 $q_Im = "";
                                 $q_Priz = "";
                                 $q_Num_a = "";
                                 $av_height=200;
                                 $av_width=200;
-                                if (file_exists($filename)) {
-                                    $whattoread = @fopen($filename, "r");
-                                    $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                                    $page = explode("#!:*&", $file_contents);
-
-                                    $q_Im=$page[1]; $q_Priz=$page[2];
-                                    $q_Num_a=$page[3]; if($q_Num_a<10){$q_Num_a=7;}
+                                $page = last_visit_read($q_avt);
+                                if ($page) {
+                                    $q_Im=$page['im']; $q_Priz=$page['priz'];
+                                    $q_Num_a=$page['avatar']; if($q_Num_a<10){$q_Num_a=7;}
                                     $av_height = isset($pageq[6]) ? $pageq[6] : null;
                                     $av_width = isset($pageq[7]) ? $pageq[7] : null;
                                     if (!is_int($av_height)) {$av_height="auto";}
                                     if (!is_int($av_width)) {$av_width=200;}
                                 }
-                                $time_file = filemtime($filename);
-                                $time_sec=time();
                                 $online = "";
                                 $my_id = "";
                                  if(Auth::user()) {
                                     $my_id = Auth::user()->id;
                                  }
-                                $t = $time_sec - $time_file;
+                                $t = last_visit_ts_diff($page);
                                 if ($t <= 500 && $my_id != $q_avt) {
                                     $online = "online";
                                 }
@@ -1240,15 +1234,10 @@ $index_go="index,follow";
                         }
                     if($Numm!=$id && $Numm>0 && $nguests==1){
 
-                        $filename0 = "storage/last_visit/$id.txt";
-                        $whattoread0 = @fopen($filename0, "r");
-                        $memory_contents0 = fread($whattoread0, filesize($filename0)); 		 fclose($whattoread0);
-                        $notices = explode("#!:*&", $memory_contents0);
-                        $lan_user=$notices[4]; $page_user=$notices[5];
+                        $lv0 = last_visit_read($id);
+                        $lan_user = $lv0['lang'] ?? "ua"; $page_user = $lv0['uri'] ?? "";
 
-                        $time_sec=time();
-                        $time_file0=filemtime($filename0);
-                        $t=$time_sec-$time_file0;
+                        $t = last_visit_ts_diff($lv0);
                         if ($t<=50000){
                         $sexm = Auth::user()->sex;
                         $Num_am = Auth::user()->avatar;
@@ -1518,9 +1507,7 @@ $index_go="index,follow";
                         $f_his="";
                         for($a=0; $a<$a_our_nr; $a++){
                             $ah=rand(0,$a_our-1); $Numfr=$group_our['friend'][$ah];
-                            $filename = "storage/last_visit/$Numfr.txt";
-
-                            if (mb_strstr($f_his,"$Numfr")=="" && file_exists($filename) && filesize($filename) > 0){
+                            if (mb_strstr($f_his,"$Numfr")=="" && last_visit_read($Numfr)){
                                 $f_his.=" $Numfr ";
 
                                 $frnd = avt($Numfr,$my_id);
@@ -1548,9 +1535,7 @@ $index_go="index,follow";
                     for($a=0; $a<$a_fr_nr; $a++){
 
                         $ah=rand(0,$a_fr-1);  $Numfr=$group_fr['friend'][$ah];
-                        $filename = "storage/last_visit/$Numfr.txt";
-
-                        if (mb_strstr($f_his,"$Numfr")=="" && file_exists($filename) && filesize($filename) > 0){
+                        if (mb_strstr($f_his,"$Numfr")=="" && last_visit_read($Numfr)){
                             $f_his.=" $Numfr ";
 
                             $frnd = avt($Numfr,$my_id);
@@ -1579,9 +1564,7 @@ $index_go="index,follow";
                     for($a=0; $a<$a_onl_nr; $a++){
 
 						$ah=rand(0,$a_onl-1); $Numfr=$group_onl['friend'][$ah];
-						$filename = "storage/last_visit/$Numfr.txt";
-
-						if (mb_strstr($f_his,"$Numfr")=="" && file_exists($filename) && filesize($filename) > 0){
+						if (mb_strstr($f_his,"$Numfr")=="" && last_visit_read($Numfr)){
 							$f_his.=" $Numfr ";
 
                             $frnd = avt($Numfr,$my_id);
@@ -1611,9 +1594,7 @@ $index_go="index,follow";
 						$ah=rand(0,$a_rin-1);
 						 $Numfr=$group_in['friend'][$ah];
 
-						$filename = "storage/last_visit/$Numfr.txt";
-
-						if (mb_strstr($f_his,"$Numfr")=="" && file_exists($filename) && filesize($filename) > 0){
+						if (mb_strstr($f_his,"$Numfr")=="" && last_visit_read($Numfr)){
 							$f_his.=" $Numfr ";
 
 							$frnd = avt($Numfr,$my_id);

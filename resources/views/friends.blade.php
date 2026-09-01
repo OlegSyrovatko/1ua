@@ -49,13 +49,9 @@ $purp_2f="";
 $recall = "";
 $nr=0;
 
-$filename0 = "storage/last_visit/$id.txt";
-if (file_exists($filename0) && filesize($filename0) > 0) {
-    $whattoread0 = @fopen($filename0, "r");
-    $memory_contents0 = fread($whattoread0, filesize($filename0));
-    fclose($whattoread0);
-    $page = explode("#!:*&", $memory_contents0);
-    $Imp=$page[1]; $Prizp=$page[2]; $Num_ap=$page[3];
+$page0 = last_visit_read($id);
+if ($page0) {
+    $Imp=$page0['im']; $Prizp=$page0['priz']; $Num_ap=$page0['avatar'];
 
 
     if (Auth::user()){
@@ -281,9 +277,7 @@ else{
 
             if($Num2==$my_id&&$Argue==1){
                 $group_in['Im'][$a_rin]=$Im1; $group_in['Priz'][$a_rin]=$Priz1; $group_in['friend'][$a_rin]=$Num1; $group_in['avatar'][$a_rin]=$avatar1; $group_in['dd'][$a_rin]=$dd;
-                $filename = "storage/last_visit/$Num1.txt";
-                $time_file=filemtime($filename);
-                $t=$time_sec-$time_file;
+                $t = last_visit_seconds_since($Num1);
                 $group_in['lv'][$a_rin]=$t;
             $a_rin++;
             }
@@ -297,9 +291,7 @@ else{
 
                 $group_fr['Im'][$a_fr]=$Imfr; $group_fr['Priz'][$a_fr]=$Prizfr; $group_fr['friend'][$a_fr]=$Numfr;
                 $group_fr['avatar'][$a_fr]=$avatarfr; $group_fr['dd'][$a_fr]=$dd;
-                $filename = "storage/last_visit/$Numfr.txt";
-                $time_file=filemtime($filename);
-                $t=$time_sec-$time_file;
+                $t = last_visit_seconds_since($Numfr);
                 $group_fr['lv'][$a_fr]=$t;
 
 

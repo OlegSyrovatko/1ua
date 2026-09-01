@@ -805,20 +805,15 @@ foreach ($results as $result) {
                                     else{$ncoment_e="";}
                                     $ncoment_e3 = "$theme";
 
-                                    $filename = "storage/last_visit/$avt.txt";
                                     $av_height="auto";
                                     $av_width=200;
-                                    if (file_exists($filename)) {
-                                        $whattoread = @fopen($filename, "r");
-                                        $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                                        $page = explode("#!:*&", $file_contents);
-                                        $av_height = isset($page[6]) ? $page[6] : null;
-                                        $av_width = isset($page[7]) ? $page[7] : null;
+                                    $page = last_visit_read($avt);
+                                    if ($page) {
+                                        $av_height = $page['av_h'] ?? null;
+                                        $av_width = $page['av_w'] ?? null;
                                     }
-                                    $time_file = filemtime($filename);
-                                    $time_sec=time();
                                     $online = "";
-                                    $t = $time_sec - $time_file;
+                                    $t = last_visit_ts_diff($page);
                                     if ($t <= 500 && $my_id != $avt) {
                                         $online = "online";
                                     }
@@ -1108,20 +1103,15 @@ foreach ($results as $result) {
                                     $av_avt = "";
 
                                     if($avt>7){
-                                        $filename = "storage/last_visit/$avt.txt";
                                         $av_height="auto";
                                         $av_width=200;
-                                        if (file_exists($filename)) {
-                                            $whattoread = @fopen($filename, "r");
-                                            $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                                            $page = explode("#!:*&", $file_contents);
-                                            $av_height = isset($page[6]) ? $page[6] : null;
-                                            $av_width = isset($page[7]) ? $page[7] : null;
+                                        $page = last_visit_read($avt);
+                                        if ($page) {
+                                            $av_height = $page['av_h'] ?? null;
+                                            $av_width = $page['av_w'] ?? null;
                                         }
-                                        $time_file = filemtime($filename);
-                                        $time_sec=time();
                                         $online = "";
-                                        $t = $time_sec - $time_file;
+                                        $t = last_visit_ts_diff($page);
                                         if ($t <= 500 && $my_id != $avt) {
                                             $online = "online";
                                         }
@@ -1134,20 +1124,15 @@ foreach ($results as $result) {
 
                                     if($avt_old>0){
 
-                                        $filename = "storage/last_visit/$avt_old.txt";
-                                        $whattoread = @fopen($filename, "r");
-                                        $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                                        $pageq = explode("#!:*&", $file_contents);
+                                        $pageq = last_visit_read($avt_old);
 
-                                        $Imq=$pageq[1]; $Prizq=$pageq[2]; $Num_aq=$pageq[3];
+                                        $Imq = $pageq['im'] ?? ''; $Prizq = $pageq['priz'] ?? ''; $Num_aq = $pageq['avatar'] ?? '';
 
-                                        $av_height = isset($pageq[6]) ? $pageq[6] : "auto";
-                                        $av_width = isset($pageq[7]) ? $pageq[7] : 200;
+                                        $av_height = $pageq['av_h'] ?? "auto";
+                                        $av_width = $pageq['av_w'] ?? 200;
 
-                                        $time_file = filemtime($filename);
-                                        $time_sec=time();
                                         $online = "";
-                                        $t = $time_sec - $time_file;
+                                        $t = last_visit_ts_diff($pageq);
                                         if ($t <= 500 && $my_id != $avt) {
                                             $online = "online";
                                         }

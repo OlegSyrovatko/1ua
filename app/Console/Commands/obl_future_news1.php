@@ -836,19 +836,8 @@ class obl_future_news1 extends Command
                             $mail_adminx = $Alu->email;
                             $allusersm .= " $mail_adminx";
 
-                            $filename = "last_visit/$Numx.txt";
-                            if (Storage::disk('public')->exists($filename)) {
-
-                                $memory_contents = Storage::disk('public')->get($filename);
-                                if ($memory_contents) {
-                                    $notices = explode("#!:*&", $memory_contents);
-                                    $lan_user = $notices[4];
-                                } else {
-                                    $lan_user = "ua";
-                                }
-                            } else {
-                                $lan_user = "ua";
-                            }
+                            $lv = last_visit_read($Numx);
+                            $lan_user = $lv['lang'] ?? "ua";
 
                             $mail_out = $new_text_mail;
                             $br_n = substr_count($new_text_mail, "<br />");

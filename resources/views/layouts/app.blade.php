@@ -546,19 +546,7 @@
         $Num_am = Auth::user()->avatar;
         $Num_aym = Auth::user()->avy;
         $Num_axm = Auth::user()->avx;
-        $filedefault = "storage/default.txt";
-        $filename2 = "storage/last_visit/$Numm.txt";
-        if (!file_exists($filename2)) {
-            copy($filedefault, $filename2);
-        }
-
-        $fp = fopen($filename2, 'a');
-        ftruncate($fp, 0); fclose($fp);
-        $newfile = @fopen($filename2, "a");
-        if ($newfile) {
-            @fwrite($newfile, "#!:*&$Imm#!:*&$Prizm#!:*&$Num_am#!:*&$lan_user#!:*&$fc#!:*&$Num_aym#!:*&$Num_axm");
-            fclose($newfile);
-        }
+        last_visit_write($Numm, $Imm, $Prizm, $Num_am, $lan_user, $fc, $Num_aym, $Num_axm);
     }
     @endphp
 @endauth

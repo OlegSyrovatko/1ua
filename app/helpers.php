@@ -49,17 +49,13 @@ function weather_date(){
 
 function avt($avt,$Numm)
 {
-    $filename = "storage/last_visit/$avt.txt";
-    if (file_exists($filename) && filesize($filename) > 0) {
-        $whattoread = @fopen($filename, "r");
-        $file_contents = fread($whattoread, filesize($filename));
-        fclose($whattoread);
-        $pageq = explode("#!:*&", $file_contents);
-        $q_Im = $pageq[1];
-        $q_Priz = $pageq[2];
-        $Num_aq = $pageq[3];
-        $av_height = isset($pageq[6]) ? $pageq[6] : null;
-        $av_width = isset($pageq[7]) ? $pageq[7] : null;
+    $pageq = last_visit_read($avt);
+    if ($pageq) {
+        $q_Im = $pageq['im'];
+        $q_Priz = $pageq['priz'];
+        $Num_aq = $pageq['avatar'];
+        $av_height = $pageq['av_h'] ?? null;
+        $av_width = $pageq['av_w'] ?? null;
         if (!is_int($av_height)) {$av_height="auto";}
         if (!is_int($av_width)) {$av_width=200;}
 
@@ -67,9 +63,7 @@ function avt($avt,$Numm)
             $Num_aq = 7;
         }
 
-        $time_file = filemtime($filename);
-        $time_sec=time();
-        $t = $time_sec - $time_file;
+        $t = last_visit_ts_diff($pageq);
         $online = "";
         if ($t <= 500 && $Numm != $avt) {
             $online = "online";
@@ -85,6 +79,44 @@ function avt($avt,$Numm)
     return $aavt;
 }
 
+
+
+function last_visit_write($id, $im, $priz, $avatar, $lang, $uri, $avH = null, $avW = null, $ts = null)
+{
+    $fields = [
+        'im' => $im,
+        'priz' => $priz,
+        'avatar' => $avatar,
+        'lang' => $lang,
+        'uri' => $uri,
+        'ts' => $ts ?? time(),
+    ];
+    if ($avH !== null) {
+        $fields['av_h'] = $avH;
+    }
+    if ($avW !== null) {
+        $fields['av_w'] = $avW;
+    }
+
+    \Illuminate\Support\Facades\Redis::hmset("last_visit:$id", $fields);
+}
+
+function last_visit_read($id)
+{
+    $data = \Illuminate\Support\Facades\Redis::hgetall("last_visit:$id");
+    return $data ? $data : null;
+}
+
+function last_visit_seconds_since($id)
+{
+    $ts = \Illuminate\Support\Facades\Redis::hget("last_visit:$id", "ts");
+    return ($ts !== null && $ts !== false) ? (time() - (int) $ts) : PHP_INT_MAX;
+}
+
+function last_visit_ts_diff($page)
+{
+    return ($page && isset($page['ts'])) ? (time() - (int) $page['ts']) : PHP_INT_MAX;
+}
 
 
 function getDescriptionAttribute($string) {

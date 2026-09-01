@@ -667,15 +667,10 @@ else {
             }
             if($Numm!=$id && $Numm>0 && $nguests==1){
 
-                $filename0 = "storage/last_visit/$id.txt";
-                $whattoread0 = @fopen($filename0, "r");
-                $memory_contents0 = fread($whattoread0, filesize($filename0)); 		 fclose($whattoread0);
-                $notices = explode("#!:*&", $memory_contents0);
-                $lan_user=$notices[4]; $page_user=$notices[5];
+                $lv0 = last_visit_read($id);
+                $lan_user = $lv0['lang'] ?? "ua"; $page_user = $lv0['uri'] ?? "";
 
-                $time_sec=time();
-                $time_file0=filemtime($filename0);
-                $t=$time_sec-$time_file0;
+                $t = last_visit_ts_diff($lv0);
                 if ($t<=50000){
                 $sexm = Auth::user()->sex;
                 $Num_am = Auth::user()->avatar;

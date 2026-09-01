@@ -130,8 +130,7 @@ class GoogleAuthController extends Controller
                     }
                     $path3 = $image_resize->save(Storage::path('public/avatar/s') . $SRC_f0);
 
-                    Storage::disk('public')->copy('default.txt', "last_visit/$id.txt");
-                    Storage::disk('public')->prepend("last_visit/$id.txt", "#!:*&$firstName#!:*&$lastName#!:*&$Num_av#!:*&ua#!:*&/infp#!:*&$h_px");
+                    last_visit_write($id, $firstName, $lastName, $Num_av, 'ua', '/infp', $h_px);
 
                     if ($path1 && $path2 && $path3) {
                         Storage::disk('public')->delete($from_path);

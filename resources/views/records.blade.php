@@ -271,13 +271,10 @@ else{
                 if(mb_strlen($them)>0){
 
                      if((int)$avt>0){
-                        $filename = "storage/last_visit/$avt.txt";
-                        if (file_exists($filename) && filesize($filename) > 0) {
-                            $whattoread = @fopen($filename, "r");
-                            $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                             $pageq = explode("#!:*&", $file_contents);
-                            $q_Im=$pageq[1]; $q_Priz=$pageq[2];
-                             $time_file=filemtime($filename); $t=$time_sec-$time_file;
+                        $pageq = last_visit_read($avt);
+                        if ($pageq) {
+                            $q_Im=$pageq['im']; $q_Priz=$pageq['priz'];
+                             $t = last_visit_ts_diff($pageq);
                              if ($t<=500 && $my_id!=$avt){$online = __('messages.online'); $qonl = " <font color=green>$online</font>";} else {$qonl = "";}
                             $aavt = "<a href=/$ppref_page$avt>$q_Im  $q_Priz</a>$qonl";
                          }else {$aavt = "";}

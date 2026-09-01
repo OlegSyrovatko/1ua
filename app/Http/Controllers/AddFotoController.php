@@ -3440,19 +3440,9 @@ class AddFotoController extends Controller
 
                             if($avt>0){
 
-                                $filename0 = "storage/last_visit/$avt.txt";
-                                if (file_exists($filename0) && filesize($filename0) > 0) {
-                                    $whattoread0 = @fopen($filename0, "r");
-                                    $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                    fclose($whattoread0);
-                                    $notices = explode("#!:*&", $memory_contents0);
-                                    $lan_user = $notices[4];
-                                    $time_file0 = filemtime($filename0);
-                                } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                                $time_sec = time();
-                                $t = $time_sec - $time_file0;
+                                $lv0 = last_visit_read($avt);
+                                $lan_user = $lv0['lang'] ?? "ua";
+                                $t = last_visit_ts_diff($lv0);
                                 if ($t <= 50000) {
 
                                     if($rate>=1){$star1="on";}else{$star1="off";}
@@ -3706,19 +3696,9 @@ class AddFotoController extends Controller
 
                             if($avt>0){
 
-                                $filename0 = "storage/last_visit/$avt.txt";
-                                if (file_exists($filename0) && filesize($filename0) > 0) {
-                                    $whattoread0 = @fopen($filename0, "r");
-                                    $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                    fclose($whattoread0);
-                                    $notices = explode("#!:*&", $memory_contents0);
-                                    $lan_user = $notices[4];
-                                    $time_file0 = filemtime($filename0);
-                                } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                                $time_sec = time();
-                                $t = $time_sec - $time_file0;
+                                $lv0 = last_visit_read($avt);
+                                $lan_user = $lv0['lang'] ?? "ua";
+                                $t = last_visit_ts_diff($lv0);
                                 if ($t <= 50000) {
 
                                     if($rate>=1){$star1="on";}else{$star1="off";}
@@ -4180,19 +4160,9 @@ class AddFotoController extends Controller
 
                         if($avt>0 && $avt != $Numm){
 
-                            $filename0 = "storage/last_visit/$avt.txt";
-                            if (file_exists($filename0) && filesize($filename0) > 0) {
-                                $whattoread0 = @fopen($filename0, "r");
-                                $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                fclose($whattoread0);
-                                $notices = explode("#!:*&", $memory_contents0);
-                                $lan_user = $notices[4];
-                                $time_file0 = filemtime($filename0);
-                            } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                            $time_sec = time();
-                            $t = $time_sec - $time_file0;
+                            $lv0 = last_visit_read($avt);
+                            $lan_user = $lv0['lang'] ?? "ua";
+                            $t = last_visit_ts_diff($lv0);
                             if ($t <= 50000) {
 
 
@@ -4826,22 +4796,9 @@ class AddFotoController extends Controller
 
                             if ($avt > 0 && $avt != $Numm) {
 
-                                $filename0 = "storage/last_visit/$avt.txt";
-                                if (file_exists($filename0) && filesize($filename0) > 0) {
-                                    $whattoread0 = @fopen($filename0, "r");
-                                    $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                    fclose($whattoread0);
-                                    $notices = explode("#!:*&", $memory_contents0);
-                                    $lan_user = $notices[4];
-                                    $time_file0 = filemtime($filename0);
-                                } else {
-                                    $lan_user = "ua";
-                                    $time_file0 = 0;
-                                }
-
-
-                                $time_sec = time();
-                                $t = $time_sec - $time_file0;
+                                $lv0 = last_visit_read($avt);
+                                $lan_user = $lv0['lang'] ?? "ua";
+                                $t = last_visit_ts_diff($lv0);
                                 if ($t <= 50000) {
 
 

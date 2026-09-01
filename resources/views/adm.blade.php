@@ -523,12 +523,8 @@
 
                                             $pageb=$ban_pages[$a];
 
-                                            $filename = "storage/last_visit/$pageb.txt";
-                                            $whattoread = @fopen($filename, "r");
-                                            $file_contents = fread($whattoread, filesize($filename)); 		 fclose($whattoread);
-                                            $pageq = explode("#!:*&", $file_contents);
-
-                                            $Imb=$pageq[1]; $Prizb=$pageq[2];
+                                            $pageq = last_visit_read($pageb);
+                                            $Imb = $pageq['im'] ?? ''; $Prizb = $pageq['priz'] ?? '';
                                             $t1="qwertyuiopasdfg"; $t3=""; for($i=0;$i<4;$i++){$z=rand(0,strlen($t1)-1);$t3.="$t1[$z]";}
 
                                             if($b==3){echo"<div id=\"hid_ban\" style=\"display: none;\">";}

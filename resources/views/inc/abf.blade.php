@@ -40,13 +40,9 @@ if(Auth::user()){$Numm = Auth::user()->id;} else{$Numm="0000000000";}
 
         }
 		if($avt>10){
-		    $file = "storage/last_visit/$avt.txt";
-            if (file_exists($file) && filesize($file) > 0) {
-                $whattoread = @fopen($file, "r");
-                $memory_contents = fread($whattoread, filesize($file));
-                fclose($whattoread);
-                $page = explode("#!:*&", $memory_contents);
-                $Im=$page[1]; $Priz=$page[2];
+		    $page = last_visit_read($avt);
+            if ($page) {
+                $Im=$page['im']; $Priz=$page['priz'];
                 $ppref_page = $pref_page .="i";
                 $M2 = "<b><a href=/$pref_page$avt>$Im $Priz </b></a>";
             }

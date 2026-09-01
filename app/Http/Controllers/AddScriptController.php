@@ -1423,21 +1423,9 @@ class AddScriptController extends Controller
                 if ($aff) {
 
 
-                    $filename0 = "storage/last_visit/$id.txt";
-                    if (file_exists($filename0) && filesize($filename0) > 0) {
-                        $whattoread0 = @fopen($filename0, "r");
-                        $memory_contents0 = fread($whattoread0, filesize($filename0));
-                        fclose($whattoread0);
-                        $notices = explode("#!:*&", $memory_contents0);
-                        $lan_user = $notices[4];
-
-                        $time_file0 = filemtime($filename0);
-                    } else {
-                        $time_file0 = 0;
-                        $lan_user = "ua";
-                    }
-                    $time_sec = time();
-                    $t = $time_sec - $time_file0;
+                    $lv0 = last_visit_read($id);
+                    $lan_user = $lv0['lang'] ?? "ua";
+                    $t = last_visit_ts_diff($lv0);
 
 
                     if ($t <= 50000) {
@@ -2285,18 +2273,9 @@ class AddScriptController extends Controller
                 $aff = DB::table('Mailpost')->insert(['Nump' => $id, 'Pmail' => $Pmail, 'Md' => $Md, 'ip' => $ip]);
                 if ($aff) {
 
-                    $filename = "storage/last_visit/$id.txt";
-                    if (file_exists($filename) && filesize($filename) > 0) {
-                        $whattoread = @fopen($filename, "r");
-                        $file_contents = fread($whattoread, filesize($filename));
-                        fclose($whattoread);
-                        $page = explode("#!:*&", $file_contents);
-                        $Im = $page[1];
-                        $Priz = $page[2];
-                    } else {
-                        $Im = "";
-                        $Priz = "";
-                    }
+                    $page = last_visit_read($id);
+                    $Im = $page['im'] ?? "";
+                    $Priz = $page['priz'] ?? "";
 
                     $lan_user = App::currentLocale();
                     if (!$lan_user) {
@@ -3606,22 +3585,9 @@ class AddScriptController extends Controller
                                     if ($aktiv == 1) {
 
 
-                                        $filename0 = "storage/last_visit/$id.txt";
-                                        if (file_exists($filename0) && filesize($filename0) > 0) {
-                                            $whattoread0 = @fopen($filename0, "r");
-                                            $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                            fclose($whattoread0);
-                                            $notices = explode("#!:*&", $memory_contents0);
-                                            $lan_user = $notices[4];
-                                            $time_file0 = filemtime($filename0);
-                                        } else {
-                                            $lan_user = "ua";
-                                            $time_file0 = 0;
-                                        }
-
-
-                                        $time_sec = time();
-                                        $t = $time_sec - $time_file0;
+                                        $lv0 = last_visit_read($id);
+                                        $lan_user = $lv0['lang'] ?? "ua";
+                                        $t = last_visit_ts_diff($lv0);
 
 
                                         if ($t <= 50000) {
@@ -3979,15 +3945,8 @@ class AddScriptController extends Controller
 
                             if($avt>0){
 
-                                $filename0 = "storage/last_visit/$avt.txt";
-                                if (file_exists($filename0) && filesize($filename0) > 0) {
-                                    $whattoread0 = @fopen($filename0, "r");
-                                    $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                    fclose($whattoread0);
-                                    $notices = explode("#!:*&", $memory_contents0);
-                                    $lan_user = $notices[4];
-                                    $time_file0 = filemtime($filename0);
-                                } else{$lan_user = "ua"; $time_file0 = 0;}
+                                $lv0 = last_visit_read($avt);
+                                $lan_user = $lv0['lang'] ?? "ua";
 
                                 if ($lan_user == "ua") {
                                     $qu_in = "";
@@ -4002,8 +3961,7 @@ class AddScriptController extends Controller
                                     $abn = "<a href=erec$Namef>$Aboutece</a>";
                                 }
 
-                                $time_sec = time();
-                                $t = $time_sec - $time_file0;
+                                $t = last_visit_ts_diff($lv0);
                                 if ($t <= 50000) {
 
                                     if($rate>=1){$star1="on";}else{$star1="off";}
@@ -4307,15 +4265,8 @@ class AddScriptController extends Controller
 
                             if($avt>0){
 
-                                $filename0 = "storage/last_visit/$avt.txt";
-                                if (file_exists($filename0) && filesize($filename0) > 0) {
-                                    $whattoread0 = @fopen($filename0, "r");
-                                    $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                    fclose($whattoread0);
-                                    $notices = explode("#!:*&", $memory_contents0);
-                                    $lan_user = $notices[4];
-                                    $time_file0 = filemtime($filename0);
-                                } else{$lan_user = "ua"; $time_file0 = 0;}
+                                $lv0 = last_visit_read($avt);
+                                $lan_user = $lv0['lang'] ?? "ua";
 
 
                                 if ($lan_user == "ua") {
@@ -4331,8 +4282,7 @@ class AddScriptController extends Controller
                                     $abn = "<a href=erecp$Namef>$Aboutepe</a>";
                                 }
 
-                                $time_sec = time();
-                                $t = $time_sec - $time_file0;
+                                $t = last_visit_ts_diff($lv0);
                                 if ($t <= 50000) {
 
                                     if($rate>=1){$star1="on";}else{$star1="off";}
@@ -4843,19 +4793,9 @@ class AddScriptController extends Controller
                         $emailu="";
                         if($avt>0 && $avt != $Numm){
 
-                            $filename0 = "storage/last_visit/$avt.txt";
-                            if (file_exists($filename0) && filesize($filename0) > 0) {
-                                $whattoread0 = @fopen($filename0, "r");
-                                $memory_contents0 = fread($whattoread0, filesize($filename0));
-                                fclose($whattoread0);
-                                $notices = explode("#!:*&", $memory_contents0);
-                                $lan_user = $notices[4];
-                                $time_file0 = filemtime($filename0);
-                            } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                            $time_sec = time();
-                            $t = $time_sec - $time_file0;
+                            $lv0 = last_visit_read($avt);
+                            $lan_user = $lv0['lang'] ?? "ua";
+                            $t = last_visit_ts_diff($lv0);
                             if ($t <= 50000) {
 
                                 if ($lan_user == "ua") {
@@ -5347,19 +5287,9 @@ class AddScriptController extends Controller
 							$emailu="";
 							if($avt>0 && $avt != $Numm){
 
-								$filename0 = "storage/last_visit/$avt.txt";
-								if (file_exists($filename0) && filesize($filename0) > 0) {
-									$whattoread0 = @fopen($filename0, "r");
-									$memory_contents0 = fread($whattoread0, filesize($filename0));
-									fclose($whattoread0);
-									$notices = explode("#!:*&", $memory_contents0);
-									$lan_user = $notices[4];
-									$time_file0 = filemtime($filename0);
-								} else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-								$time_sec = time();
-								$t = $time_sec - $time_file0;
+								$lv0 = last_visit_read($avt);
+								$lan_user = $lv0['lang'] ?? "ua";
+								$t = last_visit_ts_diff($lv0);
 								if ($t <= 50000) {
 
 									if ($lan_user == "ua") {
@@ -6484,20 +6414,15 @@ class AddScriptController extends Controller
                         else{$ncoment_e="";}
                         $ncoment_e3 = "$theme";
 
-                        $filename = "storage/last_visit/$avt.txt";
                         $av_height="auto";
                         $av_width=200;
-                        if (file_exists($filename)) {
-                            $whattoread = @fopen($filename, "r");
-                            $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                            $pagea = explode("#!:*&", $file_contents);
-                            $av_height = isset($pagea[6]) ? $pagea[6] : null;
-                            $av_width = isset($pagea[7]) ? $pagea[7] : null;
+                        $pagea = last_visit_read($avt);
+                        if ($pagea) {
+                            $av_height = $pagea['av_h'] ?? null;
+                            $av_width = $pagea['av_w'] ?? null;
                         }
-                        $time_file = filemtime($filename);
-                        $time_sec=time();
                         $online = "";
-                        $t = $time_sec - $time_file;
+                        $t = last_visit_ts_diff($pagea);
                         if ($t <= 500 && $my_id != $avt) {
                             $online = "online";
                         }
@@ -6784,20 +6709,15 @@ class AddScriptController extends Controller
                         $av_height="auto";
                         $av_width=200;
                         if($avt>7){
-                            $filename = "storage/last_visit/$avt.txt";
+                            $pagea = last_visit_read($avt);
 
-                            if (file_exists($filename)) {
-                                $whattoread = @fopen($filename, "r");
-                                $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                                $pagea = explode("#!:*&", $file_contents);
-                                $av_height = isset($pagea[6]) ? $pagea[6] : null;
-                                $av_width = isset($pagea[7]) ? $pagea[7] : null;
+                            if ($pagea) {
+                                $av_height = $pagea['av_h'] ?? null;
+                                $av_width = $pagea['av_w'] ?? null;
                                 if(!$av_height){$av_height="auto";}
                             }
-                            $time_file = filemtime($filename);
-                            $time_sec=time();
                             $online = "";
-                            $t = $time_sec - $time_file;
+                            $t = last_visit_ts_diff($pagea);
                             if ($t <= 500 && $my_id != $avt) {
                                 $online = "online";
                             }
@@ -6809,20 +6729,15 @@ class AddScriptController extends Controller
                         list($avt_old) = sscanf($avtall, "*&^@%d");
 
                         if($avt_old>0){
-                            $filename = "storage/last_visit/$avt_old.txt";
-                            $whattoread = @fopen($filename, "r");
-                            $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                            $pageq = explode("#!:*&", $file_contents);
+                            $pageq = last_visit_read($avt_old);
 
-                            $Imq=$pageq[1]; $Prizq=$pageq[2]; $Num_aq=$pageq[3];
+                            $Imq = $pageq['im'] ?? ''; $Prizq = $pageq['priz'] ?? ''; $Num_aq = $pageq['avatar'] ?? '';
 
-                            $av_height = isset($pageq[6]) ? $pageq[6] : "auto";
-                            $av_width = isset($pageq[7]) ? $pageq[7] : 200;
+                            $av_height = $pageq['av_h'] ?? "auto";
+                            $av_width = $pageq['av_w'] ?? 200;
 
-                            $time_file = filemtime($filename);
-                            $time_sec=time();
                             $online = "";
-                            $t = $time_sec - $time_file;
+                            $t = last_visit_ts_diff($pageq);
                             if ($t <= 500 && $my_id != $avt) {
                                 $online = "online";
                             }
@@ -7709,12 +7624,8 @@ class AddScriptController extends Controller
 
                         $pageb=$ban_pages[$a];
 
-                        $filename = "storage/last_visit/$pageb.txt";
-                        $whattoread = @fopen($filename, "r");
-                        $file_contents = fread($whattoread, filesize($filename)); 		 fclose($whattoread);
-                        $pageq = explode("#!:*&", $file_contents);
-
-                        $Imb=$pageq[1]; $Prizb=$pageq[2];
+                        $pageq = last_visit_read($pageb);
+                        $Imb = $pageq['im'] ?? ''; $Prizb = $pageq['priz'] ?? '';
                         $t1="qwertyuiopasdfg"; $t3=""; for($i=0;$i<4;$i++){$z=rand(0,strlen($t1)-1);$t3.="$t1[$z]";}
 
                         if($b==3){echo"<div id=\"hid_ban\" style=\"display: none;\">";}
@@ -7862,12 +7773,8 @@ class AddScriptController extends Controller
 
                     $pageb=$ban_pages[$a];
 
-                    $filename = "storage/last_visit/$pageb.txt";
-                    $whattoread = @fopen($filename, "r");
-                    $file_contents = fread($whattoread, filesize($filename)); 		 fclose($whattoread);
-                    $pageq = explode("#!:*&", $file_contents);
-
-                    $Imb=$pageq[1]; $Prizb=$pageq[2];
+                    $pageq = last_visit_read($pageb);
+                    $Imb = $pageq['im'] ?? ''; $Prizb = $pageq['priz'] ?? '';
                     $t1="qwertyuiopasdfg"; $t3=""; for($i=0;$i<4;$i++){$z=rand(0,strlen($t1)-1);$t3.="$t1[$z]";}
 
                     if($b==3){echo"<div id=\"hid_ban\" style=\"display: none;\">";}

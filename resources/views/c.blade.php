@@ -1058,32 +1058,26 @@ if($set_q=="c"){$go_q="stop";}
                      }
 
                     if((int)$q_avt>0){
-                        $filename = "storage/last_visit/$q_avt.txt";
                         $q_Im = "";
                         $q_Priz = "";
                         $q_Num_a = "";
                         $av_height=200;
                         $av_width=200;
-                        if (file_exists($filename)) {
-                            $whattoread = @fopen($filename, "r");
-                            $file_contents = fread($whattoread, filesize($filename)); fclose($whattoread);
-                            $page = explode("#!:*&", $file_contents);
-
-                            $q_Im=$page[1]; $q_Priz=$page[2];
-                            $q_Num_a=$page[3]; if($q_Num_a<10){$q_Num_a=7;}
+                        $page = last_visit_read($q_avt);
+                        if ($page) {
+                            $q_Im=$page['im']; $q_Priz=$page['priz'];
+                            $q_Num_a=$page['avatar']; if($q_Num_a<10){$q_Num_a=7;}
 							$av_height = isset($pageq[6]) ? $pageq[6] : null;
                             $av_width = isset($pageq[7]) ? $pageq[7] : null;
 							if (!is_int($av_height)) {$av_height="auto";}
 							if (!is_int($av_width)) {$av_width=200;}
                         }
-                        $time_file = filemtime($filename);
-                        $time_sec=time();
                         $online = "";
                         $my_id = "";
                          if(Auth::user()) {
                             $my_id = Auth::user()->id;
                          }
-                        $t = $time_sec - $time_file;
+                        $t = last_visit_ts_diff($page);
                         if ($t <= 500 && $my_id != $q_avt) {
                             $online = "online";
                         }

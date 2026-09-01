@@ -31,19 +31,11 @@ if(Auth::user()){$Numm = Auth::user()->id;} else{$Numm="0000000000";}
         $wcmain = "400px";
     }
     if($avt>10 && $avt!=$id){
-        $file = "storage/last_visit/$avt.txt";
-        if (file_exists($file)) {
-            if (filesize($file) > 0) {
-
-                $whattoread = @fopen($file, "r");
-                $memory_contents = fread($whattoread, filesize($file));
-                fclose($whattoread);
-                $page = explode("#!:*&", $memory_contents);
-                $Im=$page[1]; $Priz=$page[2];
-                $ppref_page = $pref_page .="i";
-                $M2 = "<a href=/$pref_page$avt><b>$Im $Priz </b></a><br />";
-            }
-            else{$M2 = ""; $avt=0;}
+        $page = last_visit_read($avt);
+        if ($page) {
+            $Im=$page['im']; $Priz=$page['priz'];
+            $ppref_page = $pref_page .="i";
+            $M2 = "<a href=/$pref_page$avt><b>$Im $Priz </b></a><br />";
         }
         else{$M2 = ""; $avt=0;}
     }

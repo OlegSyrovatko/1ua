@@ -143,9 +143,7 @@ class LoadController extends Controller
 
                     if($Num2==$id&&$Argue==1&&$id==$Numm){
                         $group_in['Im'][$a_rin]=$Im1; $group_in['Priz'][$a_rin]=$Priz1; $group_in['friend'][$a_rin]=$Num1; $group_in['avatar'][$a_rin]=$avatar1; $group_in['dd'][$a_rin]=$dd;
-                        $filename = "storage/last_visit/$Im1.txt";
-                        $time_file=filemtime($filename);
-                        $t=$time_sec-$time_file;
+                        $t = last_visit_seconds_since($Im1);
                         echo"t $t <br />";
                         $group_in['lv'][$a_rin]=$t;
                         $a_rin++;
@@ -160,9 +158,7 @@ class LoadController extends Controller
 
                         $group_fr['Im'][$a_fr]=$Imfr; $group_fr['Priz'][$a_fr]=$Prizfr; $group_fr['friend'][$a_fr]=$Numfr;
                         $group_fr['avatar'][$a_fr]=$avatarfr; $group_fr['dd'][$a_fr]=$dd;
-                        $filename = "storage/last_visit/$Numfr.txt";
-                        $time_file=filemtime($filename);
-                        $t=$time_sec-$time_file;
+                        $t = last_visit_seconds_since($Numfr);
                         $group_fr['lv'][$a_fr]=$t;
 
 
@@ -337,19 +333,9 @@ class LoadController extends Controller
                     $friend_added = __('messages.friend_added');
                     echo"$friend_added";
 
-                    $filename0 = "storage/last_visit/$Numfr.txt";
-                    if (file_exists($filename0) && filesize($filename0) > 0) {
-                        $whattoread0 = @fopen($filename0, "r");
-                        $memory_contents0 = fread($whattoread0, filesize($filename0));
-                        fclose($whattoread0);
-                        $notices = explode("#!:*&", $memory_contents0);
-                        $lan_user = $notices[4];
-                        $time_file0 = filemtime($filename0);
-                    } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                    $time_sec = time();
-                    $t = $time_sec - $time_file0;
+                    $lv = last_visit_read($Numfr);
+                    $lan_user = $lv['lang'] ?? "ua";
+                    $t = last_visit_ts_diff($lv);
                     if ($t <= 50000) {
                         if($avatar2>5){} else{$avatar2=7;}
 
@@ -508,19 +494,9 @@ class LoadController extends Controller
                         echo "$friend_send";
 
 
-                        $filename0 = "storage/last_visit/$Numfr.txt";
-                        if (file_exists($filename0) && filesize($filename0) > 0) {
-                            $whattoread0 = @fopen($filename0, "r");
-                            $memory_contents0 = fread($whattoread0, filesize($filename0));
-                            fclose($whattoread0);
-                            $notices = explode("#!:*&", $memory_contents0);
-                            $lan_user = $notices[4];
-                            $time_file0 = filemtime($filename0);
-                        } else{$lan_user = "ua"; $time_file0 = 0;}
-
-
-                        $time_sec = time();
-                        $t = $time_sec - $time_file0;
+                        $lv = last_visit_read($Numfr);
+                        $lan_user = $lv['lang'] ?? "ua";
+                        $t = last_visit_ts_diff($lv);
                         if ($t <= 50000) {
 
 
