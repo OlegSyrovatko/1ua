@@ -675,6 +675,7 @@ $index_go="index,follow";
 						else{$Ct="<a href =/$domenc><b>$City</b></a>"; $Ccity=$City;}
 
 						$ob_user = __('messages.Region'); $ob_user2 = __('messages.Region3');
+						  $obl_user = ""; $obl_user2 = "";
 						  for ($i = 0; $i <= 25; $i++){
 							 $ni = "messages.o$i"; $ni2 = "messages.oo$i"; $ii = "$i";
 							   if($obl == $ii){$nii = __($ni); $nii2 = __($ni2); if($obl == "1"){$ob_user = ""; $ob_user2 = "";}

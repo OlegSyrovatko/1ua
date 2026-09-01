@@ -15,7 +15,7 @@ else if(isset($id)){}else {$id = "";}
 
 
                     if($_REQUEST){
-                        $Im = $_REQUEST['Im']; $Bat = $_REQUEST['Bat']; $Priz = $_REQUEST['Priz'];
+                        $Im = $_REQUEST['Im'] ?? ''; $Bat = $_REQUEST['Bat']; $Priz = $_REQUEST['Priz'];
                         $Who = $_REQUEST['Who']; $sex = $_REQUEST['sex']; $email_seek = $_REQUEST['email_seek'];
                         $partner = $_REQUEST['partner']; $aktivn = $_REQUEST['aktivn'];
                         if(isset($_POST['ava']) && $_POST['ava']!="") {$ava = "Yes"; $q_s[15] = ['avatar', '>', 10];}

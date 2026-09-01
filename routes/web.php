@@ -259,7 +259,6 @@ Route::get('/sitemap.xml', 'App\Http\Controllers\LoadController@sitemap');
 
 Route::get('/sm/{sm}', function ($sm) {return view('sm', ['sm' => $sm]);})->where('sm', '[a-zA-Z0-9\.]+');
 
-Route::get('/mail-stats', [MailStatsController::class, 'index']);
 Route::get('/send-email', 'App\Http\Controllers\FeedbackController@send');
 Route::get('/ssend-email', 'App\Http\Controllers\ShippedController@send');
 Route::get('email-test', function() {
