@@ -512,9 +512,6 @@ foreach ($results as $result) {
 
 
         <!-- google для головної сторінки -->
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
-                crossorigin="anonymous"></script>
-
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-7495053896041990"
@@ -1196,9 +1193,6 @@ foreach ($results as $result) {
 
             @endphp
             <!-- google для головної сторінки -->
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
-                    crossorigin="anonymous"></script>
-
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="ca-pub-7495053896041990"

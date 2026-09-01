@@ -435,7 +435,7 @@
     @if (View::hasSection('amp'))
         <script async src="https://cdn.ampproject.org/v0.js"></script>
     @else
-        <script src="/js/jquery-3.5.1.min.js"></script>
+        <script src="/js/jquery-3.5.1.min.js" defer></script>
     @endif
     @stack('scripts')
 </head>
@@ -651,7 +651,11 @@
 				}
 			});
 		}
-		setInterval('load_notice();', 3000);
+		setInterval(function() {
+			if (!document.hidden) {
+				load_notice();
+			}
+		}, 3000);
 		</script>
 	@endif
 @endauth
@@ -909,7 +913,11 @@ if(Auth::user()) {
 
                 }
                 getStats();
-                setInterval(getStats, 3000);
+                setInterval(function() {
+                    if (!document.hidden) {
+                        getStats();
+                    }
+                }, 3000);
 
             @endif
 
