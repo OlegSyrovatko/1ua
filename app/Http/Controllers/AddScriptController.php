@@ -1454,25 +1454,9 @@ class AddScriptController extends Controller
                             $qu_e = "New question";
                             $qu_in = "ei";
                         }
-                        $r_else = "#!:*&<table><tr><td valign=top width=150><P style=\"color:white;\"><b>$qu_e</b><br /> <a href=\"/$qu_in$id\">$question</a></p><br /></td></tr></table>";
+                        $r_else = "<table><tr><td valign=top width=150><P style=\"color:white;\"><b>$qu_e</b><br /> <a href=\"/$qu_in$id\">$question</a></p><br /></td></tr></table>";
 
-                        $filename = "storage/notice/$id.txt";
-                        $fsize = filesize($filename);
-                        if ($fsize == 0) {
-                            $records_else = $r_else;
-                        } else {
-                            $whattoread = @fopen($filename, "r");
-                            $memory_contents = fread($whattoread, filesize($filename));
-                            fclose($whattoread);
-                            $records_else = $r_else .= "$memory_contents";
-                        }
-
-                        $fp = fopen($filename, 'a');
-                        ftruncate($fp, 0);
-                        fclose($fp);
-                        $newfile = @fopen($filename, "a");
-                        @fwrite($newfile, "$records_else");
-                        fclose($newfile);
+                        \Illuminate\Support\Facades\Redis::lpush("notice:$id", $r_else);
                     }
 
                     $mailgo = "off";
@@ -1554,14 +1538,7 @@ class AddScriptController extends Controller
     {
         if(Auth::user()) {
             $Numm = Auth::user()->id;
-            $filename = "storage/notice/$Numm.txt";
-
-            $fp = fopen($filename, 'a');
-            ftruncate($fp, 0);
-            fclose($fp);
-            $newfile = @fopen($filename, "a");
-            @fwrite($newfile, "");
-            fclose($newfile);
+            \Illuminate\Support\Facades\Redis::del("notice:$Numm");
         }
     }
 
@@ -1570,16 +1547,9 @@ class AddScriptController extends Controller
     {
         if(Auth::user()) {
             $Numm = Auth::user()->id;
-            $filename = "storage/notice/$Numm.txt";
-            if (filesize($filename) > 0) {
-                $whattoread = @fopen($filename, "r");
-                $memory_contents = fread($whattoread, filesize($filename));
-                fclose($whattoread);
-                $records = explode("#!:*&", $memory_contents);
-                $first_record = $records[1];
-
-                $records_else = str_replace("#!:*&$first_record", "", $memory_contents);
-                $records_else_n = substr_count($records_else, "#!:*&");
+            $first_record = \Illuminate\Support\Facades\Redis::lpop("notice:$Numm");
+            if ($first_record) {
+                $records_else_n = \Illuminate\Support\Facades\Redis::llen("notice:$Numm");
                 $records_else_n2 = $records_else_n + 1;
                 if ($records_else_n2 < 5) {
                     $records_else_n2 = "";
@@ -1655,13 +1625,6 @@ class AddScriptController extends Controller
             </div></td></tr></table>
 
             </td></tr></table>";
-
-                    $fp = fopen($filename, 'a');
-                    ftruncate($fp, 0);
-                    fclose($fp);
-                    $newfile = @fopen($filename, "a");
-                    @fwrite($newfile, "$records_else");
-                    fclose($newfile);
 
                 }
             }
@@ -3682,25 +3645,9 @@ class AddScriptController extends Controller
                                             } else {
                                                 $Aboutec_me = $Aboutec;
                                             }
-                                            $r_else = "#!:*&<table><tr><td valign=top width=150><P style=\"color:white;\"><b>$qu_e</b><br /> <a href=\"/$qu_in$id\">$Aboutec_me</a></p><br /></td></tr></table>";
+                                            $r_else = "<table><tr><td valign=top width=150><P style=\"color:white;\"><b>$qu_e</b><br /> <a href=\"/$qu_in$id\">$Aboutec_me</a></p><br /></td></tr></table>";
 
-                                            $filename = "storage/notice/$id.txt";
-                                            $fsize = filesize($filename);
-                                            if ($fsize == 0) {
-                                                $records_else = $r_else;
-                                            } else {
-                                                $whattoread = @fopen($filename, "r");
-                                                $memory_contents = fread($whattoread, filesize($filename));
-                                                fclose($whattoread);
-                                                $records_else = $r_else .= "$memory_contents";
-                                            }
-
-                                            $fp = fopen($filename, 'a');
-                                            ftruncate($fp, 0);
-                                            fclose($fp);
-                                            $newfile = @fopen($filename, "a");
-                                            @fwrite($newfile, "$records_else");
-                                            fclose($newfile);
+                                            \Illuminate\Support\Facades\Redis::lpush("notice:$id", $r_else);
                                         }
 
 
@@ -4067,7 +4014,7 @@ class AddScriptController extends Controller
 
                                     $prlink3 = $qu_in; $prlink3.="i"; $prlink3.=$Numm;
 
-                                    $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                    $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><p style=\" color:white; margin: 0px 0px 8px 0px;\">$abn</p></td></tr>
                                         <tr><td align=right>
@@ -4082,23 +4029,7 @@ class AddScriptController extends Controller
                                         <a href=/$prlink3><p style=\" color:white; margin: 8px 0px 8px 0px;\">$Imm $Prizm</p></a>
                                         </td></tr></table>";
 
-                                    $filename = "storage/notice/$avt.txt";
-                                    $fsize = filesize($filename);
-                                    if ($fsize == 0) {
-                                        $records_else = $r_else;
-                                    } else {
-                                        $whattoread = @fopen($filename, "r");
-                                        $memory_contents = fread($whattoread, filesize($filename));
-                                        fclose($whattoread);
-                                        $records_else = $r_else .= "$memory_contents";
-                                    }
-
-                                    $fp = fopen($filename, 'a');
-                                    ftruncate($fp, 0);
-                                    fclose($fp);
-                                    $newfile = @fopen($filename, "a");
-                                    @fwrite($newfile, "$records_else");
-                                    fclose($newfile);
+                                    \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                                 }
 
 
@@ -4412,7 +4343,7 @@ class AddScriptController extends Controller
 
                                     $prlink3 = $qu_in; $prlink3.="i"; $prlink3.=$Numm;
 
-                                    $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                    $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><p style=\" color:white; margin: 0px 0px 8px 0px;\">$abn</p></td></tr>
                                         <tr><td align=right>
@@ -4427,23 +4358,7 @@ class AddScriptController extends Controller
                                         <a href=/$prlink3><p style=\" color:white; margin: 8px 0px 8px 0px;\">$Imm $Prizm</p></a>
                                         </td></tr></table>";
 
-                                    $filename = "storage/notice/$avt.txt";
-                                    $fsize = filesize($filename);
-                                    if ($fsize == 0) {
-                                        $records_else = $r_else;
-                                    } else {
-                                        $whattoread = @fopen($filename, "r");
-                                        $memory_contents = fread($whattoread, filesize($filename));
-                                        fclose($whattoread);
-                                        $records_else = $r_else .= "$memory_contents";
-                                    }
-
-                                    $fp = fopen($filename, 'a');
-                                    ftruncate($fp, 0);
-                                    fclose($fp);
-                                    $newfile = @fopen($filename, "a");
-                                    @fwrite($newfile, "$records_else");
-                                    fclose($newfile);
+                                    \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                                 }
 
 
@@ -4961,7 +4876,7 @@ class AddScriptController extends Controller
 
                                 $prlink3 = $qu_in; $prlink3.="i"; $prlink3.=$Numm;
 
-                                $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td>$abn</td></tr>
                                         </table>
@@ -4973,23 +4888,7 @@ class AddScriptController extends Controller
                                         <div style=\"width: 150px; overflow: hidden\">$Aboutef_e</div>
                                         </td></tr></table>";
 
-                                $filename = "storage/notice/$avt.txt";
-                                $fsize = filesize($filename);
-                                if ($fsize == 0) {
-                                    $records_else = $r_else;
-                                } else {
-                                    $whattoread = @fopen($filename, "r");
-                                    $memory_contents = fread($whattoread, filesize($filename));
-                                    fclose($whattoread);
-                                    $records_else = $r_else .= "$memory_contents";
-                                }
-
-                                $fp = fopen($filename, 'a');
-                                ftruncate($fp, 0);
-                                fclose($fp);
-                                $newfile = @fopen($filename, "a");
-                                @fwrite($newfile, "$records_else");
-                                fclose($newfile);
+                                \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
 
                             }
 
@@ -5481,7 +5380,7 @@ class AddScriptController extends Controller
 
 									$prlink3 = $qu_in; $prlink3.="i"; $prlink3.=$Numm;
 
-									$r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+									$r_else="<table><tr><td width=100 valign=top align=right>
 											<table>
 											<tr><td>$abn</td></tr>
 											</table>
@@ -5493,23 +5392,7 @@ class AddScriptController extends Controller
 											<div style=\"width: 150px; overflow: hidden\">$Aboutef_e</div>
 											</td></tr></table>";
 
-									$filename = "storage/notice/$avt.txt";
-									$fsize = filesize($filename);
-									if ($fsize == 0) {
-										$records_else = $r_else;
-									} else {
-										$whattoread = @fopen($filename, "r");
-										$memory_contents = fread($whattoread, filesize($filename));
-										fclose($whattoread);
-										$records_else = $r_else .= "$memory_contents";
-									}
-
-									$fp = fopen($filename, 'a');
-									ftruncate($fp, 0);
-									fclose($fp);
-									$newfile = @fopen($filename, "a");
-									@fwrite($newfile, "$records_else");
-									fclose($newfile);
+									\Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
 
 								}
 

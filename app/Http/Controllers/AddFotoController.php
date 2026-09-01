@@ -3474,7 +3474,7 @@ class AddFotoController extends Controller
                                     $prlink3 = str_replace("scale", "", $prlink3);
                                     $prlink3 = str_replace("av-shadow", "", $prlink3);
 
-                                    $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                    $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><a href=/$prlink2><img border=0 width=100 SRC=\"$katalogface\" align=left></a></td></tr>
                                         <tr><td align=right>
@@ -3488,23 +3488,7 @@ class AddFotoController extends Controller
                                         $prlink3
                                         </td></tr></table>";
 
-                                    $filename = "storage/notice/$avt.txt";
-                                    $fsize = filesize($filename);
-                                    if ($fsize == 0) {
-                                        $records_else = $r_else;
-                                    } else {
-                                        $whattoread = @fopen($filename, "r");
-                                        $memory_contents = fread($whattoread, filesize($filename));
-                                        fclose($whattoread);
-                                        $records_else = $r_else .= "$memory_contents";
-                                    }
-
-                                    $fp = fopen($filename, 'a');
-                                    ftruncate($fp, 0);
-                                    fclose($fp);
-                                    $newfile = @fopen($filename, "a");
-                                    @fwrite($newfile, "$records_else");
-                                    fclose($newfile);
+                                    \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                                 }
 
 
@@ -3756,7 +3740,7 @@ class AddFotoController extends Controller
                                     $prlink3 = str_replace("scale", "", $prlink3);
                                     $prlink3 = str_replace("av-shadow", "", $prlink3);
 
-                                    $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                    $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><a href=/$prlink2><img border=0 width=100 SRC=\"$katalogface\" align=left></a></td></tr>
                                         <tr><td align=right>
@@ -3770,23 +3754,7 @@ class AddFotoController extends Controller
                                         $prlink3
                                         </td></tr></table>";
 
-                                    $filename = "storage/notice/$avt.txt";
-                                    $fsize = filesize($filename);
-                                    if ($fsize == 0) {
-                                        $records_else = $r_else;
-                                    } else {
-                                        $whattoread = @fopen($filename, "r");
-                                        $memory_contents = fread($whattoread, filesize($filename));
-                                        fclose($whattoread);
-                                        $records_else = $r_else .= "$memory_contents";
-                                    }
-
-                                    $fp = fopen($filename, 'a');
-                                    ftruncate($fp, 0);
-                                    fclose($fp);
-                                    $newfile = @fopen($filename, "a");
-                                    @fwrite($newfile, "$records_else");
-                                    fclose($newfile);
+                                    \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                                 }
 
 
@@ -4242,7 +4210,7 @@ class AddFotoController extends Controller
                                 $prlink3 = str_replace("scale", "", $prlink3);
                                 $prlink3 = str_replace("av-shadow", "", $prlink3);
 
-                                $r_else="#!:*&<table><tr><td width=100 valign=top align=right>
+                                $r_else="<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><a href=/$prlink2><img border=0 width=100 SRC=\"$katalogface\" align=left></a></td></tr>
                                         </table>
@@ -4252,23 +4220,7 @@ class AddFotoController extends Controller
                                         <div style=\"width: 150px; overflow: hidden\">$Aboutef</div>
                                         </td></tr></table>";
 
-                                $filename = "storage/notice/$avt.txt";
-                                $fsize = filesize($filename);
-                                if ($fsize == 0) {
-                                    $records_else = $r_else;
-                                } else {
-                                    $whattoread = @fopen($filename, "r");
-                                    $memory_contents = fread($whattoread, filesize($filename));
-                                    fclose($whattoread);
-                                    $records_else = $r_else .= "$memory_contents";
-                                }
-
-                                $fp = fopen($filename, 'a');
-                                ftruncate($fp, 0);
-                                fclose($fp);
-                                $newfile = @fopen($filename, "a");
-                                @fwrite($newfile, "$records_else");
-                                fclose($newfile);
+                                \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                             }
 
 
@@ -4909,7 +4861,7 @@ class AddFotoController extends Controller
                                     $prlink3 = str_replace("scale", "", $prlink3);
                                     $prlink3 = str_replace("av-shadow", "", $prlink3);
 
-                                    $r_else = "#!:*&<table><tr><td width=100 valign=top align=right>
+                                    $r_else = "<table><tr><td width=100 valign=top align=right>
                                         <table>
                                         <tr><td><a href=/$prlink2><img border=0 width=100 SRC=\"$katalogface\" align=left></a></td></tr>
                                         </table>
@@ -4919,23 +4871,7 @@ class AddFotoController extends Controller
                                         <div style=\"width: 150px; overflow: hidden\">$Aboutef</div>
                                         </td></tr></table>";
 
-                                    $filename = "storage/notice/$avt.txt";
-                                    $fsize = filesize($filename);
-                                    if ($fsize == 0) {
-                                        $records_else = $r_else;
-                                    } else {
-                                        $whattoread = @fopen($filename, "r");
-                                        $memory_contents = fread($whattoread, filesize($filename));
-                                        fclose($whattoread);
-                                        $records_else = $r_else .= "$memory_contents";
-                                    }
-
-                                    $fp = fopen($filename, 'a');
-                                    ftruncate($fp, 0);
-                                    fclose($fp);
-                                    $newfile = @fopen($filename, "a");
-                                    @fwrite($newfile, "$records_else");
-                                    fclose($newfile);
+                                    \Illuminate\Support\Facades\Redis::lpush("notice:$avt", $r_else);
                                 }
 
 

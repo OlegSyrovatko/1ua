@@ -1258,7 +1258,7 @@ $index_go="index,follow";
                         if($sexm==1){$sexm_e1="зайшов"; $sexm_e2="посетил";} else if($sexm==2){$sexm_e1="зайшла"; $sexm_e2="посетила";} else{$sexm_e1="зайшов (ла)"; $sexm_e2="посетил (ла)";}
 
                             if($lan_user=="ua"){
-                                $r_else="#!:*&<table><tr><td valign=top width=160>
+                                $r_else="<table><tr><td valign=top width=160>
                                     <b><font color=white>Новий гість</font></b><br>
                                     <a href=/i$Numm>
                                     <img  style=\"margin: 2px 8px 8px 0px; \" border=0 SRC=/storage/avatar/s$Num_am.jpg align=left>
@@ -1267,7 +1267,7 @@ $index_go="index,follow";
                                 </td></tr></table>";
                             }
                             if($lan_user=="ru"){
-                                $r_else="#!:*&<table><tr><td valign=top width=160>
+                                $r_else="<table><tr><td valign=top width=160>
                                     <b><font color=white>Новый гость</font></b><br>
                                     <a href=/ri$Numm>
                                     <img style=\"margin: 2px 8px 8px 0px; \" border=0 SRC=/storage/avatar/s$Num_am.jpg align=left>
@@ -1276,7 +1276,7 @@ $index_go="index,follow";
                                 </td></tr></table>";
                             }
                             if($lan_user=="en"){
-                                $r_else="#!:*&<table><tr><td valign=top width=160>
+                                $r_else="<table><tr><td valign=top width=160>
                                     <b><font color=white>New Guest</font></b><br>
                                     <a href=/ei$Numm>
                                     <img style=\"margin: 2px 8px 8px 0px; \" border=0 SRC=/storage/avatar/s$Num_am.jpg align=left>
@@ -1285,23 +1285,7 @@ $index_go="index,follow";
                                 </td></tr></table>";
                             }
 
-                            $filename = "storage/notice/$id.txt";
-                            if (file_exists($filename) && filesize($filename) > 0) {
-                                $whattoread = @fopen($filename, "r");
-                                $memory_contents = fread($whattoread, filesize($filename));
-                                fclose($whattoread);
-                                $records_else = $r_else.="$memory_contents";
-                            }
-                            else{$records_else=$r_else;
-                                // $filedefault = "storage/default.txt";
-                               //  copy($filedefault,$filename);
-                            }
-
-                            $fp = fopen($filename, 'a');
-                            ftruncate($fp, 0); fclose($fp);
-                             $newfile = @fopen($filename, "a");
-                             @fwrite($newfile, "$records_else");
-                             fclose($newfile);
+                            \Illuminate\Support\Facades\Redis::lpush("notice:$id", $r_else);
 
                         }
                     }

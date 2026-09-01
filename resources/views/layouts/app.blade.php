@@ -559,11 +559,6 @@
             @fwrite($newfile, "#!:*&$Imm#!:*&$Prizm#!:*&$Num_am#!:*&$lan_user#!:*&$fc#!:*&$Num_aym#!:*&$Num_axm");
             fclose($newfile);
         }
-        $filename3 = "storage/notice/$Numm.txt";
-         if (!file_exists($filename3)) {
-             copy($filedefault,$filename3);
-         }
-
     }
     @endphp
 @endauth

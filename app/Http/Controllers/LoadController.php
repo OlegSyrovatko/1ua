@@ -354,7 +354,7 @@ class LoadController extends Controller
                         if($avatar2>5){} else{$avatar2=7;}
 
                         if($lan_user=="ua"){
-                            $r_else="#!:*&<table><tr><td valign=top width=150>
+                            $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>Новий друг</font></b><br>
                                 <a href=/i$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar2.jpg align=left></a>
                                 <a href=/i$Numm><font color=white>$Imm2 $Prizm2</font></a><br>
@@ -362,7 +362,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                         }
                         if($lan_user=="ru"){
-                            $r_else="#!:*&<table><tr><td valign=top width=150>
+                            $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>Новый друг</font></b><br>
                                 <a href=/ri$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar2.jpg align=left></a>
                                 <a href=/ri$Numm><font color=white>$Imm2 $Prizm2</font></a><br>
@@ -370,7 +370,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                         }
                         if($lan_user=="en"){
-                            $r_else="#!:*&<table><tr><td valign=top width=150>
+                            $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>New friend</font></b><br>
                                 <a href=/ei$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar2.jpg align=left></a>
                                 <a href=/ei$Numm><font color=white>$Imm2 $Prizm2</font></a><br>
@@ -378,24 +378,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                         }
 
-
-                        $filename = "storage/notice/$Numfr.txt";
-                        $fsize = filesize($filename);
-                        if ($fsize == 0) {
-                            $records_else = $r_else;
-                        } else {
-                            $whattoread = @fopen($filename, "r");
-                            $memory_contents = fread($whattoread, filesize($filename));
-                            fclose($whattoread);
-                            $records_else = $r_else .= "$memory_contents";
-                        }
-
-                        $fp = fopen($filename, 'a');
-                        ftruncate($fp, 0);
-                        fclose($fp);
-                        $newfile = @fopen($filename, "a");
-                        @fwrite($newfile, "$records_else");
-                        fclose($newfile);
+                        \Illuminate\Support\Facades\Redis::lpush("notice:$Numfr", $r_else);
                     } // якщо недавно зайшов
 
 
@@ -542,7 +525,7 @@ class LoadController extends Controller
 
 
                             if($lan_user=="ua"){
-                                $r_else="#!:*&<table><tr><td valign=top width=150>
+                                $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>Новий друг</font></b><br>
                                 <a href=/i$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar1.jpg align=left></a>
                                 <a href=/i$Numm><font color=white>$Imm $Prizm</font></a><br>
@@ -550,7 +533,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                             }
                             if($lan_user=="ru"){
-                                $r_else="#!:*&<table><tr><td valign=top width=150>
+                                $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>Новый друг</font></b><br>
                                 <a href=/ri$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar1.jpg align=left></a>
                                 <a href=/ri$Numm><font color=white>$Imm $Prizm</font></a><br>
@@ -558,7 +541,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                             }
                             if($lan_user=="en"){
-                                $r_else="#!:*&<table><tr><td valign=top width=150>
+                                $r_else="<table><tr><td valign=top width=150>
                                 <b><font color=white>New friend</font></b><br>
                                 <a href=/ei$Numm><img style=\"margin: 0px 5px 0px 0px;\" border=0 SRC=/storage/avatar/s$avatar1.jpg align=left></a>
                                 <a href=/ei$Numm><font color=white>$Imm $Prizm</font></a><br>
@@ -566,24 +549,7 @@ class LoadController extends Controller
                                 </td></tr></table>";
                             }
 
-
-                            $filename = "storage/notice/$Numfr.txt";
-                            $fsize = filesize($filename);
-                            if ($fsize == 0) {
-                                $records_else = $r_else;
-                            } else {
-                                $whattoread = @fopen($filename, "r");
-                                $memory_contents = fread($whattoread, filesize($filename));
-                                fclose($whattoread);
-                                $records_else = $r_else .= "$memory_contents";
-                            }
-
-                            $fp = fopen($filename, 'a');
-                            ftruncate($fp, 0);
-                            fclose($fp);
-                            $newfile = @fopen($filename, "a");
-                            @fwrite($newfile, "$records_else");
-                            fclose($newfile);
+                            \Illuminate\Support\Facades\Redis::lpush("notice:$Numfr", $r_else);
                         } // якщо недавно зайшов
 
 
