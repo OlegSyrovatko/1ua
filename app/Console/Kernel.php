@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sixhours')->cron('1 */6 * * *');
 
         $schedule->command('oneday')->cron('1 0 * * *');
+        $schedule->command('hero_build')->cron('10 0 * * *');
         $schedule->command('redis:backup')->cron('33 3 * * *');
         $schedule->command('Del_news_more_10_days')->cron('27 4 * * *');
         $schedule->command('insert_idrayc')->cron('18 23 * * *');
