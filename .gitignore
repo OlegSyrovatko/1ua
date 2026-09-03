@@ -79,3 +79,6 @@ storage/logs/*.log
 # Файли зі списком IP-адрес відвідувачів (PII, накопичуються рантаймом)
 /ip.txt
 storage/app/public/ip.txt
+
+# Скріншоти/консоль-логи з ручного тестування через Playwright MCP — не код
+/.playwright-mcp
