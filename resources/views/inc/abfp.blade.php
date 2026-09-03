@@ -123,12 +123,16 @@ echo"\" id=\"delf$M5\">";
     echo"</div>";
 
     if(Auth::user()){
-        echo "<textarea id=\"cm$M5\" rows=2  style=\"width: 97%; max-width: $wcmain; margin: 0 auto;\" placeholder=\"" . __('messages.comment_in') . "\"
+        // Поле вводу приховане, поки асинхронно (comm_allowp) не підтвердиться, що приватність
+        // власника сторінки дозволяє коментувати — щоб не показувати поле, яке потім відхилить сервер.
+        echo "<div id=\"cg$M5\" class=\"comm-allowp-gate un-display\" data-namef=\"$M5\">
+        <textarea id=\"cm$M5\" rows=2  style=\"width: 97%; max-width: $wcmain; margin: 0 auto;\" placeholder=\"" . __('messages.comment_in') . "\"
          onFocus=clearsp('cm$M5','bc$M5');></textarea>
         <div id=\"bc$M5\" class=\"un-display centeredm\">
             <table><tr><td class=\"fcomblue intop com-button\">
                 <a onclick=\"comm_addp($M5,'cm$M5','in$M5')\">" . __('messages.Add') . "</a>
             </td></tr></table>
+        </div>
         </div>";
     }
 	if($design == "alone"){echo"<br />"; }

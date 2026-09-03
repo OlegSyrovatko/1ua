@@ -165,10 +165,146 @@ h6 {
 
 
 #abf_load {
+    /* Заякорено зверху (а не по центру через top:50%), бо на мобільних браузерах адресний рядок
+       динамічно змінює видиму висоту (vh рахується від максимально можливої, без адресного рядка),
+       і центрування через 50% могло виштовхувати верх попапу (з хрестиком закриття) за межі
+       реально видимої області без можливості прокрутки, бо сам блок position:fixed. */
+    /* z-index вище за все на сайті (найвище було 104 у .move_up), інакше фіксоване верхнє меню
+       (z-index:101) перекривало попап, коли він піднявся ближче до верху екрана. */
     position: fixed;
-    top: 60px;
-    right: 9%;
-    z-index : 99;
+    top: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: min(92vw, 820px);
+    max-height: 92vh;
+    max-height: 92dvh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.popup-photo-frame {
+    position: relative;
+}
+.popup-like {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 999px;
+    padding: 5px 10px 5px 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    backdrop-filter: blur(2px);
+    transition: background 0.2s ease;
+}
+.popup-like:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+/* За тегом, а не лише класом — після кліку сервер повертає оновлену зірку/лічильник (rate_add)
+   у трохи іншій розмітці, і вона теж має лишатись білою й акуратною всередині цього овербею. */
+.popup-like a {
+    color: #fff;
+    text-decoration: none;
+}
+.popup-like a:hover {
+    text-decoration: underline;
+}
+.popup-like svg {
+    display: block;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.popup-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+}
+.popup-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+}
+.popup-body {
+    max-height: 92vh;
+    max-height: 92dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.popup-photo-img {
+    display: block;
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+    background: #111;
+}
+.popup-photo-meta {
+    padding: 10px 18px 18px;
+}
+.popup-photo-place {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.popup-photo-place a {
+    color: inherit;
+}
+.popup-photo-place a:hover {
+    text-decoration: underline;
+}
+.popup-photo-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.popup-photo-fmenu {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.popup-photo-more {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: bold;
+}
+.popup-comments {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e2e2;
+}
+.popup-comments-loading {
+    color: #888;
+    font-size: 13px;
+}
+.popup-comment-input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+@media screen and (max-width: 500px) {
+    .popup-photo-img {
+        max-height: 50vh;
+        max-height: 50dvh;
+    }
 }
 
 
@@ -218,7 +354,7 @@ h6 {
     left: 0px;
     background: #000;
     opacity: 0.5;
-    z-index: 50;
+    z-index: 199;
     width: 100%;
     height: 10000%;
     display: none;
@@ -1130,16 +1266,38 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
 		font-size: 11px;
     }
 }
+/* "Нас уже N — дякуємо..." / "Долучайтесь до N користувачів" — більший і жирніший шрифт,
+   щоб цифра спільноти впадала в очі (лише цей текст, решта .ind-txt лишається як була) */
+.users-cta{
+    font-size: 18px;
+    font-weight: bold;
+}
+@media screen and (max-width: 410px) {
+    .users-cta{
+        font-size: 15px;
+    }
+}
 #load_foto {
     margin: 8px;
 }
 
 
 #stat{
-    margin-top: 25px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 6px;
+}
+/* Усередині #stat кілька елементів (кнопки, заголовок "Оберіть свою місцевість", інколи ще й
+   хлібні крихти "Україна -> Область" при переході в область, і сітка) — у h2/h3 різні власні
+   margin за замовчуванням (9px і 8px), через що відстані виходили нерівномірними. Прибираємо
+   власні margin повністю — інтервали задає лише flex gap на #stat, тому вони завжди однакові
+   з обох боків заголовка, незалежно від того, є крихти чи ні. Не чіпає h2/h3 поза #stat. */
+#stat table,
+#stat h2,
+#stat h3,
+#stat .stat-list{
+    margin: 0;
 }
 .stat-list {
     display: flex;
@@ -1152,6 +1310,9 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
 .stat-tb{
     margin: 0 auto;
     max-width: 300px;
+    /* "Фото 59%" і "Записи 44%" сиділи впритул одна до одної — розділяємо падінгом між кнопками */
+    border-collapse: separate;
+    border-spacing: 10px 0;
 }
 .stat-td{
     padding: 5px 10px;
@@ -1160,6 +1321,19 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
     border-radius: 7px;
     background-color: #DAE1E8;
     transition: box-shadow 0.3s ease;
+}
+/* Коли посилання/onclick одне на всю комірку (назва+перегляди разом, як в областях/районах) —
+   робимо його блоковим і "розтягуємо" від'ємними полями на весь padding комірки, щоб клік
+   спрацьовував будь-де в межах "стакана", а не лише по буквах назви.
+   :only-child — щоб це НЕ чіпало сторінку населених пунктів (третій рівень), де в одній
+   комірці кілька ОКРЕМИХ посилань (назва, фото, записи, люди) — там вони мають лишатись
+   інлайновими й іти в рядок горизонтально, як і раніше. */
+.stat-td > a:only-child{
+    display: block;
+    margin: -5px -10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: center;
 }
 .stat-td:hover{
     box-shadow: 3px 2px 6px 1px rgba(0,0,0,0.53);
@@ -1179,13 +1353,15 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
     border-radius: 4px;
 
 }
+/* "Наповнений стакан" замість тексту "65%" у блоці вибору області/району — темна заливка
+   знизу вгору пропорційно відсотку (сам відсоток лишається в title для підказки при наведенні) */
 .stats-item-view {
     background-color: #fff;
     display: inline-block;
     align-items: center;
     justify-content: center;
     gap: 0;
-    margin-left: 4px;
+    margin: 4px 2px 0;
     position: relative;
 }
 
@@ -2064,6 +2240,11 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
 }
 .mb5{
     margin-bottom:5px;
+    /* назва області/району лежить прямо на "стакані" (.stat-td), який тепер сам є заливкою —
+       рівномірне біле світіння, щоб текст не зливався ні з темною, ні зі світлою частиною заливки */
+    text-shadow:
+        0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff,
+        0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
 }
 .ph-nav{
     display: flex;
@@ -2447,14 +2628,14 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
 
 /* Головна сторінка: hero-блок ("Україна, якою її пам'ятають люди") */
 .hero-archive{
-    flex: 1 1 100%;
+    /* Блок тепер живе ВСЕРЕДИНІ лівої колонки (.mw450, 450px), а не на всю ширину сторінки —
+       просто заповнює її, без окремого max-width/flex-basis. */
     width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
+    box-sizing: border-box;
     padding: 20px 12px 10px;
 }
 .hero-archive h1{
-    font-size: 220%;
+    font-size: 170%;
     line-height: 1.2;
     margin: 6px 0 8px;
 }
@@ -2475,10 +2656,9 @@ ul.intopmenu a:hover {color: white; text-decoration:underline;}
 }
 .hero-photo-grid{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin: 0 auto;
-    max-width: 960px;
 }
 .hero-photo-grid li{
     position: relative;

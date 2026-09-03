@@ -147,6 +147,10 @@ Route::group(['middleware'=>'language'],function ()
     Route::post('all_ap', 'App\Http\Controllers\AddFotoController@all_ap');
     Route::post('abf', 'App\Http\Controllers\AddFotoController@abf');
     Route::post('abfp', 'App\Http\Controllers\AddFotoController@abfp');
+    Route::post('abf_comments', 'App\Http\Controllers\AddFotoController@abf_comments');
+    Route::post('abfp_comments', 'App\Http\Controllers\AddFotoController@abfp_comments');
+    Route::post('news_rating_state', 'App\Http\Controllers\AddFotoController@news_rating_state');
+    Route::post('comm_allowp', 'App\Http\Controllers\AddFotoController@comm_allowp');
     Route::post('comment_c', 'App\Http\Controllers\AddFotoController@comment_c');
     Route::post('comment_p', 'App\Http\Controllers\AddFotoController@comment_p');
     Route::post('foto', 'App\Http\Controllers\AddFotoController@foto');
@@ -163,6 +167,7 @@ Route::group(['middleware'=>'language'],function ()
     Route::post('load_fotop', 'App\Http\Controllers\AddFotoController@load_fotop');
     Route::post('load_obl_news', 'App\Http\Controllers\AddFotoController@load_obl_news');
     Route::post('load_map_village', 'App\Http\Controllers\AddFotoController@load_map_village');
+    Route::post('hero_hide_foto', 'App\Http\Controllers\AddFotoController@hero_hide_foto');
     Route::post('del_foto', 'App\Http\Controllers\AddFotoController@del_foto');
     Route::post('del_fotop', 'App\Http\Controllers\AddFotoController@del_fotop');
     Route::post('del_alb', 'App\Http\Controllers\AddFotoController@del_alb');

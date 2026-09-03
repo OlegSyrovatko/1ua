@@ -1512,7 +1512,9 @@ class AddFotoController extends Controller
             $rh = $Alb->rh;
         }
 
-        echo view('inc.abf', ['id' => $id, 'Namef' => $Namef, 'admpass' => $admpass, 'Nameg' => $Nameg,
+        // popup (клік по фото в стрічці новин/hero) рендериться легкою inc.abf_popup (велике фото,
+        // без стрічки коментарів) замість важкої inc.abf (тонка карточка 200px + Memoryf-коментарі)
+        echo view('inc.abf_popup', ['id' => $id, 'Namef' => $Namef, 'admpass' => $admpass, 'Nameg' => $Nameg,
             'City' => $City, 'domen' => $domen, 'M3' => $M3, 'M4' => $M4,
             'M6' => $M6, 'M7' => $M7, 'w' => $w, 'h' => $h, 'avt' => $avt, 'x' => $x, 'y' => $y, 'alb' => $alb,
             'views' => $views, 'r_gol' => $r_gol, 'r_kol' => $r_kol, 'rh' => $rh, 'design' => 'default', 'alb_des' => 'default']);
@@ -1521,7 +1523,35 @@ class AddFotoController extends Controller
 
     }
 
+    // Стрічка коментарів для popup (/abf) підвантажується окремим запитом ПІСЛЯ того, як фото вже
+    // показане — саме запит до Memoryf і по одному запиту на кожного автора коментаря були причиною
+    // затримки відкриття popup. Викликається з abf() в public/js/allcities19.js.
+    public function abf_comments(Request $request)
+    {
+        $Namef = intval($request['Namef']);
+        if (is_int($Namef) != "true") {
+            die("");
+        }
+        $id = intval($request['id']);
+        if (is_int($id) != "true") {
+            die("");
+        }
 
+        $admpass = "off";
+        if (Auth::user()) {
+            $my_id = Auth::user()->Num;
+            $Allad = DB::table('City_Admin2')->select('id')->
+            where('Num', $my_id)->where('Page', 'Foto')->where('id', $id)->
+            limit(1)->get();
+            if ($Allad->count() > 0) {
+                $admpass = "ok";
+            }
+        }
+
+        $avt = DB::table('Foto')->where('Namef', $Namef)->value('avt');
+
+        echo view('inc.comment', ['M5' => $Namef, 'admpass' => $admpass, 'avt' => $avt, 'red' => 'off']);
+    }
 
 
 
@@ -1581,10 +1611,90 @@ class AddFotoController extends Controller
             $rh = $Alb->rh;
         }
 
-        echo view('inc.abfp', ['id' => $id, 'Namef' => $Namef, 'admpass' => $admpass, 'domen' => $domen,
+        // popup рендериться легкою inc.abfp_popup (велике фото, без стрічки коментарів)
+        echo view('inc.abfp_popup', ['id' => $id, 'Namef' => $Namef, 'admpass' => $admpass, 'domen' => $domen,
             'M6' => $M6, 'M7' => $M7, 'w' => $w, 'h' => $h, 'avt' => $avt, 'alb' => $alb,
             'views' => $views, 'r_gol' => $r_gol, 'r_kol' => $r_kol, 'rh' => $rh, 'design' => 'default', 'alb_des' => 'default']);
 
+    }
+
+    // Аналог abf_comments() для особистих фото (Fotop) — підвантажується з abfp() окремим запитом.
+    public function abfp_comments(Request $request)
+    {
+        $Namef = intval($request['Namef']);
+        if (is_int($Namef) != "true") {
+            die("");
+        }
+        $id = intval($request['id']);
+        if (is_int($id) != "true") {
+            die("");
+        }
+
+        $admpass = "off";
+        if (Auth::user()) {
+            $my_id = Auth::user()->id;
+            if ($my_id == $id) {
+                $admpass = "ok";
+            }
+        }
+
+        $avt = DB::table('Fotop')->where('Namef', $Namef)->value('avt');
+
+        echo view('inc.commentp', ['M5' => $Namef, 'admpass' => $admpass, 'avt' => $avt, 'red' => 'off']);
+    }
+
+    // Легкий стан зірки оцінки для "великих" фото прямо в стрічці новин (index.blade.php,
+    // групи <=3 фото). Пошук за Namef — первинний ключ Foto/Fotop, тобто точковий, без сканування.
+    // Викликається асинхронно ПІСЛЯ показу сторінки (як і /abf_comments), щоб не сповільнювати
+    // першу видачу головної. design='popup' — та сама причина, що й для popup: без кнопок "поділитись".
+    public function news_rating_state(Request $request)
+    {
+        $Namef = intval($request['Namef']);
+        if (is_int($Namef) != "true") {
+            die("");
+        }
+        $type = ($request['type'] === 'fotop') ? 'fotop' : 'foto';
+
+        if (Auth::user()) {
+            $Numm = Auth::user()->id;
+        } else {
+            $Numm = "0000000000";
+        }
+
+        if ($type === 'fotop') {
+            $row = DB::table('Fotop')->select('r_gol', 'r_kol', 'rh')->where('Namef', $Namef)->first();
+        } else {
+            $row = DB::table('Foto')->select('r_gol', 'r_kol', 'rh')->where('Namef', $Namef)->first();
+        }
+
+        if (!$row) {
+            return "";
+        }
+
+        $r_gol = $row->r_gol;
+        $r_kol = $r_gol ? $row->r_kol : 0;
+        $rh = $row->rh;
+
+        // Світлий фон стрічки (не темне фото-підложка, як у popup) — інший неактивний колір зірки
+        $color_star = "#c7c7c7";
+        if ($r_kol > 0) { $color_star = "#356AA0"; }
+        if ($r_kol > 1) { $color_star = "gold"; }
+        if ($r_kol > 4) { $color_star = "orange"; }
+        $rect = "shine";
+        if (mb_strstr("$rh", "$Numm") != "") {
+            $rect = "";
+        }
+
+        $fn = ($type === 'fotop') ? 'rate_addp' : 'rate_add';
+        $fh = ($type === 'fotop') ? 'rate_hp' : 'rate_h';
+
+        // Префікс "n" — щоб id не збігався з popup-версією (d$Namef/r$Namef), якщо те саме
+        // фото одночасно відкрите і великою карткою в стрічці, і в popup.
+        echo "<svg class=\"star-container\" width=\"18\" height=\"18\" onclick=\"$fn('nd$Namef',$Namef,'popup')\" rel=\"noopener noreferrer\">
+            <use class=\"star\" fill=\"$color_star\" href=\"/images/icons.svg#icon-star-full\"></use>
+            <rect class=\"$rect\" fill=\"white\"></rect>
+        </svg>
+        <a href=\"##\" onclick=\"$fh('nr$Namef',$Namef)\" rel=\"noopener noreferrer\">$r_kol</a>";
     }
 
 
@@ -1593,6 +1703,98 @@ class AddFotoController extends Controller
 
 
 
+
+    // Перевірка "чи можна коментувати" ДО показу поля вводу (фото людей, Fotop) — та сама логіка
+    // приватності (Private.Forum, Friends), що й у comm_addp, але без запису коментаря. Викликається
+    // асинхронно ПІСЛЯ показу сторінки/попапу, щоб поле коментаря не блимало і не сповільнювало вивід.
+    public function comm_allowp(Request $request)
+    {
+        $Namef = intval($request['Namef']);
+        if (is_int($Namef) != "true") {
+            die("0");
+        }
+        if (!Auth::user()) {
+            die("0");
+        }
+        $Numm = Auth::user()->id;
+
+        $Allb = DB::table('Fotop')->select('Num', 'avt')->where('Namef', $Namef)->limit(1)->get();
+        $id = null; $whom = null;
+        foreach ($Allb as $All) {
+            $id = $All->Num;
+            $whom = $All->avt;
+        }
+        if (!$id) {
+            die("0");
+        }
+
+        $sq = 0;
+        $Allq = DB::table('Private')->select('ban')->
+        where('Num', $whom)->limit(1)->get();
+        foreach ($Allq as $Alq) {
+            $ComForBan = $Alq->ban;
+            $sq++;
+        }
+        if ($sq == 0) {
+            $ComForBan = "";
+        }
+
+        $sq = 0;
+        $Forum = 1;
+        $Allq = DB::table('Private')->select('ban', 'Forum')->
+        where('Num', $id)->limit(1)->get();
+        foreach ($Allq as $Alq) {
+            $Ban = $Alq->ban;
+            $Forum = $Alq->Forum;
+            $sq++;
+        }
+        if ($sq == 0) {
+            $Ban = "";
+        }
+
+        if (mb_strstr((string)$ComForBan, (string)$Numm) != "" || mb_strstr((string)$Ban, (string)$Numm) != "") {
+            die("0");
+        }
+
+        $Privatpass = "stop";
+        if (!$Forum || $Forum == 0 || $Forum == 1 || $Forum == 2) {
+            $Privatpass = "go";
+        } else {
+            $Alls = DB::table('Friends')->select('Num1', 'Num2')->
+            where(function ($query1) use ($id) {
+                $query1->where('Num1', $id)
+                    ->where('Argue', '=', 2);
+            })->
+            orWhere(function ($query2) use ($id) {
+                $query2->where('Num2', $id)
+                    ->where('Argue', '=', 2);
+            })->
+            get();
+            $fr_avt = "";
+            $Numfr = "";
+            foreach ($Alls as $All) {
+                $Num1 = $All->Num1;
+                $Num2 = $All->Num2;
+                if ($Num1 == $id) {
+                    $Numfr = $Num2;
+                } else {
+                    $Numfr = $Num1;
+                }
+                $fr_avt .= " $Numfr";
+            }
+            $isfriend = strstr("$fr_avt", "$Numm");
+
+            if ($Forum == 3 && ($id == $Numm || $isfriend != "")) {
+                $Privatpass = "go";
+            } else {
+                if ($Forum == 4 && $id == $Numm) {
+                    $Privatpass = "go";
+                }
+            }
+        }
+
+        echo $Privatpass == "go" ? "1" : "0";
+    }
 
     public function foto(Request $request)
     {
@@ -2971,6 +3173,47 @@ class AddFotoController extends Controller
 
 
 
+    // Виключення фото з добірки на головній сторінці (hero). Доступно адміну (id 72372396)
+    // або автору самого фото — бо автоматичний відбір за рейтингом/переглядами іноді підхоплює
+    // фото не в тему (портрети людей тощо), і автор має право прибрати саме своє фото.
+    function hero_hide_foto(Request $request)
+    {
+        if (!Auth::user()) {
+            return "";
+        }
+
+        $Namef = (int) $request['Namef'];
+        if ($Namef <= 0) {
+            return "";
+        }
+
+        $myId = Auth::user()->id;
+        if ($myId != 72372396) {
+            $avt = DB::table('Foto')->where('Namef', $Namef)->value('avt');
+            if ($avt === null || $myId != $avt) {
+                return "";
+            }
+        }
+
+        $filename = storage_path('app/public/hero_excluded_photos.txt');
+        $existing = file_exists($filename) ? file_get_contents($filename) : "";
+        $ids = array_filter(explode(',', $existing));
+        if (!in_array((string)$Namef, $ids)) {
+            $ids[] = (string)$Namef;
+            file_put_contents($filename, implode(',', $ids));
+        }
+
+        // добірки на головній (era-pool і trending) генеруються командою hero_build раз на добу
+        // за розкладом; тут ставимо перезапуск у чергу (database queue, воркер уже працює), щоб
+        // виключення підхопилось найближчим часом, а сам клік не чекав ~5с на повний перерахунок.
+        // poolOnly=true: знімок/cooldown "найпопулярніше за добу" НЕ чіпаємо (інакше кожен клік
+        // на "прибрати фото" збивав би годинник приросту переглядів) — приховане фото просто
+        // вирізається з уже готового списку трендів, а сам тренд перезбирається лише за розкладом.
+        \App\Jobs\RebuildHeroDataJob::dispatch(true);
+
+        return "ok";
+    }
+
     function del_foto(Request $request)
     {
         $Namef = $request['Namef'];
@@ -3381,15 +3624,18 @@ class AddFotoController extends Controller
             if($sq==0){ $ComForBan = "";}
             if(mb_strstr((string)$ComForBan, (string)$Numm)=="") {
 
-                $sharing = sharing($Namef, $design, 'nf');
+                // у popup (клік по зірці в модальному вікні перегляду фото) кнопки "поділитись
+                // в соцмережах" зайві й виглядають як накладка — показуємо коротке повідомлення
+                // без згадки про соцмережі замість звичайного тексту + iconок "поділитись"
+                $sharing = ($design == 'popup') ? '' : sharing($Namef, $design, 'nf');
 
                 if($Numm==$avt){
-                    $ch_e = __('messages.mark_own');
+                    $ch_e = ($design == 'popup') ? __('messages.mark_own_popup') : __('messages.mark_own');
                     echo "<span style='font-size: 13px;'>$ch_e </span> $sharing  ";
                 }
                 else{
                     if(mb_strstr((string)$rh, (string)$Numm)!="") {
-                        $ch_e = __('messages.mark_once');
+                        $ch_e = ($design == 'popup') ? __('messages.mark_once_popup') : __('messages.mark_once');
                         echo "<span style='font-size: 13px;'> $ch_e </span> $sharing ";
                     }
                     else{
@@ -3633,15 +3879,17 @@ class AddFotoController extends Controller
             if($sq==0){ $ComForBan = "";}
             if(mb_strstr((string)$ComForBan, (string)$Numm)=="") {
 
-			$sharing = sharing($Namef, $design, 'ni');
+            // у popup (клік по зірці в модальному вікні перегляду фото) кнопки "поділитись
+            // в соцмережах" зайві й виглядають як накладка — показуємо лише текстове повідомлення
+            $sharing = ($design == 'popup') ? '' : sharing($Namef, $design, 'ni');
 
                 if($Numm==$avt){
-                    $ch_e = __('messages.mark_own');
+                    $ch_e = ($design == 'popup') ? __('messages.mark_own_popup') : __('messages.mark_own');
                     echo "<span style='font-size: 13px;'>$ch_e </span> $sharing  ";
                 }
                 else{
                     if(mb_strstr((string)$rh, (string)$Numm)!="") {
-                        $ch_e = __('messages.mark_once');
+                        $ch_e = ($design == 'popup') ? __('messages.mark_once_popup') : __('messages.mark_once');
                         echo "<span style='font-size: 13px;'> $ch_e </span> $sharing ";
                     }
                     else{

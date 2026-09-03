@@ -312,7 +312,74 @@ foreach ($results as $result) {
 }
 @endphp
 
+@php
+    // Дані для hero-блоків готує запланована команда `hero_build` (app/Console/Commands/hero_build.php,
+    // раз на добу): 1) heroPhotos — добірка за рейтингом, стратифікована по епохах
+    // (2005-2010, 2011-2013 "пік", 2014-2017, 2018-2021, 2022+), щоб оцінки 2011-2013 не витісняли
+    // назавжди фото пізніших років; 2) heroTrending — "найпопулярніше за добу" за приростом переглядів,
+    // з cooldown 30 днів на фото, щоб воно не залипало в списку. Обидва читаються з готових JSON-файлів —
+    // жодного запиту до БД на реальному заході відвідувача.
+    $heroPoolRaw = Storage::disk('public')->exists('hero_photos_pool.json')
+        ? json_decode(Storage::disk('public')->get('hero_photos_pool.json'))
+        : [];
+    $heroPhotos = collect($heroPoolRaw)->shuffle()->take(8)->values();
+
+    $heroTrendingRaw = Storage::disk('public')->exists('hero_trending_result.json')
+        ? json_decode(Storage::disk('public')->get('hero_trending_result.json'))
+        : [];
+    $heroTrending = collect($heroTrendingRaw)->values();
+
+    $hero_places = 0;
+    $hero_stat_raw = @file_get_contents(storage_path('app/public/allstat.txt'));
+    if ($hero_stat_raw) {
+        $hero_places_part = strstr($hero_stat_raw, 'Allc');
+        list($hero_places) = sscanf($hero_places_part, 'Allc%d');
+    }
+
+    // Прибрати фото з добірки може адмін або сам автор фото ($hp->avt).
+    $heroCanHide = function ($hp) {
+        if (!Auth::user()) {
+            return false;
+        }
+        return Auth::user()->id == 72372396 || Auth::user()->id == $hp->avt;
+    };
+@endphp
+
 <section id="ind-whole">
+
+    @auth
+        <script>
+            function hero_hide_foto(namef, liid) {
+                if (!confirm('Прибрати це фото з добірки на головній назавжди?')) {
+                    return;
+                }
+                $.ajaxSetup({
+                    headers: {
+                        "X-CSRF-TOKEN": jQuery('meta[name="csrf-token"]').attr("content"),
+                    },
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/hero_hide_foto",
+                    data: { Namef: namef },
+                    cache: false,
+                    success: function (data) {
+                        if (($.trim(data)) === "ok") {
+                            var el = document.getElementById(liid);
+                            if (el) { el.remove(); }
+                            alert('Фото прибрано з добірки.');
+                        } else {
+                            alert('Не вдалося прибрати фото (сервер відповів: "' + data + '"). Можливо, немає прав на це фото.');
+                        }
+                    },
+                    error: function (jqXHR) {
+                        alert('Помилка запиту (' + jqXHR.status + '). Фото НЕ прибрано.');
+                    },
+                });
+            }
+        </script>
+    @endauth
+
     <!-- google для головної сторінки -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
             crossorigin="anonymous"></script>
@@ -327,12 +394,82 @@ foreach ($results as $result) {
         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <section class="mw450">
-        <section class="ind-section fcom0">
 
-            <section class="margin-top">
+        <section class="hero-archive fcom0">
+            <h1>{{ __('messages.hero_title') }}</h1>
+            <p class="hero-subtitle">{{ __('messages.hero_subtitle') }}</p>
+
+            <section class="margin-top hero-search">
                 <input type="text" class="search-input" id="cityInput" placeholder="{{__('messages.city_search')}}"><br />
                 <ul class="non-list search-ul" id="cityDropdown"></ul>
             </section>
+
+            <p class="hero-stats">
+                {{ __('messages.hero_stat_photos') }}
+                @if($hero_places > 0)
+                    <br>&middot; {{ number_format($hero_places, 0, ',', ' ') }} {{ __('messages.hero_stat_places') }}
+                @endif
+            </p>
+
+            @if($heroPhotos->count() > 0)
+                <ul class="hero-photo-grid non-list">
+                    @foreach($heroPhotos as $hp)
+                        @php
+                            $hp_monm = substr($hp->Fd, 5, 2);
+                            $hp_yem = substr($hp->Fd, 0, 4);
+                            $hp_monmf = ((int)$hp_monm < 10) ? substr($hp->Fd, 6, 1) : $hp_monm;
+                            if ((int)$hp_yem <= 2007) { $hp_yem = "2005-2007"; $hp_monmf = ""; }
+                            $hp_katalog  = "Photos/$hp_yem$hp_monmf/{$hp->Namef}.{$hp->Formf}";
+                            $hp_katalogb = "Photos/$hp_yem$hp_monmf/b{$hp->Namef}.{$hp->Formf}";
+                            $hp_src = getKatalogface($hp_katalog, $hp_katalogb);
+                        @endphp
+                        <li id="hero_ph{{ $hp->Namef }}">
+                            <a href="/nf{{ $hp->Namef }}" onclick="abf({{ $hp->id }},{{ $hp->Namef }}); return false;">
+                                <img loading="lazy" src="{{ $hp_src }}" alt="{{ $hp->City }}">
+                                <span>{{ $hp->City }}</span>
+                            </a>
+                            @if($heroCanHide($hp))
+                                <button type="button" class="hero-photo-hide"
+                                        onclick="hero_hide_foto('{{ $hp->Namef }}','hero_ph{{ $hp->Namef }}'); return false;"
+                                        title="Прибрати це фото з добірки назавжди">✕</button>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </section>
+
+        @if($heroTrending->count() > 0)
+            <section class="hero-archive fcom0 margin-top">
+                <h2>{{ __('messages.hero_trending_title') }}</h2>
+                <ul class="hero-photo-grid non-list">
+                    @foreach($heroTrending as $ht)
+                        @php
+                            $ht_monm = substr($ht->Fd, 5, 2);
+                            $ht_yem = substr($ht->Fd, 0, 4);
+                            $ht_monmf = ((int)$ht_monm < 10) ? substr($ht->Fd, 6, 1) : $ht_monm;
+                            if ((int)$ht_yem <= 2007) { $ht_yem = "2005-2007"; $ht_monmf = ""; }
+                            $ht_katalog  = "Photos/$ht_yem$ht_monmf/{$ht->Namef}.{$ht->Formf}";
+                            $ht_katalogb = "Photos/$ht_yem$ht_monmf/b{$ht->Namef}.{$ht->Formf}";
+                            $ht_src = getKatalogface($ht_katalog, $ht_katalogb);
+                        @endphp
+                        <li id="hero_tr{{ $ht->Namef }}">
+                            <a href="/nf{{ $ht->Namef }}" onclick="abf({{ $ht->id }},{{ $ht->Namef }}); return false;">
+                                <img loading="lazy" src="{{ $ht_src }}" alt="{{ $ht->City }}">
+                                <span>{{ $ht->City }}</span>
+                            </a>
+                            @if($heroCanHide($ht))
+                                <button type="button" class="hero-photo-hide"
+                                        onclick="hero_hide_foto('{{ $ht->Namef }}','hero_tr{{ $ht->Namef }}'); return false;"
+                                        title="Прибрати це фото з добірки назавжди">✕</button>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
+        <section class="ind-section fcom0 margin-top">
 
 		@php
 
@@ -340,7 +477,7 @@ foreach ($results as $result) {
         $Allb = DB::table('stat')->select('id','perc_f','perc_m','views')->
         where('id', '<', '26')->
         where('id', '>', '0')->
-        orderBy('views','desc')->limit(25)->get();
+        orderBy('perc_f','desc')->limit(25)->get();
         $All_rate = 0;
 
         foreach ($Allb as $All) {
@@ -352,13 +489,14 @@ foreach ($results as $result) {
                 $ua_oble="";
                 if($lan=="en"){$ua_oble="e";}
                 else if($lan=="ru"){$ua_oble="r";}
-                $mem_obl_link = "href=/" . $ua_oble . "se$id";
+                // гість переходить на окрему сторінку /se{id} (не AJAX-стрічку stat()), тому
+                // позицію для "пам'яті навігації" на головній зберігаємо тут прямо перед переходом
+                $mem_obl_link = "href=/" . $ua_oble . "se$id onclick=\"try{localStorage.setItem('1ua_stat_nav', JSON.stringify({id:'$id', purp:'Foto'}))}catch(e){}\"";
             }
             $oi = "messages.ooo$id"; $obl =__($oi);
             $link = "<a $mem_obl_link><div class=\"mb5\">$obl</div>";
             $link2 = "</a>";
-            $fff .="<li class=\"stat-td\">$link
-                <div class=\"stats-item\">$perc_f% </div>";
+            $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_f%, #dfe4ee $perc_f% 100%)\" title=\"$perc_f%\">$link";
             if($views==0){$display="display: none;";}
             else{$display="";}
                 $fff .="<div id=\"genOblViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
@@ -381,8 +519,6 @@ foreach ($results as $result) {
 			}
         @endphp
 
-        <h1>{{__('messages.our_purp')}}</h1>
-        <h2 class="h2-less"><a href=/{{$pref_page2}}>{{__('messages.all_cities')}}</a></h2>
         <div class="un-display" id="export_id"></div>
         <div id="stat">
             <table class="stat-tb">
@@ -394,13 +530,21 @@ foreach ($results as $result) {
                 </td></tr>
             </table>
 
+            <h2>{{__('messages.our_purp')}}</h2>
+
             <ul class="stat-list">@php echo"$fff"; @endphp</ul>
 
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (typeof stat_restore === 'function') { stat_restore(); }
+                if (typeof newsBigPhotoInit === 'function') { newsBigPhotoInit(); }
+            });
+        </script>
 
 
             @auth
-                <div class="hidblokwide">
+                <div>
                     <div class="ind-txt">{{__('messages.do_fotos')}}</div>
                      <form id='search'  method="POST"  action="javascript:void(0)" accept-charset="utf-8" enctype="multipart/form-data">
                         @csrf
@@ -427,6 +571,14 @@ foreach ($results as $result) {
                     <div id="load_foto"></div>
 				</div>
             @endauth
+            @guest
+                <div>
+                    <div class="ind-txt">{{ __('messages.join_photos_cta') }}</div>
+                    <table class="margin-top center-block"><tr><td class="fcomblue intop ind-button-padd">
+                        <a href="/register/{{$lan}}">{{ __('messages.join_us') }}</a>
+                    </td></tr></table>
+                </div>
+            @endguest
         </section>
 
 
@@ -454,24 +606,15 @@ foreach ($results as $result) {
                 list($Allc) = sscanf($Allc, "Allc%d");
             @endphp
 
-            <h2>{{__('messages.we_up')}}</h2>
-            <table class="margin-top">
-                <tr>
-                    <td class="fcomblue intop ind-button-padd min-text">
-                        <a href=/{{$pref_page_inf}}>{{$of_users}}: {{$reg}}</a>
-                    </td>
-                    @auth
-                        <td class="fcomblue intop ind-button-padd min-text">
-                            <a href=/{{$pref_page_sear}}>{{$of_Cityvil}}: {{$Allc}}</a>
-                        </td>
-                    @endauth
-                    @guest
-                        <td class="fcomblue intop ind-button-padd min-text">
-                            <a href=/register/{{$lan}}>{{$join_us}}</a>
-                        </td>
-                    @endguest
-                </tr>
-            </table>
+            @guest
+                <p class="ind-txt users-cta">
+                    <a href="/register/{{$lan}}">{{ __('messages.join_word') }}</a>
+                    {{ __('messages.join_users_cta_tail', ['count' => number_format($reg, 0, ',', ' ')]) }}
+                </p>
+            @endguest
+            @auth
+                <p class="ind-txt users-cta">{{ __('messages.already_with_us', ['count' => number_format($reg, 0, ',', ' ')]) }}</p>
+            @endauth
             <br />
             <ul class="online-users">
             @php
@@ -502,7 +645,7 @@ foreach ($results as $result) {
 
         </section>
 
-        <table class="fcom0 margin-top"><tr><td align=center width=438>
+        <table class="fcom0 margin-top margin-bottom"><tr><td align=center width=438>
             @php
                 $usefull_links = __('messages.usefull_links');
                 if($lan=="ua"){echo"<a href=/lifeua/1>$usefull_links</a>";}
@@ -539,14 +682,19 @@ foreach ($results as $result) {
                 $appreciated1 = __('messages.appreciated1');
                 $appreciated2 = __('messages.appreciated2');
 
-                if(isset($_COOKIE['go_news'])){$go_news = $_COOKIE['go_news'];} else {$go_news = "111100";}
+                // Формат go_news: перші 4 символи — прапорці чекбоксів (форум/фото/оцінки/коментарі),
+                // решта — список id областей через кому (порожньо = без фільтра за областю).
+                // Це заміна старого формату з РІВНО одною областю (2 цифри), щоб підтримати
+                // вибір кількох областей одночасно.
+                if(isset($_COOKIE['go_news'])){$go_news = $_COOKIE['go_news'];} else {$go_news = "1110";}
                 $nforum = substr($go_news, 0, 1);
                 $nfoto = substr($go_news, 1, 1);
                 $nratef = substr($go_news, 2, 1);
                 $ncoment = substr($go_news, 3, 1);
-                $lnews = substr($go_news, 4, 2);
-                $lnews1 = substr($lnews, 0, 1);
-                if($lnews1==0){$lnews2 = substr($go_news, 5, 1);} else{$lnews2=$lnews;}
+                $lnews_raw = substr($go_news, 4);
+                $lnews_list = array_values(array_filter(explode(',', $lnews_raw), function($v) {
+                    return $v !== '' && ctype_digit($v);
+                }));
             @endphp
             <h1>{{__('messages.1ua_news')}}</h1>
             <nav id="news_block">
@@ -569,21 +717,30 @@ foreach ($results as $result) {
                         </label></li>
                 </ul>
                 <aside id="news_forum_select">
-                    <label><h2>{{__('messages.loc_news')}}</h2>
-                        <select id="oblnew" onchange=ffnews()>;
+                    <h2>{{__('messages.loc_news')}}</h2>
+                    <div class="obl-multiselect" id="oblMultiselect">
+                        <button type="button" class="obl-multiselect-toggle" id="oblMultiselectToggle" onclick="toggleOblPanel()"
+                                data-choose-text="{{ __('messages.chopt') }}"
+                                data-count-template="{{ __('messages.obl_selected_count', ['count' => ':n']) }}">
+                            <span id="oblMultiselectLabel">
+                                @if(count($lnews_list) > 0)
+                                    {{ __('messages.obl_selected_count', ['count' => count($lnews_list)]) }}
+                                @else
+                                    {{ __('messages.chopt') }}
+                                @endif
+                            </span> ▾
+                        </button>
+                        <div class="obl-multiselect-panel un-display" id="oblMultiselectPanel">
                             @php
-                                for ($i = 0; $i <= 25; $i++){
-                                    $ni = "messages.ooo$i"; $no = "messages.chopt";
-                                    echo"<option value=$i";
-                                    if((int)$lnews2 == $i){echo" selected";}
-                                    echo">";
-                                    if($i==0){echo __($no);}
-                                        else{echo __($ni);}
-                                    echo"</option>";
+                                for ($i = 1; $i <= 25; $i++){
+                                    $ni = "messages.ooo$i";
+                                    $checked = in_array((string)$i, $lnews_list, true) ? ' checked' : '';
+                                    echo "<label class=\"obl-multiselect-option\"><input type=\"checkbox\" class=\"obl-check\" value=\"$i\" onchange=\"ffnews()\"$checked> " . __($ni) . "</label>";
                                 }
                             @endphp
-                        </select>
-                    </label><br /><br />
+                        </div>
+                    </div>
+                    <br /><br />
                 </aside>
             </nav>
         </section>
@@ -621,18 +778,13 @@ foreach ($results as $result) {
                     $q_s3[0] = ['act', 100];
                     $q_s4[0] = ['act', 100];
                 }
-                if($lnews!="00"){
-                    $lnews_obl = (int)$lnews;
-                    $q_s7[0] = ['act', (string)$lnews_obl];
-                }
-
                 $Alln = DB::table('News')->select('act','obl','avt','Im','Priz','sex','theme','ualine','ruline','enline',
                     'Nd','whom','forum','avt_fr')->
                     orWhere(function ($query)
                      use ($q_s1, $q_s2, $q_s3, $q_s4, $q_s34,
                      $q_s5,
                       $q_s6,
-                      $q_s7) {
+                      $lnews_list) {
                         $query->whereNull('act')
                             ->orWhere($q_s1)
                             ->orWhere($q_s2)
@@ -641,7 +793,13 @@ foreach ($results as $result) {
                             ->orWhere(function ($query) use ($q_s4,$q_s34){$query->Where($q_s4)->Where($q_s34);})
                             ->orWhere($q_s5)
                             ->orWhere($q_s6)
-                            ->orWhere($q_s7);
+                            ->orWhere(function ($query) use ($lnews_list) {
+                                // "Місцеві новини": декілька областей одночасно (whereIn) замість
+                                // однієї (раніше — точна рівність act = id однієї області)
+                                if (count($lnews_list) > 0) {
+                                    $query->whereIn('act', $lnews_list);
+                                }
+                            });
                     })
                     ->Where($q_s_mainp)
                     ->Where($q_s_mainp2)->
@@ -654,10 +812,35 @@ foreach ($results as $result) {
 
                         $nfm = 1;  $Nd_f_h=""; $act_old = ""; $titleh="";
                         $fortable = "shut"; $afortable = "shut"; $afmtable="shut";
-                        $fotable = "shut"; $afotable="shut"; $acttable="shut";
+                        $fotable = "shut"; $afotable="shut"; $acttable="shut"; $bigfoto="shut";
                         $linef="go";  $nforum_e3 = ""; $nfoto_e3 = ""; $nratef_e3 = ""; $ncoment_e3="";
 
-                        foreach ($Alln as $Alb) {
+                        // "Великі" картки для груп фото (<=3 шт.) прямо в стрічці: важливий не сумарний
+                        // розмір альбому користувача, а розмір ВІЗУАЛЬНОГО блока — тобто скільки фото
+                        // показується підряд в одному заголовку, поки чергу не перерве інша подія, інший
+                        // альбом чи інший день (та сама умова розриву блока, що й у циклі рендеру нижче).
+                        $newsBigPhotoEnabled = true;
+                        $nfotoBlockSize = [];
+                        $blockRows = []; $prevKeyg = null; $prevDayg = null; $prevActg = null;
+                        foreach ($Alln as $idxg => $Albg) {
+                            if ($Albg->act == "nfoto") {
+                                $keyg = $Albg->avt.$Albg->theme;
+                                $dayg = substr($Albg->Nd, 0, 10);
+                                if ($prevActg != "nfoto" || $keyg !== $prevKeyg || $dayg !== $prevDayg) {
+                                    foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
+                                    $blockRows = [];
+                                }
+                                $blockRows[] = $idxg;
+                                $prevKeyg = $keyg; $prevDayg = $dayg;
+                            } else {
+                                foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
+                                $blockRows = []; $prevKeyg = null; $prevDayg = null;
+                            }
+                            $prevActg = $Albg->act;
+                        }
+                        foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
+
+                        foreach ($Alln as $rowIdx => $Alb) {
                             if ($nfm < 61) {
 
                                 $theme = $Alb->theme; $ualine = $Alb->ualine; $ruline = $Alb->ruline; $enline = $Alb->enline;
@@ -720,6 +903,7 @@ foreach ($results as $result) {
                                     if($afmtable=="open"){echo"</td></tr></table>"; $afmtable="shut";}
                                     if($fotable=="open"){echo"</tr>"; $fotable="shut"; $nrowf=1;}
                                     if($afotable=="open"){echo"</table>"; $afotable="shut"; $nrowf=1;}
+                                    if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
                                     if($fortable=="open"){echo"</tr>"; $fortable="shut";}
                                     if($afortable=="open"){echo"</table>"; $afortable="shut"; $nrowfr=1;}
                                     if($acttable=="open"){echo"</td></tr></table>"; $acttable="shut";}
@@ -932,31 +1116,103 @@ foreach ($results as $result) {
 
 
                                     $nfoto_e2 = "$avt$theme";
+                                    // "Великі" картки для груп <=3 фото по одній події: фото + оцінка + коментарі
+                                    // прямо в стрічці (оцінка/коментарі довантажуються асинхронно після показу сторінки).
+                                    // Групи від 4 фото — без змін, стара дрібна сітка нижче.
+                                    $nfotoBig = $newsBigPhotoEnabled && (($nfotoBlockSize[$rowIdx] ?? 99) <= 3);
 
                                     if($nfoto_e2!=$nfoto_e3 || $titleh!=$title ||$act_old!=$act){
                                         if($fotable=="open"){echo"</tr>"; $fotable="shut";}
                                         if($afotable=="open"){echo"</table>"; $afotable="shut";}
+                                        if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
                                         $time_e=$time;	$nrowf=1;
 
-                                        echo"<table class=\"fcom0 margin-top\"><tr><td align=left width=430 class=\"padd05 td-rel\">
-												<div class=\"time padd5\">$time_e</div>
-                                                <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
-                                        </td></tr></table>
-                                        <table>";
-                                        $afotable="open";
+                                        if($nfotoBig){
+                                            // Рамка (fcom0) огортає ОДРАЗУ і повідомлення (хто/куди/коли), і самі фото —
+                                            // щоб не виглядало відірваним одне від одного.
+                                            $bigCount = $nfotoBlockSize[$rowIdx] ?? 1;
+                                            echo"<div class=\"fcom0 margin-top news-photo-big-wrap news-photo-big-group-$bigCount\">
+                                                <div class=\"padd05 td-rel\">
+                                                    <div class=\"time padd5\">$time_e</div>
+                                                    <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
+                                                </div>
+                                                <div class=\"news-photo-big-group\">";
+                                            $bigfoto="open";
+                                        }
+                                        else{
+                                            echo"<table class=\"fcom0 margin-top\"><tr><td align=left width=430 class=\"padd05 td-rel\">
+													<div class=\"time padd5\">$time_e</div>
+                                                    <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
+                                            </td></tr></table>
+                                            <table>";
+                                            $afotable="open";
+                                        }
                                     }
 
                                     $nfoto_e3 = "$avt$theme";
 
-                                    if($nrowf==1){echo"<tr>"; $fotable="open";}
-                                    echo"<td align=center class=\"fcom\" onMouseOver=\"this.style.background='white'\" onMouseOut=\"this.style='fcom'\">
-                                            <div class=\"height70\">$ualine</div>
-                                     </td>";
-                                        $nrowf++;
+                                    if($nfotoBig){
+                                        // Тип (foto/fotop), id міста/профілю і Namef дістаємо з готового onclick у $ualine —
+                                        // без додаткових запитів до БД.
+                                        $bigNamef = null; $bigCityId = null; $bigType = "foto";
+                                        if (preg_match('/onclick=(abfp?)\(\'(\d+)\',\'(\d+)\'\)/', $ualine, $bigM)) {
+                                            $bigType = ($bigM[1] === 'abfp') ? 'fotop' : 'foto';
+                                            $bigCityId = $bigM[2];
+                                            $bigNamef = $bigM[3];
+                                        }
 
-                                    if($nrowf==5){
-                                        $nrowf=1; echo"</tr>";
-                                        $fotable="shut";
+                                        if ($bigNamef) {
+                                            // "b"-версія файлу = висока якість (та сама угода, що й у popup abf/abfp)
+                                            $ualineBig = preg_replace('#/(\d+)\.jpg#', '/b$1.jpg', $ualine, 1);
+                                            // Фото вже показане великим з оцінкою/коментарями прямо в стрічці —
+                                            // відкривати ще й модалку abf(p) по кліку на нього не потрібно.
+                                            $ualineBig = preg_replace('/^<a[^>]*onclick=abfp?\([^)]*\)>/', '', $ualineBig);
+                                            $ualineBig = preg_replace('/<\/a>\s*$/', '', $ualineBig);
+
+                                            $bigCommentFn = ($bigType === 'fotop') ? 'comm_addp' : 'comm_add';
+                                            $bigClearFn = ($bigType === 'fotop') ? 'clearsp' : 'clearsq';
+                                            $bigCommentIn = __('messages.comment_in');
+                                            $bigAdd = __('messages.Add');
+
+                                            echo "<div class=\"news-photo-big-card\">
+                                                <div class=\"news-photo-big-img\">$ualineBig
+                                                    <div id=\"nd$bigNamef\" class=\"news-inline-star\" data-namef=\"$bigNamef\" data-cityid=\"$bigCityId\" data-type=\"$bigType\">…</div>
+                                                </div>
+                                                <div class=\"centeredm\" id=\"nr$bigNamef\"></div>
+                                                <div id=\"nin$bigNamef\" class=\"news-inline-comments\" data-namef=\"$bigNamef\" data-cityid=\"$bigCityId\" data-type=\"$bigType\">…</div>";
+
+                                            if (Auth::user()) {
+                                                // Для фото людей (fotop) поле вводу приховане, поки асинхронно (comm_allowp) не
+                                                // підтвердиться, що приватність власника сторінки дозволяє коментувати. Для
+                                                // фото населених пунктів (foto) такого обмеження приватності нема — без змін.
+                                                if ($bigType === 'fotop') {
+                                                    echo "<div id=\"ncg$bigNamef\" class=\"comm-allowp-gate un-display\" data-namef=\"$bigNamef\">";
+                                                }
+                                                echo "<textarea id=\"ncm$bigNamef\" rows=2 class=\"news-inline-comment-input\" placeholder=\"$bigCommentIn\" onFocus=\"$bigClearFn('ncm$bigNamef','nbc$bigNamef');\"></textarea>
+                                                <div id=\"nbc$bigNamef\" class=\"un-display centeredm\">
+                                                    <table><tr><td class=\"fcomblue intop com-button\">
+                                                        <a onclick=\"$bigCommentFn($bigNamef,'ncm$bigNamef','nin$bigNamef')\">$bigAdd</a>
+                                                    </td></tr></table>
+                                                </div>";
+                                                if ($bigType === 'fotop') {
+                                                    echo "</div>";
+                                                }
+                                            }
+
+                                            echo "</div>";
+                                        }
+                                    }
+                                    else{
+                                        if($nrowf==1){echo"<tr>"; $fotable="open";}
+                                        echo"<td align=center class=\"fcom\" onMouseOver=\"this.style.background='white'\" onMouseOut=\"this.style='fcom'\">
+                                                <div class=\"height70\">$ualine</div>
+                                         </td>";
+                                            $nrowf++;
+
+                                        if($nrowf==5){
+                                            $nrowf=1; echo"</tr>";
+                                            $fotable="shut";
+                                        }
                                     }
 
                                 }
@@ -1165,6 +1421,7 @@ foreach ($results as $result) {
                         if($afmtable=="open"){echo"</td></tr></table>"; $afmtable="shut";}
                         if($fotable=="open"){echo"</tr>"; $fotable="shut";}
                         if($afotable=="open"){echo"</table>"; $afotable="shut";}
+                        if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
                         if($fortable=="open"){echo"</tr>"; $fortable="shut";}
                         if($afortable=="open"){echo"</table>"; $afortable="shut";}
                         if($acttable=="open"){echo"</td></tr></table>"; $acttable="shut";}

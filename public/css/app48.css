@@ -165,10 +165,105 @@ h6 {
 
 
 #abf_load {
+    /* Заякорено зверху (а не по центру через top:50%), бо на мобільних браузерах адресний рядок
+       динамічно змінює видиму висоту (vh рахується від максимально можливої, без адресного рядка),
+       і центрування через 50% могло виштовхувати верх попапу (з хрестиком закриття) за межі
+       реально видимої області без можливості прокрутки, бо сам блок position:fixed. */
     position: fixed;
-    top: 60px;
-    right: 9%;
-    z-index : 99;
+    top: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    width: min(92vw, 820px);
+    max-height: 92vh;
+    max-height: 92dvh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.popup-photo-frame {
+    position: relative;
+}
+.popup-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+}
+.popup-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+}
+.popup-body {
+    max-height: 92vh;
+    max-height: 92dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.popup-photo-img {
+    display: block;
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+    background: #111;
+}
+.popup-photo-meta {
+    padding: 10px 18px 18px;
+}
+.popup-photo-place {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.popup-photo-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.popup-photo-fmenu {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.popup-photo-more {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: bold;
+}
+.popup-comments {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e2e2;
+}
+.popup-comments-loading {
+    color: #888;
+    font-size: 13px;
+}
+.popup-comment-input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+@media screen and (max-width: 500px) {
+    .popup-photo-img {
+        max-height: 50vh;
+        max-height: 50dvh;
+    }
 }
 
 

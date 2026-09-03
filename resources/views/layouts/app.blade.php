@@ -6,7 +6,7 @@
 @endphp">
 
 @php
-    $css_file = "/css/app43.css";
+    $css_file = "/css/app75.css";
 
  @endphp
 <head>
@@ -441,7 +441,7 @@
 </head>
 <body>
 @if (!View::hasSection('amp'))
-    <script src="{{ "/js/allcities18.js" }}" defer></script>
+    <script src="{{ "/js/allcities23.js" }}" defer></script>
 @endif
 
 
@@ -677,8 +677,7 @@
 </script>
 
 <div id="abf_load" class="un-display" >
-    <table><tr><td width=123></td><td class=fcom align=right>&nbsp;&nbsp;<a href=## onclick=shut_abf();><b>{{__('messages.Close')}}</b></a>&nbsp;&nbsp;</td></tr></table>
-    <div id="f_in" style="z-index: 96; overflow-y: auto; overflow-x: hidden; width: 212px; height: 550px;">
+    <div id="f_in" class="popup-body">
     </div>
 </div>
 
@@ -698,8 +697,8 @@
     @include('inc.messages')
 </section>
 
-<a href=# aria-label="{{__('messages.close_pop_up')}}" onclick=shut_main();><div id="overlay"></div></a>
-<a href=# aria-label="{{__('messages.close_pop_up')}}" onclick=shut_abf();><div id="overlay_abf"></div></a>
+<a href=# aria-label="{{__('messages.close_pop_up')}}" onclick="shut_main(); return false;"><div id="overlay"></div></a>
+<a href=# aria-label="{{__('messages.close_pop_up')}}" onclick="shut_abf(); return false;"><div id="overlay_abf"></div></a>
 
 @guest @else
     <div id="notice_in" style="color: white;  position: fixed; bottom: 50px; left: 50px; z-index : 666666666;"></div>

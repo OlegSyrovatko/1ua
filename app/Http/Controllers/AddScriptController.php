@@ -5919,7 +5919,7 @@ class AddScriptController extends Controller
         $Allb = DB::table('stat')->select('id','perc_f','perc_m','views')->
         where('id', '<', '26')->
         where('id', '>', '0')->
-        orderBy('views','desc')->limit(25)->get();
+        orderBy($perc_s,'desc')->limit(25)->get();
 
 
 		foreach ($Allb as $All) {
@@ -5933,10 +5933,9 @@ class AddScriptController extends Controller
             if($views==0){$display="display: none;";}
             else{$display="";}
 
-            $fff .="<li class=\"stat-td\">
+            $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
                         <a onclick=stat('$id','$purp')>
                             <div class=\"mb5\">$obl</div>
-                            <div class=\"stats-item\">$perc_e% </div>
                             <div id=\"genOblViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
                                 <svg style=\"margin-right: -2px;\" title='" . __('messages.views') . "' alt='" . __('messages.views') . "' width=\"12\" height=\"12\"><use href=\"/images/icons.svg#icon-magnifying-glass\"></use></svg>
                                 <span class=\"in-dif\" id=\"inDif$id\"></span><span id=\"oblViews$id\">$views</span>
@@ -5964,7 +5963,9 @@ class AddScriptController extends Controller
             $Allb = DB::table('stat')
                 ->select('id','City1','City2','City3','perc_f','perc_m', 'views')
                 ->where('obl', $idfrom)
-                ->orderByDesc('views')
+                ->whereNotNull('City1')
+                ->where('City1', '!=', '')
+                ->orderByDesc($perc_s)
                 ->get();
 
             foreach ($Allb as $All) {
@@ -5996,10 +5997,9 @@ class AddScriptController extends Controller
                     $display = "";
                 }
 
-                $fff .="<li class=\"stat-td\">
+                $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
             <a onclick=stat('$id','$purp')>
                 <div class=\"mb5\">$City_e</div>
-                <div class=\"stats-item\">$perc_e% </div>
                 <div id=\"genRayViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
                     <svg style=\"margin-right: -2px;\" title='" . __('messages.views') . "' alt='" . __('messages.views') . "' width=\"12\" height=\"12\"><use href=\"/images/icons.svg#icon-magnifying-glass\"></use></svg>
                     <span class=\"in-dif\" id=\"inDif$id\"></span><span id=\"rayViews$id\">$views</span>
@@ -6178,7 +6178,8 @@ class AddScriptController extends Controller
                 </td></tr>
             </table>";
 		}
-			echo "<h3>$ua_e $obl_e $ray_e</h3><ul class=\"stat-list\">$fff</ul>";
+			$our_purp = __('messages.our_purp');
+			echo "<h2>$our_purp</h2><h3>$ua_e $obl_e $ray_e</h3><ul class=\"stat-list\">$fff</ul>";
 
     }
 
@@ -6208,13 +6209,18 @@ class AddScriptController extends Controller
         else if (isset($_COOKIE['go_news'])){
             $go_news = $_COOKIE['go_news'];
         }
-        else {$go_news = "111100";}
+        else {$go_news = "1110";}
 
+        // Формат go_news: перші 4 символи — прапорці чекбоксів, решта — список id областей
+        // через кому (порожньо = без фільтра). Заміна старого формату з рівно однією областю.
         $nforum = substr($go_news, 0, 1);
         $nfoto = substr($go_news, 1, 1);
         $nratef = substr($go_news, 2, 1);
         $ncoment = substr($go_news, 3, 1);
-        $lnews = substr($go_news, 4, 2);
+        $lnews_raw = substr($go_news, 4);
+        $lnews_list = array_values(array_filter(explode(',', $lnews_raw), function ($v) {
+            return $v !== '' && ctype_digit($v);
+        }));
         $q_s1[0] = ['act', 100];
         $q_s2[0] = ['act', 100];
         $q_s3[0] = ['act', 100];
@@ -6243,14 +6249,9 @@ class AddScriptController extends Controller
             $q_s3[0] = ['act', 100];
             $q_s4[0] = ['act', 100];
         }
-        if($lnews!="00"){
-            $lnews_obl = (int)$lnews;
-            $q_s7[0] = ['act', (string)$lnews_obl];
-        }
-
         $Alln = DB::table('News')->select('act','obl','avt','Im','Priz','sex','theme','ualine','ruline','enline',
             'Nd','whom','forum','avt_fr')->
-        orWhere(function ($query) use ($q_s1, $q_s2, $q_s3, $q_s4, $q_s34, $q_s5, $q_s6, $q_s7) {
+        orWhere(function ($query) use ($q_s1, $q_s2, $q_s3, $q_s4, $q_s34, $q_s5, $q_s6, $lnews_list) {
             $query->whereNull('act')
                 ->orWhere($q_s1)
                 ->orWhere($q_s2)
@@ -6258,7 +6259,12 @@ class AddScriptController extends Controller
                 ->orWhere(function ($query) use ($q_s4,$q_s34){$query->Where($q_s4)->Where($q_s34);})
                 ->orWhere($q_s5)
                 ->orWhere($q_s6)
-                ->orWhere($q_s7);
+                ->orWhere(function ($query) use ($lnews_list) {
+                    // "Місцеві новини": декілька областей одночасно (whereIn)
+                    if (count($lnews_list) > 0) {
+                        $query->whereIn('act', $lnews_list);
+                    }
+                });
         })
         ->Where($q_s_mainp)
         ->Where($q_s_mainp2)->
@@ -6269,9 +6275,34 @@ class AddScriptController extends Controller
         $afmtable="shut";
         $fotable = "shut";
         $afotable="shut";
+        $bigfoto="shut";
         $fortable = "shut";
         $afortable = "shut";
         $acttable="shut";
+
+        // Той самий підрахунок розміру ВІЗУАЛЬНОГО блока фото, що й на головній сторінці
+        // (index.blade.php) — важливий розмір блока, який показується підряд в одному заголовку
+        // до розриву іншою подією/альбомом/днем, а не сумарна кількість фото альбому у вибірці.
+        $newsBigPhotoEnabled = true;
+        $nfotoBlockSize = [];
+        $blockRows = []; $prevKeyg = null; $prevDayg = null; $prevActg = null;
+        foreach ($Alln as $idxg => $Albg) {
+            if ($Albg->act == "nfoto") {
+                $keyg = $Albg->avt.$Albg->theme;
+                $dayg = substr($Albg->Nd, 0, 10);
+                if ($prevActg != "nfoto" || $keyg !== $prevKeyg || $dayg !== $prevDayg) {
+                    foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
+                    $blockRows = [];
+                }
+                $blockRows[] = $idxg;
+                $prevKeyg = $keyg; $prevDayg = $dayg;
+            } else {
+                foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
+                $blockRows = []; $prevKeyg = null; $prevDayg = null;
+            }
+            $prevActg = $Albg->act;
+        }
+        foreach ($blockRows as $bi) { $nfotoBlockSize[$bi] = count($blockRows); }
 
         if($Allnn>0) {
 
@@ -6279,7 +6310,7 @@ class AddScriptController extends Controller
 
             $linef="go"; $nforum_e3 = ""; $nfoto_e3 = ""; $nratef_e3 = ""; $ncoment_e3="";
 
-            foreach ($Alln as $Alb) {
+            foreach ($Alln as $rowIdx => $Alb) {
                 if ($nfm < 61) {
 
                     $theme = $Alb->theme; $ualine = $Alb->ualine; $ruline = $Alb->ruline; $enline = $Alb->enline;
@@ -6332,6 +6363,7 @@ class AddScriptController extends Controller
                         if($afmtable=="open"){echo"</td></tr></table>"; $afmtable="shut";}
                         if($fotable=="open"){echo"</tr>"; $fotable="shut"; $nrowf=1;}
                         if($afotable=="open"){echo"</table>"; $afotable="shut"; $nrowf=1;}
+                        if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
                         if($fortable=="open"){echo"</tr>"; $fortable="shut";}
                         if($afortable=="open"){echo"</table>"; $afortable="shut"; $nrowfr=1;}
                         if($acttable=="open"){echo"</td></tr></table>"; $acttable="shut";}
@@ -6543,31 +6575,97 @@ class AddScriptController extends Controller
 
 
                         $nfoto_e2 = "$avt$theme";
+                        // "Великі" картки для груп <=3 фото по одній події — та сама логіка, що й на
+                        // головній сторінці (index.blade.php), важливо для консистентності при AJAX-довантаженні.
+                        $nfotoBig = $newsBigPhotoEnabled && (($nfotoBlockSize[$rowIdx] ?? 99) <= 3);
 
                         if($nfoto_e2!=$nfoto_e3 || $titleh!=$title ||$act_old!=$act){
                             if($fotable=="open"){echo"</tr>"; $fotable="shut";}
                             if($afotable=="open"){echo"</table>"; $afotable="shut";}
+                            if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
                             $time_e=$time;	$nrowf=1;
 
-                            echo"<table class=\"fcom0 margin-top\"><tr><td align=left width=430 class=\"padd05 td-rel\">
-												<div class=\"time padd5\">$time_e</div>
-                                                <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
-                                        </td></tr></table>
-                                        <table>";
-                            $afotable="open";
+                            if($nfotoBig){
+                                // Рамка (fcom0) огортає ОДРАЗУ і повідомлення (хто/куди/коли), і самі фото.
+                                $bigCount = $nfotoBlockSize[$rowIdx] ?? 1;
+                                echo"<div class=\"fcom0 margin-top news-photo-big-wrap news-photo-big-group-$bigCount\">
+                                    <div class=\"padd05 td-rel\">
+                                        <div class=\"time padd5\">$time_e</div>
+                                        <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
+                                    </div>
+                                    <div class=\"news-photo-big-group\">";
+                                $bigfoto="open";
+                            }
+                            else{
+                                echo"<table class=\"fcom0 margin-top\"><tr><td align=left width=430 class=\"padd05 td-rel\">
+													<div class=\"time padd5\">$time_e</div>
+                                                    <h3 class=\"news-photo\"><b><a href=/$pref_page_i$avt>$Im $Priz</a></b> $nfoto_e1 $fotom$theme_e</h3>
+                                            </td></tr></table>
+                                            <table>";
+                                $afotable="open";
+                            }
                         }
 
                         $nfoto_e3 = "$avt$theme";
 
-                        if($nrowf==1){echo"<tr>"; $fotable="open";}
-                        echo"<td align=center class=\"fcom\" onMouseOver=\"this.style.background='white'\" onMouseOut=\"this.style='fcom'\">
+                        if($nfotoBig){
+                            $bigNamef = null; $bigCityId = null; $bigType = "foto";
+                            if (preg_match('/onclick=(abfp?)\(\'(\d+)\',\'(\d+)\'\)/', $ualine, $bigM)) {
+                                $bigType = ($bigM[1] === 'abfp') ? 'fotop' : 'foto';
+                                $bigCityId = $bigM[2];
+                                $bigNamef = $bigM[3];
+                            }
+
+                            if ($bigNamef) {
+                                $ualineBig = preg_replace('#/(\d+)\.jpg#', '/b$1.jpg', $ualine, 1);
+                                // Фото вже показане великим з оцінкою/коментарями прямо в стрічці —
+                                // відкривати ще й модалку abf(p) по кліку на нього не потрібно.
+                                $ualineBig = preg_replace('/^<a[^>]*onclick=abfp?\([^)]*\)>/', '', $ualineBig);
+                                $ualineBig = preg_replace('/<\/a>\s*$/', '', $ualineBig);
+
+                                $bigCommentFn = ($bigType === 'fotop') ? 'comm_addp' : 'comm_add';
+                                $bigClearFn = ($bigType === 'fotop') ? 'clearsp' : 'clearsq';
+                                $bigCommentIn = __('messages.comment_in');
+                                $bigAdd = __('messages.Add');
+
+                                echo "<div class=\"news-photo-big-card\">
+                                    <div class=\"news-photo-big-img\">$ualineBig
+                                        <div id=\"nd$bigNamef\" class=\"news-inline-star\" data-namef=\"$bigNamef\" data-cityid=\"$bigCityId\" data-type=\"$bigType\">…</div>
+                                    </div>
+                                    <div class=\"centeredm\" id=\"nr$bigNamef\"></div>
+                                    <div id=\"nin$bigNamef\" class=\"news-inline-comments\" data-namef=\"$bigNamef\" data-cityid=\"$bigCityId\" data-type=\"$bigType\">…</div>";
+
+                                if (Auth::user()) {
+                                    // Для фото людей (fotop) поле вводу приховане, поки асинхронно (comm_allowp) не
+                                    // підтвердиться дозвіл — та сама логіка, що й на головній сторінці.
+                                    if ($bigType === 'fotop') {
+                                        echo "<div id=\"ncg$bigNamef\" class=\"comm-allowp-gate un-display\" data-namef=\"$bigNamef\">";
+                                    }
+                                    echo "<textarea id=\"ncm$bigNamef\" rows=2 class=\"news-inline-comment-input\" placeholder=\"$bigCommentIn\" onFocus=\"$bigClearFn('ncm$bigNamef','nbc$bigNamef');\"></textarea>
+                                    <div id=\"nbc$bigNamef\" class=\"un-display centeredm\">
+                                        <table><tr><td class=\"fcomblue intop com-button\">
+                                            <a onclick=\"$bigCommentFn($bigNamef,'ncm$bigNamef','nin$bigNamef')\">$bigAdd</a>
+                                        </td></tr></table>
+                                    </div>";
+                                    if ($bigType === 'fotop') {
+                                        echo "</div>";
+                                    }
+                                }
+
+                                echo "</div>";
+                            }
+                        }
+                        else{
+                            if($nrowf==1){echo"<tr>"; $fotable="open";}
+                            echo"<td align=center class=\"fcom\" onMouseOver=\"this.style.background='white'\" onMouseOut=\"this.style='fcom'\">
                                             <div class=\"height70\">$ualine</div>
                                      </td>";
-                        $nrowf++;
+                            $nrowf++;
 
-                        if($nrowf==5){
-                            $nrowf=1; echo"</tr>";
-                            $fotable="shut";
+                            if($nrowf==5){
+                                $nrowf=1; echo"</tr>";
+                                $fotable="shut";
+                            }
                         }
 
                     }
@@ -6779,6 +6877,7 @@ class AddScriptController extends Controller
         if($afmtable=="open"){echo"</td></tr></table>"; $afmtable="shut";}
         if($fotable=="open"){echo"</tr>"; $fotable="shut";}
         if($afotable=="open"){echo"</table>"; $afotable="shut";}
+        if($bigfoto=="open"){echo"</div></div>"; $bigfoto="shut";}
         if($fortable=="open"){echo"</tr>"; $fortable="shut";}
         if($afortable=="open"){echo"</table>"; $afortable="shut";}
         if($acttable=="open"){echo"</td></tr></table>"; $acttable="shut";}
