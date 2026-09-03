@@ -43,31 +43,13 @@ class Kernel extends ConsoleKernel
 	//	$schedule->command('passw')->cron('* * * * *');
     //   $schedule->command('s3')->cron('*/2 * * * *');
 
-        $schedule->command('obl_future_news1')->everyFiveMinutes()->between('21:10', '23:59');
-        $schedule->command('obl_future_news2')->everyFiveMinutes()->between('21:10', '23:59');
-        $schedule->command('obl_future_news3')->everyFiveMinutes()->between('21:10', '23:59');
-        $schedule->command('obl_future_news4')->everyFiveMinutes()->between('21:10', '23:59');
-        $schedule->command('obl_future_news5')->everyFiveMinutes()->between('21:10', '23:59');
-        $schedule->command('obl_future_news6')->everyFiveMinutes()->between('21:15', '23:59');
-        $schedule->command('obl_future_news7')->everyFiveMinutes()->between('21:15', '23:59');
-        $schedule->command('obl_future_news8')->everyFiveMinutes()->between('21:15', '23:59');
-        $schedule->command('obl_future_news9')->everyFiveMinutes()->between('21:15', '23:59');
-        $schedule->command('obl_future_news10')->everyFiveMinutes()->between('21:15', '23:59');
-        $schedule->command('obl_future_news11')->everyFiveMinutes()->between('21:20', '23:59');
-        $schedule->command('obl_future_news12')->everyFiveMinutes()->between('21:20', '23:59');
-        $schedule->command('obl_future_news13')->everyFiveMinutes()->between('21:20', '23:59');
-        $schedule->command('obl_future_news14')->everyFiveMinutes()->between('21:20', '23:59');
-        $schedule->command('obl_future_news15')->everyFiveMinutes()->between('21:20', '23:59');
-        $schedule->command('obl_future_news16')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news17')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news18')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news19')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news20')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news21')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news22')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news23')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news24')->everyFiveMinutes()->between('21:25', '23:59');
-        $schedule->command('obl_future_news25')->everyFiveMinutes()->between('21:25', '23:59');
+        // Було 25 окремих записів (obl_future_news1..25), кожен every 5 хв у вікні 21:10-23:59 —
+        // це означало 25 окремих PHP-процесів (і 25 нових з'єднань з MySQL) щотику, з яких кожен
+        // платить повну ціну bootstrap'у Laravel лише заради 1-2 рядків, що реально відрізняються
+        // між файлами. Тепер один тонкий оркестратор (obl_future_news_all) викликає всі 25 команд
+        // всередині ОДНОГО процесу. Сама 25х команд і їх retry-логіка (пропустити, якщо вже є
+        // новини за сьогодні, або якщо навантаження зависоке) лишились без жодних змін.
+        $schedule->command('obl_future_news_all')->everyFiveMinutes()->between('21:10', '23:59');
 
         $schedule->command('obl_save_combine')->cron('5 12,15,16,21 * * *');
 		$schedule->command('del_memory_city_news')->cron('50-59 5 * * *');
