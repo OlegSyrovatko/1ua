@@ -274,6 +274,9 @@ $fill="#111";
 $description = __('messages.i_description');
 $keywords = __('messages.i_keywords');
 $index_go="index,follow";
+if ($nd == 0 || $Sh_Page == 5 || $Privatpass == "stop") { $index_go = "noindex,follow"; }
+$my_domen = $_SERVER['SERVER_NAME'];
+$lanem = App::currentLocale(); if(!$lanem){$lanem = "ua";}
 @endphp
 @section('description'){{$description}}@endsection
 @section('keywords'){{$keywords}}@endsection
@@ -281,7 +284,40 @@ $index_go="index,follow";
 @section('title_block'){{$title}}@endsection
 @section('image'){{$path1}}@endsection
 
+@if($nd > 0)
+    @php
+        // На цю ж сторінку ведуть кілька URL (/domen, /i{id}, /domen/ua, /ri{id}...) —
+        // canonical вказує на "гарний" slug-варіант як єдиний, кого варто індексувати.
+        $canonical_ua = "https://$my_domen/$domen";
+        $canonical_ru = "https://$my_domen/$domen/ru";
+        $canonical_en = "https://$my_domen/$domen/en";
+        $canonical = $canonical_ua;
+        if ($lanem == "ru") { $canonical = $canonical_ru; }
+        if ($lanem == "en") { $canonical = $canonical_en; }
+    @endphp
+    @section('canonical'){{$canonical}}@endsection
+    @section('hreflang_ua'){{$canonical_ua}}@endsection
+    @section('hreflang_ru'){{$canonical_ru}}@endsection
+    @section('hreflang_en'){{$canonical_en}}@endsection
+@endif
+
 @section('content')
+
+@if($nd > 0)
+    @php
+        // Через PHP-масив + json_encode, а не сирий JSON у шаблоні — бо "@context"/"@type"
+        // з "@" на початку Blade міг би сприйняти як спробу викликати директиву.
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Person',
+            'name' => trim("$Im $Priz"),
+            'url' => $canonical,
+        ];
+        if ($path1) { $jsonLd['image'] = $path1; }
+        if ($Adr) { $jsonLd['address'] = ['@type' => 'PostalAddress', 'addressLocality' => $Adr]; }
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endif
 
     @if($nd==0)
 
@@ -435,6 +471,120 @@ $index_go="index,follow";
             </section>
 
             <section class="cityuser2">
+                @php
+
+                if($nnrf>0){
+                    $lan = App::currentLocale();
+                    $pref_page = __('messages.pref_page');
+                    $pref_page_f = $pref_page.="ni";
+                    $latest_photo = __('messages.latest-photo');
+                    echo"<section class=\"fcom city-center-block\">
+                    <h3><a aria-label=\"$latest_photo $Im $Priz\" href=\"/$domen/foto/$lan/\">$latest_photo</a></h3>
+                    <section class=\"city-center-foto\">";
+                    $v_s=1;
+                    if($my_id==$id){$v_s=4; }
+                    else{
+                    if($my_id == "999999999999999"){$v_s=1;}
+                    else if($my_id>0){$v_s=2;
+                    if($isfriend!=""){$v_s=3;}
+                    }
+                    }
+
+                    $Allf = DB::table('Fotop')->select('Namef', 'Formf', 'Fd', 'w', 'h')->
+                    where('Num', $id)->
+                    orderBy('Fd', 'desc')->
+                    where('Sh', '<=', $v_s)->
+                    limit(4)->
+                    get();
+                    $Allfn = $Allf->count();
+
+                    if($Allfn>0){
+                        foreach ($Allf as $Alf) {
+                            $M5=$Alf->Namef;
+                            $M7=$Alf->Formf;
+                            $M6=$Alf->Fd;
+                            $w=$Alf->w;
+                            $h=$Alf->h;
+                            $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
+                            if ($monm<10){$monmf = substr($M6, 6, 1);}
+                            else{$monmf=$monm;}
+                            if($yem<=2007){$yem = "2005-2007"; $monmf="";}
+                            $katalogb = "Fotop/$yem$monmf/$M5.$M7";
+                            $katalog = "Fotop/$yem$monmf/b$M5.$M7";
+                            $katalogface = getKatalogface($katalog, $katalogb);
+                            $widthf="auto";
+                            if($w>0 && $h>0){
+                                $widthf=round(100*$w/$h);
+                            }
+                            if(Auth::user()) {
+                                $flink = "onclick=abfp($id,$M5)";
+                            }
+                            else{
+                                $flink = "href=\"$pref_page_f$M5\"";
+                            }
+
+                            echo "
+                                <a $flink>
+                                    <div class=\"scale ccf-item fcom0\">
+                                        <img width=\"$widthf\" height=\"100\" alt=\"$Im $Priz - $latest_photo\" src=\"$katalogface\">
+                                    </div>
+                                </a>
+                            ";
+                        }
+                        echo"</section>";
+                    }
+
+
+                    $Allf = DB::table('Fotop')->select('Namef', 'Formf', 'Fd', 'w', 'h')->
+                    where('Num', $id)->
+                    orderBy('Fd', 'desc')->
+                    where('Publ', '1')->
+                    where('Sh', '<=', $v_s)->
+                    get();
+                    $Allfn = $Allf->count();
+
+                    if($Allfn>0){
+                        $selected_photo = __('messages.selected-photo');
+                        echo"<br /><h3>$selected_photo</h3>
+                        <section class=\"city-center-foto\">";
+                        foreach ($Allf as $Alf) {
+                            $M5=$Alf->Namef;
+                            $M7=$Alf->Formf;
+                            $M6=$Alf->Fd;
+                            $w=$Alf->w;
+                            $h=$Alf->h;
+                            $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
+                            if ($monm<10){$monmf = substr($M6, 6, 1);}
+                            else{$monmf=$monm;}
+                            if($yem<=2007){$yem = "2005-2007"; $monmf="";}
+                            $katalogb = "Fotop/$yem$monmf/$M5.$M7";
+                            $katalog = "Fotop/$yem$monmf/b$M5.$M7";
+                            $katalogface = getKatalogface($katalog, $katalogb);
+                            $widthf="auto";
+                            if($w>0 && $h>0){
+                                $widthf=round(100*$w/$h);
+                            }
+                            if(Auth::user()) {
+                                $flink = "onclick=abfp($id,$M5)";
+                            }
+                            else{
+                                $flink = "href=\"$pref_page_f$M5\"";
+                            }
+
+                            echo "
+                                <a $flink>
+                                    <div class=\"scale ccf-item fcom0\">
+                                        <img width=\"$widthf\" height=\"100\" alt=\"$Im $Priz - $latest_photo\" src=\"$katalogface\">
+                                    </div>
+                                </a>
+                            ";
+                        }
+                        echo"</section>";
+                    }
+                echo"</section>";
+                }
+
+                @endphp
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
                         crossorigin="anonymous"></script>
                 <!-- для людей -->
@@ -564,6 +714,7 @@ $index_go="index,follow";
                 @endif
 
                 <section class="fcom city-center-block lefted ab-user">
+					<h3>{{ __('messages.about-info') }}</h3>
 					<p>
 					@php
 
@@ -890,117 +1041,6 @@ $index_go="index,follow";
                             Ваш браузер не підтримує відео.
                         </video>
                     </a>
-                @php
-
-                if($nnrf>0){
-                    $lan = App::currentLocale();
-                    $pref_page = __('messages.pref_page');
-                    $pref_page_f = $pref_page.="ni";
-                    $latest_photo = __('messages.latest-photo');
-                    echo"<section class=\"fcom city-center-block\">
-                    <h3><a aria-label=\"$latest_photo $Im $Priz\" href=\"/$domen/foto/$lan/\">$latest_photo</h3>
-                    <section class=\"city-center-foto\">";
-                    $v_s=1;
-                    if($my_id==$id){$v_s=4; }
-                    else{
-                    if($my_id == "999999999999999"){$v_s=1;}
-                    else if($my_id>0){$v_s=2;
-                    if($isfriend!=""){$v_s=3;}
-                    }
-                    }
-
-                    $Allf = DB::table('Fotop')->select('Namef', 'Formf', 'Fd', 'w', 'h')->
-                    where('Num', $id)->
-                    orderBy('Fd', 'desc')->
-                    where('Sh', '<=', $v_s)->
-                    limit(4)->
-                    get();
-                    $Allfn = $Allf->count();
-
-                    if($Allfn>0){
-                        foreach ($Allf as $Alf) {
-                            $M5=$Alf->Namef;
-                            $M7=$Alf->Formf;
-                            $M6=$Alf->Fd;
-                            $w=$Alf->w;
-                            $h=$Alf->h;
-                            $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
-                            if ($monm<10){$monmf = substr($M6, 6, 1);}
-                            else{$monmf=$monm;}
-                            if($yem<=2007){$yem = "2005-2007"; $monmf="";}
-                            $katalogb = "Fotop/$yem$monmf/$M5.$M7";
-                            $katalogface=Storage::disk('public')->url($katalogb);
-                            $widthf="auto";
-                            if($w>0 && $h>0){
-                                $widthf=round(100*$w/$h);
-                            }
-                            if(Auth::user()) {
-                                $flink = "onclick=abfp($id,$M5)";
-                            }
-                            else{
-                                $flink = "href=\"$pref_page_f$M5\"";
-                            }
-
-                            echo "
-                                <a $flink>
-                                    <div class=\"scale ccf-item fcom0\">
-                                        <img width=\"$widthf\" height=\"100\" alt=\"$Im $Priz - $latest_photo\" src=\"$katalogface\">
-                                    </div>
-                                </a>
-                            ";
-                        }
-                        echo"</section>";
-                    }
-
-
-                    $Allf = DB::table('Fotop')->select('Namef', 'Formf', 'Fd', 'w', 'h')->
-                    where('Num', $id)->
-                    orderBy('Fd', 'desc')->
-                    where('Publ', '1')->
-                    where('Sh', '<=', $v_s)->
-                    get();
-                    $Allfn = $Allf->count();
-
-                    if($Allfn>0){
-                        $selected_photo = __('messages.selected-photo');
-                        echo"<br /><h3>$selected_photo</h3>
-                        <section class=\"city-center-foto\">";
-                        foreach ($Allf as $Alf) {
-                            $M5=$Alf->Namef;
-                            $M7=$Alf->Formf;
-                            $M6=$Alf->Fd;
-                            $w=$Alf->w;
-                            $h=$Alf->h;
-                            $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
-                            if ($monm<10){$monmf = substr($M6, 6, 1);}
-                            else{$monmf=$monm;}
-                            if($yem<=2007){$yem = "2005-2007"; $monmf="";}
-                            $katalogb = "Fotop/$yem$monmf/$M5.$M7";
-                            $katalogface=Storage::disk('public')->url($katalogb);
-                            $widthf="auto";
-                            if($w>0 && $h>0){
-                                $widthf=round(100*$w/$h);
-                            }
-                            if(Auth::user()) {
-                                $flink = "onclick=abfp($id,$M5)";
-                            }
-                            else{
-                                $flink = "href=\"$pref_page_f$M5\"";
-                            }
-
-                            echo "
-                                <a $flink>
-                                    <div class=\"scale ccf-item fcom0\">
-                                        <img width=\"$widthf\" height=\"100\" alt=\"$Im $Priz - $latest_photo\" src=\"$katalogface\">
-                                    </div>
-                                </a>
-                            ";
-                        }
-                        echo"</section>";
-                    }
-                echo"</section>";
-                }
-
                 @endphp
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
                         crossorigin="anonymous"></script>
@@ -1157,12 +1197,14 @@ $index_go="index,follow";
 
 
                 @php
+                // Було: ->orWhere(theme IS NULL OR theme='')->where('Num',$id) — через порядок
+                // виклику це компілювалось у WHERE (theme IS NULL OR theme='') AND Num=$id,
+                // тобто зі стрічки повністю зникали записи, які МАЮТЬ тему. Якщо людина розписала
+                // "про себе" по темах (Біографія/Робота/Хобі...), усі її записи мали тему — і
+                // стрічка виглядала порожньою, хоча "Всі записи (N)" в меню показувало N>0.
+                // Фільтр за темою лишається доступним окремо через випадаючий список нижче.
                 $Allm =DB::table('Memoryp')
                 ->select('afisha', 'theme', 'idrec','Aboutep','r_gol','r_kol','rh','Md','Ip','avt')
-                 ->orWhere(function($query) {
-                    $query->whereNull('theme')
-                        ->orWhere('theme','');
-                        })
                 ->where('Num',$id)
                 ->orderBy('Md','Desc')
                 ->limit(11)
