@@ -6,7 +6,7 @@
 @endphp">
 
 @php
-    $css_file = "/css/app75.css";
+    $css_file = "/css/app85.css";
 
  @endphp
 <head>
@@ -18,6 +18,12 @@
     <meta name="robots" content="@yield('robots')" />
     <meta name="facebook-domain-verification" content="x86v38nq0ps3jyiidq0ki4qg4g9mqu" />
     <meta property="og:image" content="@yield('image')" />
+    <meta property="og:title" content="@yield('title_block')" />
+    <meta property="og:description" content="@yield('description')" />
+    <meta property="og:type" content="website" />
+    @hasSection('canonical')
+        <meta property="og:url" content="@yield('canonical')" />
+    @endif
     <title>@yield('title_block')</title>
     @if (View::hasSection('amp'))
 	<style amp-boilerplate>
@@ -430,7 +436,15 @@
     @endif
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-	<link rel="canonical" href="@yield('canonical')" />
+	@hasSection('canonical')
+		<link rel="canonical" href="@yield('canonical')" />
+	@endif
+	@hasSection('hreflang_ua')
+		<link rel="alternate" hreflang="uk" href="@yield('hreflang_ua')" />
+		<link rel="alternate" hreflang="ru" href="@yield('hreflang_ru')" />
+		<link rel="alternate" hreflang="en" href="@yield('hreflang_en')" />
+		<link rel="alternate" hreflang="x-default" href="@yield('hreflang_ua')" />
+	@endif
 
     @if (View::hasSection('amp'))
         <script async src="https://cdn.ampproject.org/v0.js"></script>
@@ -441,7 +455,7 @@
 </head>
 <body>
 @if (!View::hasSection('amp'))
-    <script src="{{ "/js/allcities23.js" }}" defer></script>
+    <script src="{{ "/js/allcities26.js" }}" defer></script>
 @endif
 
 

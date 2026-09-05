@@ -20,6 +20,12 @@
 @section('content')
 
     @php
+    // Стан 3 згортних блоків лівої колонки (hero/тренди/статистика) читаємо тут,
+    // до першого рендеру — щоб при перезавантаженні сторінки згорнутий блок одразу
+    // рендерився згорнутим (без "миготіння" спочатку розгорнутого стану до вмикання JS).
+    $hb1_hidden = isset($_COOKIE['hb1']) && $_COOKIE['hb1'] == '1';
+    $hb2_hidden = isset($_COOKIE['hb2']) && $_COOKIE['hb2'] == '1';
+    $hb3_hidden = isset($_COOKIE['hb3']) && $_COOKIE['hb3'] == '1';
  //   phpinfo();
 // print_r(get_loaded_extensions());
 
@@ -395,8 +401,14 @@ foreach ($results as $result) {
     </script>
     <section class="mw450">
 
-        <section class="hero-archive fcom0">
+        <div class="home-block-toggle">
             <h1>{{ __('messages.hero_title') }}</h1>
+            <a href="#" id="hb1-hide" onclick="hideHomeBlock('hb1'); return false;" @if($hb1_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
+            <a href="#" id="hb1-show" onclick="showHomeBlock('hb1'); return false;" @if(!$hb1_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
+        </div>
+        <div class="home-block-collapse @if($hb1_hidden) is-collapsed @endif" id="hb1-wrap">
+        <div class="home-block-collapse-inner">
+        <section class="hero-archive fcom0">
             <p class="hero-subtitle">{{ __('messages.hero_subtitle') }}</p>
 
             <section class="margin-top hero-search">
@@ -438,10 +450,18 @@ foreach ($results as $result) {
                 </ul>
             @endif
         </section>
+        </div>
+        </div>
 
         @if($heroTrending->count() > 0)
-            <section class="hero-archive fcom0 margin-top">
+            <div class="home-block-toggle">
                 <h2>{{ __('messages.hero_trending_title') }}</h2>
+                <a href="#" id="hb2-hide" onclick="hideHomeBlock('hb2'); return false;" @if($hb2_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
+                <a href="#" id="hb2-show" onclick="showHomeBlock('hb2'); return false;" @if(!$hb2_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
+            </div>
+            <div class="home-block-collapse @if($hb2_hidden) is-collapsed @endif" id="hb2-wrap">
+            <div class="home-block-collapse-inner">
+            <section class="hero-archive fcom0 margin-top">
                 <ul class="hero-photo-grid non-list">
                     @foreach($heroTrending as $ht)
                         @php
@@ -467,8 +487,17 @@ foreach ($results as $result) {
                     @endforeach
                 </ul>
             </section>
+            </div>
+            </div>
         @endif
 
+        <div class="home-block-toggle">
+            <h2>{{ __('messages.our_purp') }}</h2>
+            <a href="#" id="hb3-hide" onclick="hideHomeBlock('hb3'); return false;" @if($hb3_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
+            <a href="#" id="hb3-show" onclick="showHomeBlock('hb3'); return false;" @if(!$hb3_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
+        </div>
+        <div class="home-block-collapse @if($hb3_hidden) is-collapsed @endif" id="hb3-wrap">
+        <div class="home-block-collapse-inner">
         <section class="ind-section fcom0 margin-top">
 
 		@php
@@ -530,8 +559,6 @@ foreach ($results as $result) {
                 </td></tr>
             </table>
 
-            <h2>{{__('messages.our_purp')}}</h2>
-
             <ul class="stat-list">@php echo"$fff"; @endphp</ul>
 
         </div>
@@ -550,7 +577,11 @@ foreach ($results as $result) {
                         @csrf
                         <table class="righted-block margin-top">
                             <tr><td>
-                                <input type="file" class="nineth-width" name="files[]" accept="image/jpeg" id="files" placeholder="Choose files" multiple  onchange=load_hid.style.display='block';>
+                                {{-- Без accept="image/jpeg": на Android з цим атрибутом Chrome відкриває системний
+                                     Photo Picker, який вирізає GPS з EXIF для приватності. Без accept частіше
+                                     показується класичний діалог із пунктом "Файли", що не чіпає метадані.
+                                     Тип файлу все одно перевіряється на сервері (mimes:jpg,jpeg). --}}
+                                <input type="file" class="nineth-width" name="files[]" id="files" placeholder="Choose files" multiple  onchange=load_hid.style.display='block';>
                             </td><td >
                                 <button type="submit" class="fcomblue intop ind-button-load" id="submit"><a>{{ __('messages.add_foto') }}</a></button>
                             </td></tr>
@@ -580,7 +611,8 @@ foreach ($results as $result) {
                 </div>
             @endguest
         </section>
-
+        </div>
+        </div>
 
 
         <section class="ind-section fcom0 margin-top">

@@ -1,0 +1,3025 @@
+body {
+    background-color: #f2f2f2;
+    COLOR:#29476b;
+    font-family: Verdana;
+}
+.body {
+	list-style-type: square;
+}
+
+img {
+    max-width: 100%;
+    width: auto\9; /* ie8 */
+    vertical-align: top;
+}
+.img {
+    max-width: 100%;
+    height: auto;
+}
+
+body, form { margin:0; padding:0; }
+ul { padding-left:0;}
+
+a {
+    color: #2a507e;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+a:Active {
+    color: #ff9966;
+}
+a:Hover {
+    color: #000000;
+}
+
+
+ select, input, button {
+    font-size: 12px;
+    padding:5px;
+    font-family: Tahoma, Arial, Verdana, Helvetica, sans-serif;
+}
+
+.box input {
+    font-size: 15px;
+    padding: 7px;
+    border: 1px solid;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    outline: none;
+}
+
+.box select {
+    font-size: 15px;
+    padding: 7px;
+    border: 1px solid;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    outline: none;
+}
+
+
+input, textarea {
+    transition: all 0.30s ease-in-out;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    border:1px solid #ccc;
+    outline:none;
+}
+
+
+input:hover, textarea:focus {
+    border:#717fff 1px solid;
+    border-radius:4px;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    box-shadow: 0 0 4px rgba(81, 203, 238, 1);
+    -webkit-box-shadow: 0 0 4px rgba(81, 203, 238, 1);
+    -moz-box-shadow: 0 0 4px rgba(81, 203, 238, 1);
+}
+
+.non-list{
+    list-style: none;
+}
+.green{
+    color: green;
+    font-size: 11px;
+}
+.grey{
+    color: grey;
+    font-size: 11px;
+}
+
+
+.centered{
+    text-align: center;
+}
+
+.lefted{
+   text-align: left;
+}
+
+.pointed{
+    cursor: pointer;
+}
+
+
+.colored{
+    color: #2a507e;
+    background: rgb(242, 242, 255);
+    transition: color 0.3s ease;
+    transition: background 0.3s ease;
+}
+.colored:hover {
+    background: white;
+    color: #111;
+}
+
+h1 {
+    font-size: 170%;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    margin:10px 0 10px 0;
+}
+h2 {
+    font-size: 150%;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    margin:9px 0 9px 0;
+}
+.h2-less {
+    font-size: 120%;
+}
+h3 {
+    font-size: 130%;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    margin:8px 0 8px 0;
+}
+h4 {
+    font-size: 120%;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    margin:2px 0 2px 0;
+}
+h5 {
+    font-size: 110%;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    margin:2px 0 2px 0;
+    line-height: 1.5;
+}
+h6 {
+    font-size:50%;
+    font-family: Verdana, sans-serif;
+    color:gray;
+}
+
+
+
+#abf_load {
+    /* Заякорено зверху (а не по центру через top:50%), бо на мобільних браузерах адресний рядок
+       динамічно змінює видиму висоту (vh рахується від максимально можливої, без адресного рядка),
+       і центрування через 50% могло виштовхувати верх попапу (з хрестиком закриття) за межі
+       реально видимої області без можливості прокрутки, бо сам блок position:fixed. */
+    /* z-index вище за все на сайті (найвище було 104 у .move_up), інакше фіксоване верхнє меню
+       (z-index:101) перекривало попап, коли він піднявся ближче до верху екрана. */
+    position: fixed;
+    top: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: min(92vw, 820px);
+    max-height: 92vh;
+    max-height: 92dvh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+.popup-photo-frame {
+    position: relative;
+}
+.popup-like {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 999px;
+    padding: 5px 10px 5px 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    backdrop-filter: blur(2px);
+    transition: background 0.2s ease;
+}
+.popup-like:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+/* За тегом, а не лише класом — після кліку сервер повертає оновлену зірку/лічильник (rate_add)
+   у трохи іншій розмітці, і вона теж має лишатись білою й акуратною всередині цього овербею. */
+.popup-like a {
+    color: #fff;
+    text-decoration: none;
+}
+.popup-like a:hover {
+    text-decoration: underline;
+}
+.popup-like svg {
+    display: block;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.popup-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+}
+.popup-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+}
+.popup-body {
+    max-height: 92vh;
+    max-height: 92dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.popup-photo-img {
+    display: block;
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+    background: #111;
+}
+.popup-photo-meta {
+    padding: 10px 18px 18px;
+}
+.popup-photo-place {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.popup-photo-place a {
+    color: inherit;
+}
+.popup-photo-place a:hover {
+    text-decoration: underline;
+}
+.popup-photo-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.popup-photo-fmenu {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.popup-photo-more {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: bold;
+}
+.popup-comments {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e2e2;
+}
+.popup-comments-loading {
+    color: #888;
+    font-size: 13px;
+}
+.popup-comment-input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+@media screen and (max-width: 500px) {
+    .popup-photo-img {
+        max-height: 50vh;
+        max-height: 50dvh;
+    }
+}
+
+
+
+#abfs_load {
+    position: fixed;
+    width: 1100px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -550px;
+    z-index : 98;
+}
+
+
+
+
+#add_load {
+    position: fixed;
+    margin: 0 auto;
+    max-width: 800px; overflow: hidden;
+    top: 150px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 550px;
+    z-index : 97;
+}
+
+
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    z-index: 50;
+    width: 100%;
+    height: 10000%;
+    display: none;
+}
+#overlay_abf {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #000;
+    opacity: 0.5;
+    z-index: 199;
+    width: 100%;
+    height: 10000%;
+    display: none;
+}
+
+
+#abf_load_index {
+    position: fixed;
+    top: 50px;
+    left: 30%;
+    z-index : 96;
+    transition-duration: 0.7s;
+}
+
+
+
+#abf_load_news {
+    position: fixed;
+    top: -550px;
+    right: 22%;
+    z-index : 95;
+    transition-duration: 0.7s;
+}
+
+#abf_load_news {
+    top: 38;
+}
+
+
+#abf_load_searc {
+    position: fixed;
+    top: 50px;
+    left: 25%;
+    z-index : 95;
+}
+
+
+
+div#ent {padding: 0; width: 45.5em; margin:0; float:right; text-align:right; color: white;}
+
+
+.scrollTop{
+    background:url(/images/arrows2.png) 0 0 no-repeat;
+    display:block; width:50px; height:50px;
+    position:fixed; bottom:10px; left:47%;
+    z-index:93;
+}
+.scrollTop:hover{ background-position:0 -58px; }
+
+
+/* background-color: #4A556B;*/
+
+
+#notice_in {
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    border: 0 solid #000000;
+    background: #1C1C1C;
+    filter: alpha(opacity=82);
+    opacity: 0.82;
+    box-shadow: 0px 0px 6px 5px rgba(0, 0, 0, 0.5);
+}
+#notice_in table {color: white;}
+#notice_in table td {color: #DAE1E8;}
+#notice_in a:link {color: #DAE1E8;}
+#notice_in a:active {color: white;}
+#notice_in a:hover {color: white; text-decoration:underline;}
+
+
+#notice_in_right {
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    border: 0px solid #000000;
+    background: #1C1C1C; filter: alpha(opacity=95); opacity:0.95;
+    box-shadow: 0px 0px 6px 5px rgba(0,0,0,0.5);
+}
+#notice_in_right table {color: white;}
+#notice_in_right table td {color: #DAE1E8;}
+#notice_in_right a:link {color: #DAE1E8;}
+#notice_in_right a:active {color: white;}
+#notice_in_right a:hover {color: white; text-decoration:underline;}
+
+#notice_center {
+    position: fixed; /* Фиксированное положение */
+    text-align: center;
+    bottom: 50%; /* Расстояние сверху */
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    border: 0 solid #000000;
+    filter: alpha(opacity=82);
+    opacity: 0.82;
+    padding: 20px;
+}
+
+
+
+.fcom  {
+
+    background: rgb(242,242,255); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YyZjJmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWUzZjIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); /* FF3.6+ */ /* Chrome,Safari4+ */ /* Chrome10+,Safari5.1+ */ /* Opera 11.10+ */ /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(242,242,255,1) 0%,rgba(225,227,242,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2ff', endColorstr='#e1e3f2',GradientType=0 ); /* IE6-8 */
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+
+.fcomtop {
+    border: groove #2a507e;
+    border-width: 1px;
+    border-radius: 3px;
+    box-shadow: 0 0;
+    transition: box-shadow 0.3s ease;
+}
+.fcomtop:hover {
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+
+.fcom0  {
+    border: groove #2a507e;
+    border-width: 1px;
+    background: white;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+
+.error{
+    color: red;
+}
+
+
+.fcombold  {
+    box-sizing: border-box;
+    border: groove #2a507e;
+    border-width: 2px;
+    border-radius: 0px;
+    background: rgb(242,242,255); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YyZjJmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWUzZjIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); /* FF3.6+ */ /* Chrome,Safari4+ */ /* Chrome10+,Safari5.1+ */ /* Opera 11.10+ */ /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(242,242,255,1) 0%,rgba(225,227,242,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2ff', endColorstr='#e1e3f2',GradientType=0 ); /* IE6-8 */
+    box-shadow: 0 0;
+    transition: box-shadow 0.3s ease;
+}
+.fcombold:hover {
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+
+
+
+
+.fcomblue {
+    border: groove #2a507e;
+    border-width: 1px;
+    border-radius: 3px;
+    background: rgb(135,197,221); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM1NmFhMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzNTZhYTAiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); /* FF3.6+ */ /* Chrome,Safari4+ */ /* Chrome10+,Safari5.1+ */ /* Opera 11.10+ */ /* IE10+ */
+    background: linear-gradient(to bottom, rgba(53,106,160,1) 0%,rgba(53,106,160,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#356aa0', endColorstr='#356aa0',GradientType=0 ); /* IE6-8 */
+    box-shadow: 0 0;
+    transition: box-shadow 0.3s ease;
+}
+.fcomblue:hover {
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+
+
+.intop  {
+    text-align: center;
+    line-height: 7px;
+    margin:0;
+    list-style: none;
+    height: 100%;
+    padding: 5px 0 0 0;
+}
+.intop_left  {
+    text-align: left;
+    line-height: 5px; margin:0;
+    list-style: none;
+    padding: 3px 0 0 10px;
+}
+.intop_right  {
+    text-align: right;
+    line-height: 5px; margin:0;
+    list-style: none;
+    padding: 3px 10px 0 0;
+}
+
+
+ul.intop li {
+    display: inline;
+    padding-top:10px; margin:0;
+}
+ul.intop_left li {
+    display: inline;
+    padding-top:0; margin:0;
+}
+ul.intop_right li {
+    display: inline;
+    padding-top:0; margin:0;
+}
+
+ul.intop a {
+    font-weight: bold;
+    font-size:11px;
+    height: 13px;
+    display:block;
+    margin: auto 0;
+    padding: 2px;
+    color: #DAE1E8;
+    transition: color 0.3s ease;
+}
+ul.intop a:hover {
+    color: white;
+    text-decoration:underline;
+}
+td.intop a {
+    font-weight: bold;
+    font-size:12px;
+    height: 13px;
+    display:block;
+    margin: auto 0;
+    padding: 2px;
+    color: #DAE1E8;
+    transition: color 0.3s ease;
+}
+@media screen and (max-width: 400px) {
+    td.intop a {
+       font-size: 11px;
+    }
+}
+td.intop a:hover {
+    color: white;
+    text-decoration:underline;
+}
+button.intop a {
+    font-weight: bold;
+    font-size:12px;
+    height: 13px;
+    display:block;
+    margin: auto 0;
+    padding: 2px;
+    color: #DAE1E8;
+    transition: color 0.3s ease;
+}
+button.intop a:hover {
+    color: white;
+    text-decoration:underline;
+}
+
+
+ul.intop_left a {font-weight: bold; font-size:11px; height: 13px;display:block; margin: auto 0; padding: 2px; color: #DAE1E8;}
+ul.intop_left a:hover {color: white; text-decoration:underline;}
+ul.intop_right a {font-weight: bold; font-size:11px; height: 13px;display:block; margin: auto 0; padding: 2px; color: #DAE1E8;}
+ul.intop_right a:hover {color: white; text-decoration:underline;}
+
+.intopbig  {
+    text-align: center;
+    line-height: 13px; margin:0;
+    list-style: none;
+    padding: 8px 4px 0 4px;
+}
+ul.intopbig a {font-weight: bold; font-size:13px; height: 26px;display:block; margin: auto 0; padding: 2px; color: #DAE1E8;}
+ul.intopbig a:hover {color: white; text-decoration:underline;}
+
+.intopnarrow  {
+    text-align: center;
+    line-height: 3px; margin:0;
+    list-style: none;
+    padding: 2px 0 0 0;
+}
+
+ul.intopnarrow a {font-weight: bold; font-size:10px; height: 9px;display:block; margin: auto 0; padding: 2px; color: #DAE1E8;}
+ul.intopnarrow a:hover {color: white; text-decoration:underline;}
+
+
+
+
+a.shutover {
+    background: url(/images/deln0.png);
+    display: block;
+    width: 19px;
+    height: 19px;
+}
+a.shutover:hover {
+    background: url(/images/deln.png);
+}
+
+
+
+a.inover {
+    background: url(/images/inn0.png);
+    display: block;
+    width: 21px;
+    height: 19px;
+}
+a.inover:hover {
+    background: url(/images/inn.png);
+}
+
+
+
+
+a.uaover {background: url("/../images/flag-uk0.gif"); display:block; width:22px; height:14px;}
+a.uaover:hover {background: url("/../images/flag-uk.gif");}
+a.ruover {background: url("/../images/flag-ru0.gif"); display: block; width:22px; height:14px;}
+a.ruover:hover {background: url("/../images/flag-ru.gif");}
+a.enover {background: url("/../images/flag-en0.png"); display: block; width:22px; height:14px;}
+a.enover:hover {background: url("/../images/flag-en.png");}
+
+
+
+
+.scrollbar_right::-webkit-scrollbar {
+    width: 7px;
+}
+
+/* Track */
+.scrollbar_right::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+/* Handle */
+.scrollbar_right::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: rgba(255,255,255,0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+.scrollbar_right::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255,0,0,0.4);
+}
+
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 1px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: rgb(242,242,255);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255,0,0,0.4);
+}
+
+
+.clear {clear: left;}
+
+
+
+@media screen and (min-width: 768px) {
+    .layer1 {width:50%; float: left;}
+    .layer11 {width: 240px; float: left;}
+    .layerfoto {width:33.333%; float: left;}
+    TABLE, div, section { FONT-SIZE: 12px;}
+}
+@media screen and (max-width: 768px) {
+    .layer1 {width:100%; clear: left;}
+    .layer11 {width:330px; clear: left;}
+    .layerfoto {width:100%; clear: left;}
+    .hidblok {display: none;}
+    li.hidblok {display: none;}
+    TABLE, div, section { FONT-SIZE: 13.5px;}
+}
+
+@media screen and (min-width: 769px) {
+    .hidblokwide {display: none;}
+    li.hidblokwide {display: none;}
+}
+@media screen and (max-width: 990px) {
+    .hidblok-extra-wide {display: none;}
+    li.hidblok-extra-wide {display: none;}
+}
+@media screen and (min-width: 990px) {
+    li.enter {display: none;}
+}
+@media screen and (max-width: 440px) {
+    li.forgot-pwd {display: none;}
+}
+
+.layermaxwide {
+	max-width: 990px;
+	margin: 0 auto;
+}
+
+.layermaxwide1190 {max-width: 1190px; }
+.layermaxwideadm {max-width: 925px;}
+.layercityuser2 {
+    max-width: 535px;
+}
+
+.layercityuser1, .layercityuser3 {
+    max-width: 220px;
+	text-align: center;
+}
+
+.layercityuser1 {
+    float: left;
+}
+
+.layercityuser3 {
+    float: right;
+}
+.adm2 {max-width: 480px; }
+.adm1 {max-width: 230px; float: left; align:center;}
+.adm3 {max-width: 270px; float: right; align:center;}
+
+.frienduser2 {max-width: 640px;}
+.frienduser3 {max-width: 345px;  align:center;}
+
+.centermain{
+	display: flex;
+	gap: 15px;
+	margin: 0 auto;
+}
+
+@media screen and (min-width: 768px) {
+    .layercityuser1, .layercityuser3 {
+        width: 23%;
+    }
+    .frienduser3 {width:25%; float: right;}
+    .adm1 {width:25%;}
+    .adm3 {width:29%;}
+    .adm3 {width:46%;}
+
+}
+
+@media screen and (max-width: 768px) {
+
+    .layercityuser1, .layercityuser3 {width:50%;}
+
+    .adm1 {max-width: 480px; width:100%; align:center;}
+    .adm3 {max-width: 480px; width:100%; align:center;}
+    .frienduser3 {width:100%; clear: right; float: center;}
+}
+
+
+.menu {
+    display: flex;
+    align-items: center;
+	justify-content: center;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+	gap: 20px;
+    top: 0;
+    z-index: 101;
+    padding: 10px 20px 10px 0;
+}
+
+
+.submenu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+	width: 100%;
+}
+@media screen and (min-width: 768px) {
+    .submenu{width: 50%; }
+}
+@media screen and (min-width: 1300px) {
+    .submenu{gap: 15px;}
+}
+
+.intopmenu  {
+
+    text-align: center;
+    line-height: 7px;
+    margin:0;
+    list-style: none;
+    height: 100%;
+    padding: 0;
+}
+
+ul.intopmenu a {
+    font-weight: bold;
+    font-size:13px;
+    line-height: 1.14;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px 4px 8px;
+    color: #DAE1E8;
+}
+@media screen and (min-width: 1200px) {
+    ul.intopmenu a {
+	    padding: 4px 30px 4px 30px;
+	}
+}
+ul.intopmenu a:hover {color: white; text-decoration:underline;}
+
+
+.cookie  {
+    margin: 0 auto;
+    position: fixed;
+    width: 250px;
+    text-align: center;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 102;
+    opacity: 0.85;
+    padding: 10px;
+    transition: opacity 0.3s ease;
+}
+.hidden {
+    opacity: 0;
+}
+
+.adbl  {
+    position: fixed;
+    text-align: center;
+    bottom: 30%;
+    z-index: 103;
+    opacity: 0.85;
+}
+.move_up  {
+    position: fixed;
+    bottom: 5%;
+    left: 10%;
+    z-index: 104;
+    display: none;
+}
+
+.scale {
+    display: inline-block;
+    overflow: hidden;
+}
+.scale img {
+    transition: 0.5s;
+    display: block;
+}
+.scale img:hover {
+    transform: scale(1.1);
+}
+
+
+
+
+#fotoout_inner {
+    position: absolute;
+    top: -550px;
+    right: 20%;
+    z-index : 100;
+    transition-duration: 0.7s;
+}
+
+
+#fotoout:hover
+#fotoout_inner {
+    top: 38;
+}
+
+
+
+
+
+#slideout {
+    position: fixed;
+    top: 50px;
+    left: 45.4%;
+    z-index: 90;
+    -webkit-transition-delay:1s;
+    -webkit-transition-duration: 1s;
+    -moz-transition-delay:1s;
+    -moz-transition-duration: 1s;
+    -o-transition-delay:1s;
+    -o-transition-duration: 1s;
+    -transition-duration: 1s;
+    -ms-transition-delay: 1s;
+    -ms-duration-delay: 1s;
+}
+
+
+
+#slideout_inner {
+    position: fixed;
+    top: -345px;
+    left: 50%;
+    z-index: 90;
+    -webkit-transition-delay:1s;
+    -webkit-transition-duration: 1s;
+    -moz-transition-delay:1s;
+    -moz-transition-duration: 1s;
+    -o-transition-duration: 1s;
+    -transition-duration: 1s;
+    -ms-transition-delay: 1s;
+    -ms-duration-delay: 1s;
+}
+
+
+
+#slideout_innerm {
+    position: fixed;
+    top: -370px;
+    left: 50%;
+    z-index: 90;
+    -webkit-transition-delay:1s;
+    -webkit-transition-duration: 1s;
+    -moz-transition-delay:1s;
+    -moz-transition-duration: 1s;
+    -o-transition-duration: 1s;
+    -transition-duration: 1s;
+    -ms-transition-delay: 1s;
+    -ms-duration-delay: 1s;
+}
+
+
+#slideout:hover #slideout_inner {
+    top: 38;
+}
+
+#slideout:hover #slideout_innerm {
+    top: 38;
+}
+
+
+#weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#weather__degree {
+     margin-top: 20px;
+     font-weight: 400;
+     font-size: 32px;
+     line-height: 36px;
+}
+#weather__degree_future {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    margin: 5px;
+}
+#weather__wind {
+    font-size: 11px;
+    line-height: 14px;
+    margin: 5px;
+}
+
+#weather__cloud {
+     margin-top: 15px;
+     font-weight: 400;
+     font-size: 24px;
+     line-height: 32px;
+ }
+
+.weather__location {
+
+    margin: 10px;
+     background: rgba(150, 150, 255, 0.3);
+     border-radius: 10px;
+     font-weight: 400;
+     font-size: 16px;
+     line-height: 20px;
+
+     padding: 10px 17px 9px 11px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 10px;
+ }
+#weather__image {
+     margin-top: 20px;
+     width: 70px;
+ }
+#weather__time {
+     margin: 10px;
+     font-size: 18px;
+     line-height: 22px;
+ }
+
+
+
+ #news_block {
+	padding: 0 10px 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+	gap: 15px;
+    flex-wrap:  wrap;
+ }
+
+
+.news_forum_ul {
+	width: 190px;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    gap: 5px;
+	padding-left: 0;
+}
+.news_forum aside {
+	width: 190px;
+}
+
+@media screen and (max-width: 410px) {
+	.news_forum aside {
+		width: 145px;
+	}
+	.news_forum_ul {
+		width: 145px;
+	}
+}
+
+.news_forum_li {
+	fill: black;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    transition: fill 0.3s ease;
+}
+
+.news_forum_li input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+
+#news_forum_select{
+    position: relative;
+}
+#news_forum_select h2{
+    font-size: 17px;
+}
+#news_block select {
+    height: 40px;
+    font-size: 16px;
+}
+
+/* Дропдаун із чекбоксами для множинного вибору областей у "Місцевих новинах" */
+.obl-multiselect{
+    position: relative;
+}
+.obl-multiselect-toggle{
+    width: 100%;
+    min-width: 145px;
+    height: 40px;
+    font-size: 14px;
+    text-align: left;
+    padding: 0 10px;
+    background: white;
+    border: 1px solid #2a507e;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.obl-multiselect-toggle:hover{
+    background: #f2f2ff;
+}
+.obl-multiselect-panel{
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 50;
+    width: 220px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #2a507e;
+    border-radius: 4px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+    padding: 6px 0;
+}
+.obl-multiselect-option{
+    display: block;
+    padding: 5px 10px;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+.obl-multiselect-option:hover{
+    background: #f2f2ff;
+}
+
+
+.news_forum_li:hover,
+.news_forum_li:focus{
+    	fill: #356AA0;
+}
+
+
+.reg-form {
+    display: flex;
+    align-items: center;
+	gap: 10px;
+}
+
+.online{
+    border: 4px solid green;
+}
+
+.online-users{
+	width: 100%;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.online-users li{
+    width: 100%;
+    max-width: 75px;
+    overflow: hidden;
+    font-size: 12px;
+}
+@media screen and (max-width: 410px) {
+    .online-users li{
+        max-width: 65px;
+        font-size: 11px;
+    }
+}
+
+.online-users div{
+    height: 50px;
+    overflow: hidden;
+}
+
+.av-conteiner{
+    border-radius: 50%;
+
+}
+.av-shadow{
+    box-shadow: 0 0;
+	transition: box-shadow 0.3s ease;
+}
+.av-shadow:hover{
+    box-shadow: 3px 2px 6px 1px rgba(0,0,0,0.53);
+}
+.img-container{
+    object-fit: cover;
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.av-conteiner-online {
+    position: relative;
+}
+
+.av-conteiner-online::before,
+.av-conteiner-online::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.av-conteiner-online::after {
+	border: 2px solid green;
+	border-radius: 50%;
+}
+
+
+.big-av-conteiner-online {
+    position: relative;
+}
+.big-av-conteiner-online::before,
+.big-av-conteiner-online::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 6px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.big-av-conteiner-online::after {
+	border: 4px solid green;
+	border-radius: 50%;
+}
+
+
+
+.un-display{
+    display: none;
+}
+
+.forum-avatar{
+    height: 50px;
+    float: left;
+    overflow: hidden;
+    margin: 0 5px 5px 0;
+}
+.center-avatar{
+    height: 50px;
+    overflow: hidden;
+    margin: 0;
+}
+
+
+#ind-whole{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap:  wrap;
+    text-align: center;
+    padding: 0 5px;
+}
+
+.ind-section{
+    width: 422px;
+    max-width: 422px;
+    padding: 20px 11px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Згортні блоки лівої колонки головної сторінки (hero/тренди/статистика).
+   grid-template-rows: 1fr -> 0fr замість max-height: висота вмісту тут дуже
+   різна (0-10+ фото), а з max-height довелось би або вгадувати число з
+   запасом (тоді анімація "застрягає" — більшість часу переходу нічого
+   візуально не відбувається), або міряти висоту в JS. Grid-рядки анімують
+   рівно фактичну висоту без жодних вимірювань. */
+.home-block-toggle {
+    text-align: center;
+    margin: 0 0 6px;
+}
+.home-block-toggle h1,
+.home-block-toggle h2 {
+    margin: 0;
+    font-size: 18px;
+}
+.home-block-toggle a {
+    display: block;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 13px;
+}
+.home-block-collapse {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.35s ease;
+}
+.home-block-collapse.is-collapsed {
+    grid-template-rows: 0fr;
+}
+.home-block-collapse-inner {
+    overflow: hidden;
+}
+@media screen and (max-width: 462px) {
+    .ind-section {
+        max-width: 100%;
+        width: 99%;
+        padding: 10px 0;
+    }
+}
+
+
+.ind-txt{
+    max-width: 380px;
+    margin: 30px auto 0;
+    overflow-x: hidden;
+}
+@media screen and (max-width: 410px) {
+    .ind-txt{
+        margin: 30px 10px;
+		font-size: 11px;
+    }
+}
+/* "Нас уже N — дякуємо..." / "Долучайтесь до N користувачів" — більший і жирніший шрифт,
+   щоб цифра спільноти впадала в очі (лише цей текст, решта .ind-txt лишається як була) */
+.users-cta{
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px; /* було успадковано 30px від .ind-txt — тут удвічі менше */
+}
+@media screen and (max-width: 410px) {
+    .users-cta{
+        font-size: 15px;
+    }
+}
+#load_foto {
+    margin: 8px;
+}
+
+
+#stat{
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+/* Усередині #stat кілька елементів (кнопки, заголовок "Оберіть свою місцевість", інколи ще й
+   хлібні крихти "Україна -> Область" при переході в область, і сітка) — у h2/h3 різні власні
+   margin за замовчуванням (9px і 8px), через що відстані виходили нерівномірними. Прибираємо
+   власні margin повністю — інтервали задає лише flex gap на #stat, тому вони завжди однакові
+   з обох боків заголовка, незалежно від того, є крихти чи ні. Не чіпає h2/h3 поза #stat. */
+#stat table,
+#stat h2,
+#stat h3,
+#stat .stat-list{
+    margin: 0;
+}
+/* .stat-tb (кнопки Фото/Записи) звужена до max-width:300px, тому потребує авто-полів по
+   боках, щоб бути по центру картки — вертикальні лишаємо 0 (для рівномірного flex gap) */
+#stat table.stat-tb{
+    margin: 0 auto;
+}
+#stat h2{
+    padding: 10px 0;
+}
+.stat-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+.stat-tb{
+    margin: 0 auto;
+    max-width: 300px;
+    /* "Фото 59%" і "Записи 44%" сиділи впритул одна до одної — розділяємо падінгом між кнопками */
+    border-collapse: separate;
+    border-spacing: 10px 0;
+}
+.stat-td{
+    padding: 5px 10px;
+    text-align: left;
+    border: #2a507e solid 1px;
+    border-radius: 7px;
+    background-color: #DAE1E8;
+    transition: box-shadow 0.3s ease;
+}
+/* Коли посилання/onclick одне на всю комірку (назва+перегляди разом, як в областях/районах) —
+   робимо його блоковим і "розтягуємо" від'ємними полями на весь padding комірки, щоб клік
+   спрацьовував будь-де в межах "стакана", а не лише по буквах назви.
+   :only-child — щоб це НЕ чіпало сторінку населених пунктів (третій рівень), де в одній
+   комірці кілька ОКРЕМИХ посилань (назва, фото, записи, люди) — там вони мають лишатись
+   інлайновими й іти в рядок горизонтально, як і раніше. */
+.stat-td > a:only-child{
+    display: block;
+    margin: -5px -10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: center;
+}
+.stat-td:hover{
+    box-shadow: 3px 2px 6px 1px rgba(0,0,0,0.53);
+}
+@media screen and (max-width: 400px) {
+    .stat-td {
+        font-size: 10px;
+    }
+}
+
+
+
+.stats-item {
+    display: inline-block;
+    background-color: #fff;
+    padding: 4px;
+    border-radius: 4px;
+
+}
+/* "Наповнений стакан" замість тексту "65%" у блоці вибору області/району — темна заливка
+   знизу вгору пропорційно відсотку (сам відсоток лишається в title для підказки при наведенні) */
+.stats-item-view {
+    background-color: #fff;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 4px 2px 0;
+    position: relative;
+}
+
+.in-dif{
+    background-color: lightblue;
+    border: #2a507e solid 1px;
+    border-radius: 50%;
+    padding: 5px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    text-align: center;
+    top: -20px;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+
+.ind-button{
+    width: 120px;
+    height: 25px;
+}
+.ind-button-padd{
+    padding: 9px;
+    line-height: 12px;
+}
+.ind-button-load{
+    width: 120px;
+    height: 35px;
+}
+
+.small-button{
+    width: 50px;
+    height: 25px;
+}
+.wide-button{
+    width: 100px;
+    height: 25px;
+}
+.short-button{
+    padding: 3px 8px 0;
+    height: 24px;
+}
+.com-button{
+    width: 100px;
+    height: 17px;
+}
+.qwest-button{
+	padding-top: 5px;
+    width: 115px;
+    height: 19px;
+}
+.righted{
+	    text-align: right;
+}
+
+.td-rel{
+	position: relative;
+}
+.time{
+	position: absolute;
+	right: 0;
+	padding: 0 0 5px 5px;
+	background: rgba(255,255,255,0.8);
+}
+.time-mem{
+	position: absolute;
+	right: 0;
+	padding: 0 5px 5px 5px;
+	background: rgba(255,255,255,0.8);
+}
+
+.righted-block{
+    margin-left: auto;
+}
+.margin-top5{
+    margin-top: 5px;
+}
+
+.margin-top{
+    margin-top: 10px;
+}
+.center-block{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.margin-bottom{
+    margin-bottom: 10px;
+}
+.margin-top30{
+    margin-top: 30px;
+}
+.ml10{
+    margin-left: 10px;
+}
+.margin-file{
+    margin: 10px 0 10px 10px;
+}
+.pad10{
+    padding: 10px;
+}
+.pad10-5{
+    padding: 10px 5px;
+}
+
+.nineth-width{
+    width: 90%;
+}
+
+.min-padding{
+    padding: 2px 5px;
+}
+
+.min-photo{
+    height: 80px;
+    overflow: hidden;
+}
+
+
+.min-text{
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.login-input input{
+	width: 120px;
+	height: 6px;
+}
+.red{
+	color: #ff0000;
+}
+
+.comblock {
+	width: 322px;
+	max-width: 322px;
+	overflow: hidden;
+	position: relative;
+}
+
+
+.com-mem-block {
+    width: 315px;
+    max-width: 315px;
+    overflow: hidden;
+	position: relative;
+}
+
+.com-est-block {
+    width: 302px;
+    max-width: 302px;
+    overflow: hidden;
+	position: relative;
+}
+
+.com-photo {
+	width: 100px;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.com-photo-pad {
+	padding: 5px 5px 5px 0;
+}
+
+@media screen and (max-width: 440px) {
+	.comblock {
+		width: 100%;
+		max-width: none;
+	}
+	.com-est-block {
+		width: 100%;
+		max-width: none;
+	}
+}
+.forum-content{
+    width: 200px;
+    overflow-x: hidden;
+}
+.forum-com-content{
+    width: 220px;
+    overflow-x: hidden;
+}
+
+.com-mem-city {
+	width: 100px;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.padd5 {
+	padding: 5px;
+}
+.padd05 {
+	padding: 0 5px;
+}
+
+
+.height70 {
+	height: 70px;
+	overflow: hidden;
+}
+
+.news-photo{
+	font-size: 13px;
+}
+
+.nforum-h3{
+	font-size: 13px;
+	margin: 5px;
+	max-width: 97px;
+	overflow: hidden;
+	position: sticky;
+	top: 65px
+}
+
+.forum-news{
+	padding: 5px;
+	max-width: 318px;
+	overflow: hidden;
+}
+
+.local-news-gen{
+	width:100%;
+	max-width: 445px;
+}
+
+.local-news{
+	padding: 2px 5px;
+	max-width: 390px;
+	overflow: hidden;
+}
+
+.langs{
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+}
+
+.font18{
+    font-size: 18px;
+}
+
+.no_news{
+    width:100%;
+    max-width: 445px;
+}
+
+.mw450{
+	max-width: 450px;
+}
+
+.search-input{
+    width: 90%;
+    font-size: 15px;
+}
+
+.search-ul{
+    font-size: 13px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.map-block{
+    max-width: 360px;
+    text-align: center;
+}
+@media (min-width: 600px) {
+    .map-block{
+        width: 360px;
+    }
+}
+.city-map{
+    POSITION: relative;
+    z-index: 14;
+    max-width: 360px;
+    height:390px;
+}
+
+.icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 10;
+}
+.icon-yellow {
+    background-image: radial-gradient(
+        circle at top left,
+        yellow 20%, #FF7F27 50%
+    );
+}
+.icon-red {
+    background-image: radial-gradient(
+        circle at top left,
+        #ffd502 20%, #e31616 50%
+    );
+}
+.icon-blue {
+    background-image: radial-gradient(
+        circle at top left,
+        rgba(103, 118, 238, 0.28) 20%, #6776ee 50%
+    );
+}
+.icon-grey {
+    background-image: radial-gradient(
+        circle at top left,
+        rgba(35, 35, 35, 0.03) 20%, rgba(33, 29, 29, 0.58) 50%
+    );
+}
+
+.aside-text{
+    background-color: #DDE2F5; padding: 2px; position: absolute;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.menu-item {
+    min-height: 30px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    text-align: left;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+.menu-ph-closed {
+    margin: 0 auto 15px;
+    max-width: 1047px;
+    font-size: 14px;
+    line-height: 21px;
+    padding: 15px;
+}
+
+@media (max-width: 718px) {
+    .menu-ph-closed {
+        font-size: 16px;
+        line-height: 32px;
+    }
+}
+
+.menu-list-photo{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    max-width: 1077px;
+}
+.menu-list-photo li {
+    max-width: 1077px;
+    text-align: center;
+}
+
+@media (max-width: 718px) {
+    .menu-list-photo{
+        display: flex;
+        flex-direction: column;
+        width: 99%;
+    }
+}
+
+@media (min-width: 718px) {
+    .menu-list-photo li {
+        width: 100%;
+    }
+}
+
+.menu-list-photo h1,
+.menu-list-photo h2,
+.menu-list-photo h3 {
+    font-size: 15px;
+}
+
+
+
+
+.menu-item:hover {
+    background: white;
+}
+
+
+.maxwide {
+    text-align: center;
+    max-width: 990px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+
+.cityuser1, .cityuser3 {
+    flex: 1;
+    box-sizing: border-box;
+    max-width: calc(50% - 20px);
+}
+
+/* Бокові колонки (аватар+меню зліва, друзі справа) розтягуються по висоті
+   заодно з .cityuser2 (align-items:stretch за замовчуванням у флекс-контейнера),
+   але їхній реальний контент — лише 100-350px, тому решта висоти колонки
+   (до 2000px на довгих сторінках) — порожній непомітний простір: віджет
+   "Друзі" прокручується разом зі сторінкою і зникає з очей вже за першим
+   екраном. top:75px = висота фіксованого меню (65px, див. margin-top у
+   <main>) + невеликий відступ. */
+.cityuser1 > ul.menu-list, .cityuser3 > ul.menu-list {
+    position: sticky;
+    top: 75px;
+}
+
+/* Те саме на сторінках міст (c.blade.php): там у .cityuser3 замість списку
+   друзів — блок погоди (#weather), і саме він, а не порожній контейнер
+   навколо, повинен лишатись видимим під час прокрутки довгої сторінки міста. */
+.cityuser3 #weather {
+    position: sticky;
+    top: 75px;
+}
+
+@media (max-width: 718px) {
+    .cityuser1 > ul.menu-list, .cityuser3 > ul.menu-list {
+        position: static;
+    }
+
+    .cityuser3 #weather {
+        position: static;
+    }
+}
+
+.cityuser2 {
+    margin: 0 auto;
+    flex: 2;
+    box-sizing: border-box;
+    max-width: 535px;
+}
+
+@media (max-width: 718px) {
+    .cityuser1, .cityuser3 {
+        flex: 1;
+        max-width: none;
+    }
+    .cityuser2 {
+
+        flex: 1;
+        order: 3;
+    }
+}
+
+@media (min-width: 719px) {
+    .cityuser1, .cityuser3 {
+        flex: 1;
+        max-width: calc(50% - 10px);
+    }
+
+    .cityuser2 {
+        flex: 2;
+        max-width: 535px;
+    }
+}
+
+.city-block {
+    padding: 10px;
+    text-align: left;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+}
+
+.city_rating {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 15px;
+}
+.city-rating-a {
+    font-size: 15px;
+    padding: 10px;
+}
+#viber, #whatsapp, #facebook, #telegram, #twitter {
+    fill: black;
+    transition: fill 0.3s;
+}
+
+#viber:hover,
+#viber:focus{
+    fill: #7360F2;
+}
+#whatsapp:hover,
+#whatsapp:focus{
+    fill: #25D366;
+}
+#facebook:hover,
+#facebook:focus{
+    fill: #1877F2;
+}
+#telegram:hover,
+#telegram:focus{
+    fill: #27A6E7;
+}
+#twitter:hover,
+#twitter:focus{
+    fill: #2DAAE1;
+}
+#social-madia{
+    padding-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.social-madia{
+     padding-top: 10px;
+     display: flex;
+     flex-wrap: wrap;
+     gap: 7px;
+ }
+
+.city-center-block {
+    padding: 10px 10px 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+	max-width: 515px;
+	overflow: hidden;
+}
+
+.city-center-forum {
+    padding: 10px 10px 15px 10px;
+    text-align: left;
+    margin: 0;
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+    max-width: 515px;
+    overflow: hidden;
+}
+
+.city-center-foto {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+/* Було: width:auto + height:100px на .ccf-item, а на <img> — HTML-атрибути
+   width="$widthf" height="100". Портретні фото з auto-шириною виходили вузькими
+   смужками. Тепер клітинка має фіксовану пропорцію 4/3, а img заповнює її через
+   object-fit:cover (перекриває inline-атрибути ширини/висоти) — як у .city-hero-foto
+   на сторінках міст. */
+.ccf-item {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ccf-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}
+
+.img-interv{
+    float:left;
+    margin-right: 10px
+}
+
+.ques-in {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.ques-in-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.mw355{
+    max-width: 335px;
+    overflow: hidden;
+}
+.mw535 {
+    max-width: 535px;
+}
+.pl5{
+    padding-left: 5px;
+}
+.theme-go {
+    display: flex;
+    justify-content: space-evenly;
+	align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.theme-go-gap {
+    gap: 15px;
+}
+
+.mem-menu {
+	width: 100%;
+    height: 35px;
+    display: flex;
+    justify-content: space-between;
+	align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.mem-menu p {
+	margin: 0;
+}
+
+.com-block {
+    max-width: 430px;
+    width: 100%;
+    overflow: hidden;
+    margin: 10px auto 0;
+}
+
+.forum-menu{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 5px;
+    max-width: 535px;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.forum-menu-item{
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forum-menu-guest{
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.w39{
+    width: 39%;
+}
+.w22{
+    width: 22%;
+}
+.w100{
+    width: 100%
+}
+.w250{
+    width: 250px;
+}
+
+.forum-answser{
+    display: flex;
+    gap: 15px;
+    flex-wrap:  wrap;
+    justify-content: space-between;
+}
+.mw225{
+    width: 225px;
+    max-width: 225px;
+}
+.see-more-comm{
+    margin-left: 5px;
+    max-width: 250px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+
+.ml10{
+    margin-left: 10px;
+}
+
+#useful-links{
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 15px;
+	font-size: 14px;
+}
+
+#guests{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 15px auto 0;
+    padding: 0;
+    gap: 5px;
+}
+#guests a {
+    font-size: 11px;
+}
+#guests img {
+    margin: 0 auto;
+}
+
+#guests p {
+    margin: 0;
+}
+
+#guests li {
+    margin-bottom: 8px;
+    width: 88px;
+    overflow: hidden;
+    padding: 10px 0;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+
+#Pmail, #mailnp {
+    width: 100px;
+    height: 30px;
+    padding: 0 5px;
+}
+#sub-city{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+
+.admcity{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.admcity-item {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#hidpage {
+    margin: 100px auto 40px;
+    max-width: 370px;
+    padding: 20px 15px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    font-size: 15px;
+}
+
+#av_img0 {
+    object-fit: cover;
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 50%;
+}
+#av_img1 {
+    object-fit: cover;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
+}
+
+.fr-in-user{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: space-around;
+    gap: 0;
+}
+.fr-in-user li{
+    text-align: center;
+    font-size: 11px;
+    max-width: 68px;
+    overflow: hidden;
+    padding: 5px 0 15px;
+
+}
+
+@media screen and (min-width: 449px) {
+    .fr-in-user-item:nth-child(4) {
+        display: none;
+    }
+
+}
+
+.ab-user {
+	font-size: 16px;
+	line-height: 23px;
+}
+@media screen and (min-width: 449px) {
+.ab-user {
+	font-size: 13px;
+	line-height: 18px;
+}
+}
+
+.mark-hist {
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ph-menu-container{
+    max-width: 1097px;
+    overflow: hidden;
+    padding: 5px;
+    margin: 0 auto;
+}
+
+.fsection{
+    margin: 0 auto;
+    max-width: 1330px;
+    overflow: hidden;
+    padding: 5px;
+    align-items: center;
+}
+.flist{
+    display: flex;
+    align-items: start;
+    align-content:center;
+    justify-content:center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+.fnext{
+    width: 1330px;
+    margin: 0 auto;
+    max-width: 1330px;
+}
+
+
+#fsearch{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 337px;
+    margin: 10px 10px 15px auto;
+    padding: 10px;
+    overflow: hidden;
+}
+#load_hid{
+    display: none;
+    text-align: right;
+}
+#load_on{
+    display: none;
+    text-align: center;
+}
+
+.custom-file-input {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size:12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(to bottom, rgba(53,106,160,1) 0%,rgba(53,106,160,1) 100%);
+    color: #DAE1E8;
+    border: none;
+    border-radius: 4px;
+    transition: color, box-shadow 0.3s ease;
+}
+.custom-file-input:hover {
+    color: white;
+    text-decoration:underline;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+.centeredm{
+    margin: 0 auto;
+}
+.non-cursor{
+    cursor: default;
+}
+.mt5{
+    margin-top:5px;
+}
+.mt10{
+    margin-top:10px;
+}
+.mt15{
+    margin-top:15px;
+}
+.mb15{
+    margin-bottom:15px;
+}
+.mb10{
+    margin-bottom:10px;
+}
+.mb5{
+    margin-bottom:5px;
+    /* назва області/району лежить прямо на "стакані" (.stat-td), який тепер сам є заливкою —
+       рівномірне біле світіння, щоб текст не зливався ні з темною, ні зі світлою частиною заливки */
+    text-shadow:
+        0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff,
+        0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+}
+.ph-nav{
+    display: flex;
+    gap: 3px;
+}
+.ph-nav li{
+    width: 50%;
+    text-align: center;
+}
+.lph-nav{
+    margin-left:2px;
+}
+.rph-nav{
+    margin-right:2px;
+}
+.ph-nav-b {
+    display: flex;
+    gap: 10px;
+}
+.ph-nav-b-center {
+    flex-shrink: 2;
+    max-width: 100%;
+}
+.lph-nav-b{
+    margin-left: 10px;
+    flex: 1;
+    flex-shrink: 1;
+    padding: 5px;
+    align-items: center;
+	text-align: center;
+}
+.rph-nav-b{
+    margin-right:10px;
+    flex: 1;
+    flex-shrink: 1;
+    padding: 5px;
+    align-items: center;
+	text-align: center;
+}
+.alone-ph{
+    margin: 0;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+	transition: background 0.3s ease;
+}
+
+.alone-ph li {
+	transition: fill 0.3s ease;
+}
+
+.alone-ph li:hover,
+.alone-ph li:focus {
+	fill: #356AA0;
+}
+
+@media screen and (min-width: 769px) {
+    .alone-ph{
+        margin: 0 10px;
+    }
+}
+
+.responsive-image-block {
+	width: 100%;
+	max-width: 200px;
+	height: auto;
+	margin-bottom: 5px;
+	padding: 7px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	transition: background 0.3s ease;
+}
+
+.responsive-image-block li {
+	transition: fill 0.3s ease;
+}
+
+.responsive-image-block li:hover,
+.responsive-image-block li:focus {
+	fill: #356AA0;
+}
+@media screen and (max-width: 465px) {
+  .responsive-image-block {
+    max-width: 190px;
+  }
+}
+@media screen and (max-width: 445px) {
+  .responsive-image-block {
+    max-width: 182px;
+  }
+}
+@media screen and (max-width: 425px) {
+  .responsive-image-block {
+    max-width: 175px;
+  }
+}
+@media screen and (max-width: 400px) {
+  .responsive-image-block {
+    max-width: 200px;
+  }
+}
+
+@media screen and (min-width: 200px) {
+    .pimg {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media screen and (max-width: 465px) {
+    .pimg {
+        width: 100%;
+        height: auto;
+    }
+}
+
+
+@media (min-width: 600px) {
+    .pimg {
+        width: 200px;
+    }
+}
+
+.fmenu{
+    margin: 10px auto 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    list-style: none;
+    font-size: 16px;
+    flex-wrap: wrap;
+}
+.fmenu-auth{
+    gap: 11px;
+}
+.fmenu-views{
+    gap: 10px;
+}
+
+.fview{
+	display: flex;
+	align-items: center;
+	gap: 3px;
+}
+.fstar{
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.star-container {
+    position: relative;
+}
+
+.star {
+    position: relative;
+}
+
+
+.shine {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 0, 0 100%, 100% 0);
+    background: linear-gradient(45deg, transparent 0%, transparent 50%, white 50%, white 100%);
+    opacity: 0;
+    animation: shine-animation 4s linear infinite;
+}
+
+@keyframes shine-animation {
+    0% {
+        transform: translateX(-1000%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(1000%);
+        opacity: 0;
+    }
+}
+
+.m55010{
+    margin: 5px 10px 0 5px;
+}
+
+.registration-form {
+    margin: 0 auto;
+    max-width: 350px;
+    background-color: #fff;
+    padding: 10px 20px 20px 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.registration-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.registration-form input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+
+.auth-el {
+    width: 100%;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.auth-el-err {
+    border: 1px solid red;
+}
+
+
+.auth-button {
+    background-color: #06651C;
+    color: #ECF1F3;
+    transition: color 0.3s ease;
+    font-size: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #065B1A;
+	color: white;
+    text-decoration:underline;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+}
+#auth-la-check {
+    font-weight: 400;
+	line-height: 20px;
+}
+.auth-links {
+    padding: 3px;
+	border: 1px solid black;
+	border-radius: 4px;
+	font-weight: bold;
+}
+
+.sear-tit {
+    padding: 0 15px 5px;
+    max-width: 438px;
+    margin-bottom: 10px;
+    line-height: 40px;
+}
+.sear-tit a {
+    padding: 10px;
+    color: rgb(242, 242, 255);
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 3px;
+    background-color: #356AA0;
+    transition: color, box-shadow 0.3s ease;
+}
+.sear-tit a:hover {
+    color: #fff;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+    text-decoration:underline;
+}
+.sear-bott {
+    max-width: 438px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+
+.searc-item {
+    cursor: pointer;
+    margin-bottom: 5px;
+    text-align: left;
+    max-width: 438px;
+    padding: 5px 15px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+    fill: #29476b;
+}
+.searc-item a {
+    display: block;
+}
+.searc-item:hover {
+    background: white;
+    fill:#000;
+}
+.searc-item-item {
+    padding: 4px;
+    background-color: #FFF;
+    border-radius: 7px;
+    display: inline-block;
+}
+.searc-nav{
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    gap: 5px;
+}
+
+.searc-nav a{
+    display: block;
+    max-width: 200px;
+    padding: 7px;
+    color: rgb(242, 242, 255);
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #356AA0;
+    transition: color, box-shadow 0.3s ease;
+}
+
+.searc-nav a:hover {
+    color: #fff;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+    text-decoration:underline;
+}
+
+.searc-nav span{
+    display: block;
+    box-sizing: border-box;
+    padding: 7px;
+    border-radius: 3px;
+    border: solid 3px #29476b;
+    background-color: #fff;
+    font-weight: bold;
+    max-width: 200px;
+}
+
+.searc-nav-react{
+    max-width: 200px;
+    text-align: center;
+}
+.raycs {
+    padding: 15px;
+}
+
+.raycs li {
+    list-style: none;
+}
+.raycs h2 {
+    font-size: 16px;
+}
+
+.raycs ul {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    text-align: center;
+    justify-content: center;
+}
+
+.raycs a {
+    padding: 5px;
+    color: rgb(242, 242, 255);
+    font-size: 12px;
+    line-height: 24px;
+    border-radius: 3px;
+    background-color: #356AA0;
+    transition: color, box-shadow 0.3s ease;
+}
+.raycs a:hover {
+    color: #fff;
+    box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.53);
+    text-decoration:underline;
+}
+
+/* Головна сторінка: hero-блок ("Україна, якою її пам'ятають люди") */
+.hero-archive{
+    /* Блок тепер живе ВСЕРЕДИНІ лівої колонки (.mw450, 450px), а не на всю ширину сторінки —
+       просто заповнює її, без окремого max-width/flex-basis. */
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 12px 10px;
+}
+.hero-archive h1{
+    font-size: 170%;
+    line-height: 1.2;
+    margin: 6px 0 8px;
+}
+.hero-subtitle{
+    max-width: 620px;
+    margin: 0 auto 18px;
+    color: #444;
+    font-size: 15px;
+}
+.hero-search{
+    max-width: 420px;
+    margin: 0 auto 14px;
+}
+.hero-stats{
+    color: #2a507e;
+    font-size: 13px;
+    margin: 0 0 22px;
+}
+.hero-photo-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 0 auto;
+}
+.hero-photo-grid li{
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #DAE1E8;
+}
+.hero-photo-grid a{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.hero-photo-grid img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+.hero-photo-grid a:hover img{
+    transform: scale(1.06);
+}
+.hero-photo-grid span{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px 10px 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+    color: #fff;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+}
+.hero-photo-hide{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+}
+.hero-photo-hide:hover{
+    background: #c0392b;
+}
+@media screen and (max-width: 700px) {
+    .hero-photo-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-archive h1{
+        font-size: 170%;
+    }
+}
+
+/* "Великі" фото прямо в стрічці новин (groups <=3), ширина обмежена шириною колонки новин.
+   Рамка (fcom0) огортає ОДРАЗУ і повідомлення (хто/куди/коли), і самі фото — щоб не виглядало
+   відірваним одне від одного. */
+.news-photo-big-wrap{
+    width: 100%;
+    max-width: 422px;
+    box-sizing: border-box;
+    padding-bottom: 3px;
+    text-align: left;
+}
+/* Час був position:absolute (top:0), а <h3> мав стандартний браузерний відступ зверху —
+   через це час і текст стояли не на одному рівні. Робимо flex-рядок: h3 займає доступну
+   ширину зліва, час лишається фіксованим справа, обидва вирівняні по верху однаково. */
+.news-photo-big-wrap .padd05.td-rel{
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 7px;
+}
+.news-photo-big-wrap .padd05.td-rel .time{
+    position: static;
+    background: none;
+    padding: 0;
+    order: 2;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.news-photo-big-wrap .padd05.td-rel h3{
+    margin: 0;
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.news-photo-big-group{
+    margin: 6px 0 0;
+    padding: 0 10px 4px;
+}
+.news-photo-big-card{
+    max-width: 422px;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e2e2;
+}
+.news-photo-big-card:last-child{
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.news-photo-big-img{
+    line-height: 0;
+    position: relative;
+}
+.news-photo-big-img img{
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 422px;
+    border-radius: 4px;
+    background: #eee;
+}
+/* Зірка оцінки — прямо на фото, тим самим стилем, що й у попапі abf/abfp (.popup-like),
+   замість окремого рядка під фото — єдиний стиль для обох місць. */
+.news-inline-star{
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 999px;
+    padding: 5px 10px 5px 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    backdrop-filter: blur(2px);
+    transition: background 0.2s ease;
+    min-height: 18px;
+    box-sizing: border-box;
+}
+.news-inline-star:hover{
+    background: rgba(0, 0, 0, 0.75);
+}
+.news-inline-star svg{
+    display: block;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.news-inline-star a{
+    color: #fff;
+    text-decoration: none;
+}
+.news-inline-star a:hover{
+    text-decoration: underline;
+}
+.news-photo-big-card > .centeredm:not(:empty){
+    margin-top: 6px;
+}
+.news-inline-comments{
+    margin-top: 8px;
+    font-size: 13px;
+}
+.news-inline-comments-loading,
+.news-inline-comments > p:only-child{
+    color: #888;
+    font-size: 13px;
+}
+.news-inline-comment-input{
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 8px;
+}
+@media screen and (max-width: 700px) {
+    .news-photo-big-wrap,
+    .news-photo-big-group,
+    .news-photo-big-card,
+    .news-photo-big-img img{
+        max-width: 100%;
+    }
+}
+
+/* Фотовітрина на сторінці населеного пункту — піднята одразу під навігаційне меню
+   (раніше глибоко на сторінці, 4 крихітні мініатюри 100px). За зразком .hero-photo-grid
+   з головної сторінки: сітка, більші фото, плавний zoom при наведенні. */
+.city-hero-foto-wrap{
+    /* Без box-sizing:border-box навмисно — сусідні блоки (.city-center-block) на цій сторінці
+       рахують ширину в content-box (падінг додається зверху), і щоб рамка була однакової
+       ширини з ними, тут те саме. З border-box падінг віднімався б від width, роблячи
+       блок вужчим і візуально зсунутим ліворуч відносно сусідів. */
+    padding: 10px;
+    width: calc(100% - 20px);
+    max-width: 515px;
+    margin: 0 0 10px;
+}
+.city-hero-foto-wrap h3{
+    margin: 0 0 10px;
+}
+.city-hero-foto{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.city-hero-foto li{
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #DAE1E8;
+}
+.city-hero-foto a{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.city-hero-foto img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+.city-hero-foto a:hover img{
+    transform: scale(1.06);
+}
+@media screen and (max-width: 500px) {
+    .city-hero-foto{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
