@@ -18,7 +18,6 @@ $canonical .= $topic ;
 
 
 
-$amp = "amp";
 if(isset($_POST['topic'])){
     $topic = $_POST['topic'];
 }
@@ -83,7 +82,8 @@ else if(isset($topic)){}else {$topic = "";}
             $content2 = "|$content";
             $ntag2=substr_count($content2, '|');
             $words = explode("|", $content2);
-            $zn=rand(1,$ntag2);
+            // Було rand() — див. пояснення нижче біля другого такого ж циклу (для $mytxt).
+            $zn=1;
             $word=$words[$zn];
             $contentr="{"; $contentr.=$content; $contentr.="}";
             $title = str_replace("$contentr", "$word", $ua);
@@ -103,7 +103,8 @@ else if(isset($topic)){}else {$topic = "";}
 
 @section('robots'){{$index_go}}@endsection
 @section('canonical'){{$canonical}}@endsection
-@section('amp'){{$amp}}@endsection
+{{-- Було @section('amp') — переведено зі звичайну (не-AMP) сторінку, див. пояснення в коментарях
+     нижче біля колишніх <amp-ad> блоків. --}}
 @section('index')index@endsection
 @section('amp_img'){{ $amp_img }} @endsection
 @section('image'){{ $amp_img }}@endsection
@@ -124,15 +125,15 @@ if($nrc>0){
 
     echo"
 <section class=\"sear-tit \" style=\"margin: 15px auto; text-align: center; \">
-    <amp-ad width=\"100vw\" height=\"320\"
-            type=\"adsense\"
-            data-ad-client=\"ca-pub-7495053896041990\"
-            data-ad-slot=\"7275245359\"
-            data-auto-format=\"rspv\"
-            data-full-width=\"\"
-			role=\"complementary\">
-        <div overflow=\"\"></div>
-    </amp-ad>
+    <script async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990\"
+            crossorigin=\"anonymous\"></script>
+    <ins class=\"adsbygoogle\"
+         style=\"display:block\"
+         data-ad-client=\"ca-pub-7495053896041990\"
+         data-ad-slot=\"7275245359\"
+         data-ad-format=\"auto\"
+         data-full-width-responsive=\"true\"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     <a style=\"padding: 5px 50px; \" href=/$life_link/$lc_page>$all_records ($lc)</a>
 </section>
 <br />
@@ -151,7 +152,11 @@ for($ntag0=1;$ntag0<=$ntag;$ntag0++){
 $content2 = "|$content";
 $ntag2=substr_count($content2, '|');
 $words = explode("|", $content2);
-$zn=rand(1,$ntag2);
+// Було rand(1,$ntag2) — та сама сторінка (той самий URL) при кожному завантаженні показувала
+// ІНШИЙ текст ({a|b|c}-шаблон обирав випадкове слово щоразу наново). Для Google це виглядає
+// як "spun content" — сторінка, яка ніколи не має стабільного вмісту, і зазвичай занижується
+// в видачі, а не підвищується. Тепер завжди перший варіант — стабільний текст на URL.
+$zn=1;
 $word=$words[$zn];
 $contentr="{"; $contentr.=$content; $contentr.="}";
 $mytxt = str_replace("$contentr", "$word", $mytxt);
@@ -279,15 +284,13 @@ foreach ($Allm as $All) {
 
 
         <br /><br />
-        <amp-ad width="100vw" height="320"
-                type="adsense"
-                data-ad-client="ca-pub-7495053896041990"
-                data-ad-slot="7275245359"
-                data-auto-format="rspv"
-                data-full-width=""
-				role="complementary">
-            <div overflow=""></div>
-        </amp-ad>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-7495053896041990"
+             data-ad-slot="7275245359"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 	</div >
 
 

@@ -122,7 +122,10 @@ echo"<div id=news class=\"content\">
             $content2 = "|$content";
             $ntag2=substr_count($content2, '|');
             $words = explode("|", $content2);
-            $zn=rand(1,$ntag2);
+            // Було rand() — той самий текст на тій самій URL показувався по-різному щоразу
+            // (класичний "spun content", який Google занижує в видачі). Тепер завжди перший
+            // варіант — стабільний, детермінований текст для однієї сторінки.
+            $zn=1;
             $word=$words[$zn];
             $contentr="{"; $contentr.=$content; $contentr.="}";
             $ua = str_replace("$contentr", "$word", $ua);
