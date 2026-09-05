@@ -2056,14 +2056,24 @@ function setHomeBlockCookie(key, val) {
 function hideHomeBlock(key) {
     document.getElementById(key + "-wrap").classList.add("is-collapsed");
     document.getElementById(key + "-hide").style.display = "none";
-    document.getElementById(key + "-show").style.display = "";
+    // "показати" не існує окремим написом — сам заголовок стає посиланням,
+    // яке й розгортає блок назад (title+"приховати" уже достатньо пояснює дію,
+    // окреме слово "показати" в парі з заголовком було зайвим).
+    var titleEl = document.getElementById(key + "-title");
+    if (titleEl) {
+        var title = titleEl.getAttribute("data-title");
+        titleEl.innerHTML = '<a href="#" onclick="showHomeBlock(\'' + key + '\'); return false;">' + title + "</a>";
+    }
     setHomeBlockCookie(key, "1");
 }
 function showHomeBlock(key) {
     var wrap = document.getElementById(key + "-wrap");
     wrap.classList.remove("is-collapsed");
-    document.getElementById(key + "-show").style.display = "none";
     document.getElementById(key + "-hide").style.display = "";
+    var titleEl = document.getElementById(key + "-title");
+    if (titleEl) {
+        titleEl.textContent = titleEl.getAttribute("data-title");
+    }
     setHomeBlockCookie(key, "0");
 
     // Фото в hb1/hb2 при першому завантаженні сторінки в згорнутому стані
@@ -2076,9 +2086,13 @@ function showHomeBlock(key) {
 
     // hb3 (області/райони) при згорнутому старті взагалі не отримує DB-запит:
     // #stat лишається порожнім. Той самий AJAX stat(), що й для кліку по області.
+    // На швидкому з'єднанні відповідь встигає прийти ще до кінця анімації розкриття
+    // (~0.35s), тому здається "миттєвим" — це не заглушка, а реальний AJAX; спінер
+    // лишень підстраховує повільніші з'єднання, де це не так непомітно.
     if (key === "hb3") {
         var statBox = document.getElementById("stat");
         if (statBox && !statBox.innerHTML.trim()) {
+            statBox.innerHTML = '<div style="text-align:center; padding:20px 0;"><span class="mini-spinner"></span></div>';
             stat(0, "Foto");
         }
     }

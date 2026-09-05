@@ -402,9 +402,14 @@ foreach ($results as $result) {
     <section class="mw450">
 
         <div class="home-block-toggle">
-            <h1>{{ __('messages.hero_title') }}</h1>
+            <h1 id="hb1-title" data-title="{{ __('messages.hero_title') }}">
+                @if($hb1_hidden)
+                    <a href="#" onclick="showHomeBlock('hb1'); return false;">{{ __('messages.hero_title') }}</a>
+                @else
+                    {{ __('messages.hero_title') }}
+                @endif
+            </h1>
             <a href="#" id="hb1-hide" onclick="hideHomeBlock('hb1'); return false;" @if($hb1_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
-            <a href="#" id="hb1-show" onclick="showHomeBlock('hb1'); return false;" @if(!$hb1_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
         </div>
         <div class="home-block-collapse @if($hb1_hidden) is-collapsed @endif" id="hb1-wrap">
         <div class="home-block-collapse-inner">
@@ -437,7 +442,11 @@ foreach ($results as $result) {
                         @endphp
                         <li id="hero_ph{{ $hp->Namef }}">
                             <a href="/nf{{ $hp->Namef }}" onclick="abf({{ $hp->id }},{{ $hp->Namef }}); return false;">
-                                <img loading="lazy" src="{{ $hp_src }}" alt="{{ $hp->City }}">
+                                @if($hb1_hidden)
+                                    <img loading="lazy" data-src="{{ $hp_src }}" alt="{{ $hp->City }}">
+                                @else
+                                    <img loading="lazy" src="{{ $hp_src }}" alt="{{ $hp->City }}">
+                                @endif
                                 <span>{{ $hp->City }}</span>
                             </a>
                             @if($heroCanHide($hp))
@@ -455,9 +464,14 @@ foreach ($results as $result) {
 
         @if($heroTrending->count() > 0)
             <div class="home-block-toggle">
-                <h2>{{ __('messages.hero_trending_title') }}</h2>
+                <h2 id="hb2-title" data-title="{{ __('messages.hero_trending_title') }}">
+                    @if($hb2_hidden)
+                        <a href="#" onclick="showHomeBlock('hb2'); return false;">{{ __('messages.hero_trending_title') }}</a>
+                    @else
+                        {{ __('messages.hero_trending_title') }}
+                    @endif
+                </h2>
                 <a href="#" id="hb2-hide" onclick="hideHomeBlock('hb2'); return false;" @if($hb2_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
-                <a href="#" id="hb2-show" onclick="showHomeBlock('hb2'); return false;" @if(!$hb2_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
             </div>
             <div class="home-block-collapse @if($hb2_hidden) is-collapsed @endif" id="hb2-wrap">
             <div class="home-block-collapse-inner">
@@ -475,7 +489,11 @@ foreach ($results as $result) {
                         @endphp
                         <li id="hero_tr{{ $ht->Namef }}">
                             <a href="/nf{{ $ht->Namef }}" onclick="abf({{ $ht->id }},{{ $ht->Namef }}); return false;">
-                                <img loading="lazy" src="{{ $ht_src }}" alt="{{ $ht->City }}">
+                                @if($hb2_hidden)
+                                    <img loading="lazy" data-src="{{ $ht_src }}" alt="{{ $ht->City }}">
+                                @else
+                                    <img loading="lazy" src="{{ $ht_src }}" alt="{{ $ht->City }}">
+                                @endif
                                 <span>{{ $ht->City }}</span>
                             </a>
                             @if($heroCanHide($ht))
@@ -492,14 +510,20 @@ foreach ($results as $result) {
         @endif
 
         <div class="home-block-toggle">
-            <h2>{{ __('messages.our_purp') }}</h2>
+            <h2 id="hb3-title" data-title="{{ __('messages.our_purp') }}">
+                @if($hb3_hidden)
+                    <a href="#" onclick="showHomeBlock('hb3'); return false;">{{ __('messages.our_purp') }}</a>
+                @else
+                    {{ __('messages.our_purp') }}
+                @endif
+            </h2>
             <a href="#" id="hb3-hide" onclick="hideHomeBlock('hb3'); return false;" @if($hb3_hidden) style="display:none;" @endif>{{ __('messages.hide') }}</a>
-            <a href="#" id="hb3-show" onclick="showHomeBlock('hb3'); return false;" @if(!$hb3_hidden) style="display:none;" @endif>{{ __('messages.show') }}</a>
         </div>
         <div class="home-block-collapse @if($hb3_hidden) is-collapsed @endif" id="hb3-wrap">
         <div class="home-block-collapse-inner">
         <section class="ind-section fcom0 margin-top">
 
+		@if(!$hb3_hidden)
 		@php
 
         $fff = ""; $All_ratef = 0; $All_ratem = 0;
@@ -525,7 +549,7 @@ foreach ($results as $result) {
             $oi = "messages.ooo$id"; $obl =__($oi);
             $link = "<a $mem_obl_link><div class=\"mb5\">$obl</div>";
             $link2 = "</a>";
-            $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_f%, #dfe4ee $perc_f% 100%)\" title=\"$perc_f%\">$link";
+            $fff .="<li class=\"stat-td\" style=\"--fill:$perc_f%; background: linear-gradient(to top, #2a507e $perc_f%, #dfe4ee $perc_f% 100%)\" title=\"$perc_f%\">$link";
             if($views==0){$display="display: none;";}
             else{$display="";}
                 $fff .="<div id=\"genOblViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
@@ -568,6 +592,14 @@ foreach ($results as $result) {
                 if (typeof newsBigPhotoInit === 'function') { newsBigPhotoInit(); }
             });
         </script>
+        @else
+        {{-- Блок згорнутий кукою при заході — не рахуємо DB::table('stat') і не будуємо
+             $fff (25 елементів), поки людина сама не натисне "показати". showHomeBlock('hb3')
+             в allcities26.js бачить порожній #stat і довантажує той самий вміст через уже
+             існуючий AJAX stat(0,'Foto') — без нового ендпоінта. --}}
+        <div class="un-display" id="export_id"></div>
+        <div id="stat"></div>
+        @endif
 
 
             @auth

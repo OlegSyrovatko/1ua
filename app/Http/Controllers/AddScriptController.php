@@ -5933,7 +5933,7 @@ class AddScriptController extends Controller
             if($views==0){$display="display: none;";}
             else{$display="";}
 
-            $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
+            $fff .="<li class=\"stat-td\" style=\"--fill:$perc_e%; background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
                         <a onclick=stat('$id','$purp')>
                             <div class=\"mb5\">$obl</div>
                             <div id=\"genOblViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
@@ -5997,7 +5997,7 @@ class AddScriptController extends Controller
                     $display = "";
                 }
 
-                $fff .="<li class=\"stat-td\" style=\"background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
+                $fff .="<li class=\"stat-td\" style=\"--fill:$perc_e%; background: linear-gradient(to top, #2a507e $perc_e%, #dfe4ee $perc_e% 100%)\" title=\"$perc_e%\">
             <a onclick=stat('$id','$purp')>
                 <div class=\"mb5\">$City_e</div>
                 <div id=\"genRayViews$id\" class=\"stats-item stats-item-view\" style=\"$display\">
@@ -6178,8 +6178,9 @@ class AddScriptController extends Controller
                 </td></tr>
             </table>";
 		}
-			$our_purp = __('messages.our_purp');
-			echo "<h2>$our_purp</h2><h3>$ua_e $obl_e $ray_e</h3><ul class=\"stat-list\">$fff</ul>";
+			// "Оберіть свою місцевість" (our_purp) тепер лише в статичному заголовку блоку на
+			// головній (index.blade.php, поза #stat) — тут дублювалось при кожному drill-down.
+			echo "<h3>$ua_e $obl_e $ray_e</h3><ul class=\"stat-list\">$fff</ul>";
 
     }
 

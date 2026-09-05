@@ -2076,9 +2076,13 @@ function showHomeBlock(key) {
 
     // hb3 (області/райони) при згорнутому старті взагалі не отримує DB-запит:
     // #stat лишається порожнім. Той самий AJAX stat(), що й для кліку по області.
+    // На швидкому з'єднанні відповідь встигає прийти ще до кінця анімації розкриття
+    // (~0.35s), тому здається "миттєвим" — це не заглушка, а реальний AJAX; спінер
+    // лишень підстраховує повільніші з'єднання, де це не так непомітно.
     if (key === "hb3") {
         var statBox = document.getElementById("stat");
         if (statBox && !statBox.innerHTML.trim()) {
+            statBox.innerHTML = '<div style="text-align:center; padding:20px 0;"><span class="mini-spinner"></span></div>';
             stat(0, "Foto");
         }
     }

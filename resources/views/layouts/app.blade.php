@@ -6,7 +6,7 @@
 @endphp">
 
 @php
-    $css_file = "/css/app85.css";
+    $css_file = "/css/app95.css";
 
  @endphp
 <head>
@@ -455,7 +455,7 @@
 </head>
 <body>
 @if (!View::hasSection('amp'))
-    <script src="{{ "/js/allcities26.js" }}" defer></script>
+    <script src="{{ "/js/allcities29.js" }}" defer></script>
 @endif
 
 
