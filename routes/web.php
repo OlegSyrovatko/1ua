@@ -253,6 +253,7 @@ Route::group(['middleware'=>'language'],function ()
     Route::post('redo', 'App\Http\Controllers\LoadController@redo');
 
 	Route::post('weather', 'App\Http\Controllers\LoadController@weather');
+	Route::post('weather_now', 'App\Http\Controllers\LoadController@weather_now');
 
 
     Route::get('get-cities', 'App\Http\Controllers\AddScriptController@getCities');

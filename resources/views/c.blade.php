@@ -226,7 +226,44 @@ else {$fpath = "";  $flinka = "";}
 @section('title_block'){{$title}}@endsection
 @section('image'){{$fpath}}@endsection
 
+@if($nd > 0)
+    @php
+        // На цю ж сторінку ведуть кілька URL (/domen, /c{id}, /domen/ua, /rc{id}...) —
+        // canonical вказує на "гарний" slug-варіант як єдиний, кого варто індексувати.
+        $canonical_ua = "https://$my_domen/$domen";
+        $canonical_ru = "https://$my_domen/$domen/ru";
+        $canonical_en = "https://$my_domen/$domen/en";
+        $canonical = $canonical_ua;
+        if ($lanem == "ru") { $canonical = $canonical_ru; }
+        if ($lanem == "en") { $canonical = $canonical_en; }
+    @endphp
+    @section('canonical'){{$canonical}}@endsection
+    @section('hreflang_ua'){{$canonical_ua}}@endsection
+    @section('hreflang_ru'){{$canonical_ru}}@endsection
+    @section('hreflang_en'){{$canonical_en}}@endsection
+@endif
+
 @section('content')
+
+@if($nd > 0 && $x && $y)
+    @php
+        // Через PHP-масив + json_encode, а не сирий JSON у шаблоні — бо "@context"/"@type"
+        // з "@" на початку Blade міг би сприйняти як спробу викликати директиву.
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Place',
+            'name' => $City,
+            'url' => $canonical,
+            'geo' => [
+                '@type' => 'GeoCoordinates',
+                'latitude' => (float) $y,
+                'longitude' => (float) $x,
+            ],
+        ];
+        if ($fpath) { $jsonLd['image'] = $fpath; }
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endif
 
 
 @if($nd==0)
@@ -847,6 +884,106 @@ if($set_q=="c"){$go_q="stop";}
 
     <section class="cityuser2">
 
+        {{-- Фотовітрина піднята сюди (раніше була нижче, у вигляді 4 крихітних мініатюр після
+             блоку запитань/реклами) — головна цінність сторінки (фото населеного пункту) має
+             бути видна одразу, а не після прокрутки повз кілька віджетів. "b"-якість — та сама
+             угода, що й у попапі abf/abfp та на головній сторінці. --}}
+        @php
+        if($nrf7>0){
+            $s_time = microtime(true);
+            $latest_photo = __('messages.latest-photo');
+
+            echo"<section class=\"fcom city-hero-foto-wrap\">
+                <h3><a aria-label=\"$latest_photo $City\" href=\"/$domen/foto/$lan/\">$latest_photo</a></h3>
+                <ul class=\"city-hero-foto\">";
+                $Allf = DB::table('Foto')->select('Namef', 'Formf', 'Fd')->
+                where('id', $id)->
+                orderBy('Fd', 'desc')->
+                limit(6)->
+                get();
+
+                foreach ($Allf as $Alf) {
+                    $M5=$Alf->Namef;
+                    $M7=$Alf->Formf;
+                    $M6=$Alf->Fd;
+
+                    $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
+                    if ($monm<10){$monmf = substr($M6, 6, 1);}
+                    else{$monmf=$monm;}
+                    if($yem<=2007){$yem = "2005-2007"; $monmf="";}
+
+                    $katalogbig = "Photos/$yem$monmf/b$M5.$M7";
+                    $katalogsmall = "Photos/$yem$monmf/$M5.$M7";
+                    $katalogface = getKatalogface($katalogbig, $katalogsmall);
+
+                    if(Auth::user()) {
+                        $flink = "onclick=abf($id,$M5)";
+                    }
+                    else{
+                        $flink = "href=\"$pref_page_f$M5\"";
+                    }
+
+                    echo "
+                        <li>
+                            <a $flink>
+                                <img loading=\"lazy\" alt=\"$City - $latest_photo\" src=\"$katalogface\">
+                            </a>
+                        </li>
+                    ";
+                }
+            echo"</ul></section>";
+
+            $Allf = DB::table('Foto')->select('Namef', 'Formf', 'Fd')->
+            where('id', $id)->
+            where('Publ', '1')->
+            get();
+            $Allfn = $Allf->count();
+
+            if($Allfn>0){
+                $selected_photo = __('messages.selected-photo');
+                echo"<section class=\"fcom city-hero-foto-wrap\">
+                    <h3>$selected_photo</h3>
+                    <ul class=\"city-hero-foto\">";
+                foreach ($Allf as $Alf) {
+                    $M5=$Alf->Namef;
+                    $M7=$Alf->Formf;
+                    $M6=$Alf->Fd;
+
+                    $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
+                    if ($monm<10){$monmf = substr($M6, 6, 1);}
+                    else{$monmf=$monm;}
+                    if($yem<=2007){$yem = "2005-2007"; $monmf="";}
+
+                    $katalogbig = "Photos/$yem$monmf/b$M5.$M7";
+                    $katalogsmall = "Photos/$yem$monmf/$M5.$M7";
+                    $katalogface = getKatalogface($katalogbig, $katalogsmall);
+
+                    if(Auth::user()) {
+                        $flink = "onclick=abf($id,$M5)";
+                    }
+                    else{
+                        $flink = "href=\"$pref_page_f$M5\"";
+                    }
+
+                    echo "
+                        <li>
+                            <a $flink>
+                                <img loading=\"lazy\" alt=\"$City - $selected_photo\" src=\"$katalogface\">
+                            </a>
+                        </li>
+                    ";
+                }
+                echo"</ul></section>";
+            }
+
+            if(Auth::check() && Auth::user()->id == 72372396) {
+                $e_time = microtime(true);
+                $execution_time = $e_time - $s_time;
+                echo "<br > Блок фото виконався за " . $execution_time . " секунд";
+            }
+        }
+        @endphp
+
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7495053896041990"
                 crossorigin="anonymous"></script>
         <ins class="adsbygoogle"
@@ -926,112 +1063,7 @@ if($set_q=="c"){$go_q="stop";}
 
 
         @php
-
-        if($nrf7>0){
-			$s_time = microtime(true);
-            $latest_photo = __('messages.latest-photo');
-
-            echo"<section class=\"fcom city-center-block\">
-                <h3><a aria-label=\"$latest_photo $City\" href=\"/$domen/foto/$lan/\">$latest_photo</h3>
-                <section class=\"city-center-foto\">";
-                    $Allf = DB::table('Foto')->select('Namef', 'Formf', 'Fd')->
-                    where('id', $id)->
-                    orderBy('Fd', 'desc')->
-                    limit(4)->
-                    get();
-
-                    foreach ($Allf as $Alf) {
-                        $M5=$Alf->Namef;
-                        $M7=$Alf->Formf;
-                        $M6=$Alf->Fd;
-
-                        $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
-                        if ($monm<10){$monmf = substr($M6, 6, 1);}
-                        else{$monmf=$monm;}
-                        if($yem<=2007){$yem = "2005-2007"; $monmf="";}
-
-                        $katalogface = "Photos/$yem$monmf/$M5.$M7";
-                        $katalog = Storage::disk('public')->url($katalogface);
-                        $katalogface = str_replace("http:", "https:", $katalog);
-
-                        if(Auth::user()) {
-                            $flink = "onclick=abf($id,$M5)";
-                        }
-                        else{
-                            $flink = "href=\"$pref_page_f$M5\"";
-                        }
-
-                        echo "
-                            <a $flink>
-                                <div class=\"scale ccf-item fcom0\">
-                                    <img width=\"auto\" height=\"100\" alt=\"$City - $latest_photo\" src=\"$katalogface\">
-                                </div>
-                            </a>
-                        ";
-
-                    }
-                echo"</section>";
-				if(Auth::check() && Auth::user()->id == 72372396) {
-					$e_time = microtime(true);
-					$execution_time = $e_time - $s_time;
-					echo "<br > Блок виконався за " . $execution_time . " секунд";
-				}
-				$s_time = microtime(true);
-                $Allf = DB::table('Foto')->select('Namef', 'Formf', 'Fd')->
-                where('id', $id)->
-                where('Publ', '1')->
-                get();
-                $Allfn = $Allf->count();
-
-                if($Allfn>0){
-                    $selected_photo = __('messages.selected-photo');
-                    echo"<br /><h3>$selected_photo</h3>
-                        <section class=\"city-center-foto\">";
-                    foreach ($Allf as $Alf) {
-                        $M5=$Alf->Namef;
-                        $M7=$Alf->Formf;
-                        $M6=$Alf->Fd;
-
-                        $monm = substr($M6, 5, 2); $yem = substr($M6, 0, 4);
-                        if ($monm<10){$monmf = substr($M6, 6, 1);}
-                        else{$monmf=$monm;}
-                        if($yem<=2007){$yem = "2005-2007"; $monmf="";}
-
-                        $katalogface = "Photos/$yem$monmf/$M5.$M7";
-                        $katalog = Storage::disk('public')->url($katalogface);
-                        $katalogface = str_replace("http:", "https:", $katalog);
-
-                        if(Auth::user()) {
-                            $flink = "onclick=abf($id,$M5)";
-                        }
-                        else{
-                            $flink = "href=\"$pref_page_f$M5\"";
-                        }
-
-
-                        echo "
-                            <a $flink>
-                                <div class=\"scale ccf-item fcom0\">
-                                    <img width=\"auto\" height=\"100\" alt=\"$City - $selected_photo\" src=\"$katalogface\">
-                                </div>
-                            </a>
-                        ";
-                    }
-                    echo"</section>";
-                }
-
-            echo"</section>";
-			if(Auth::check() && Auth::user()->id == 72372396) {
-				$e_time = microtime(true);
-				$execution_time = $e_time - $s_time;
-				echo "<br > Блок виконався за " . $execution_time . " секунд";
-			}
-        }
-
-
-
-
-
+        // Фотовітрину перенесено вище (одразу під навігаційним меню) — див. коментар там.
 
         $questions_n = substr_count($questions,"#!^:*&");
 
@@ -1116,10 +1148,13 @@ if($set_q=="c"){$go_q="stop";}
                             $someone = str_replace(" ", "<br />", $someone);
                             $block = __('messages.lock');
                             echo"<div  style\"flex-shrink: 1;\">
-                            <p>$someone</p>
-                            <p style = \"font-size: 10px;\">$q_ip</p>";
-                            if(($admpass=="ok" || $my_id=72372396) && mb_strlen($q_ip)>5){
-                                echo"<div id=\"ban$q\">
+                            <p>$someone</p>";
+                            // IP анонімного автора питання бачить лише адмін/модератор сторінки —
+                            // раніше через "$my_id=72372396" (присвоєння, не порівняння "==") ця
+                            // умова була завжди істинною, і IP бачили всі відвідувачі сторінки.
+                            if(($admpass=="ok" || $my_id==72372396) && mb_strlen($q_ip)>5){
+                                echo"<p style = \"font-size: 10px;\">$q_ip</p>
+                                <div id=\"ban$q\">
                                     <a onclick=ban_qc('ban$q','$q_ip','$id')> $block Ip</a>
                                 </div>";
                             }
@@ -1987,78 +2022,15 @@ echo"$flinka ";
 
 
 
-if(Auth::user()) {
-	$s_time = microtime(true);
-	function fetchWeather($x, $y) {
-	global $apiKey, $latitude, $longitude;
-
-	$apiKey = "6e0df8e82af781ce5f5883bfecde10de";
-
-	$url = "https://api.openweathermap.org/data/2.5/weather?lat=$y&lon=$x&appid=$apiKey";
-	$response = file_get_contents($url);
-
-	if ($response === false) {
-		// Handle error
-		echo "An error occurred while fetching the weather data.";
-		return;
-	}
-
-	$data = json_decode($response, true);
-
-	$cityName = $data['name'];
-	$temperature = round($data['main']['temp'] - 273.15); // Convert from Kelvin to Celsius and round to the nearest integer
-	$cloud = $data['weather'][0]['main'];
-	$description = $data['weather'][0]['description'];
-	$iconCode = $data['weather'][0]['icon'];
-	$iconUrl = "https://openweathermap.org/img/wn/$iconCode@2x.png";
-
-
-	$M6_e = weather_date();
-	$weather = __('messages.weather');
-	$daysfuture = __('messages.5days');
-
-
-
-	$weatherLayout = "
-	<section id=\"weather\" class=\"fcom0 city-block\">
-
-		<h3>$weather</h3>
-		<div id=\"weather__degree\">{$temperature}&#186;</div>
-
-		<div id=\"weather__cloud\">
-			{$cloud}
-		</div>
-		<div class=\"weather__location\">
-			<svg width=\"18\" height=\"23\" viewBox=\"0 0 14 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">
-				<path d=\"M7.00001 0.125C5.35957 0.126935 3.78688 0.779452 2.62692 1.93941C1.46696 3.09938 0.814442 4.67207 0.812507 6.3125C0.810542 7.65306 1.24843 8.95725 2.05901 10.025C2.05901 10.025 2.22776 10.2472 2.25532 10.2793L7.00001 15.875L11.7469 10.2764C11.7717 10.2466 11.941 10.025 11.941 10.025L11.9416 10.0233C12.7517 8.95603 13.1894 7.65245 13.1875 6.3125C13.1856 4.67207 12.5331 3.09938 11.3731 1.93941C10.2131 0.779452 8.64044 0.126935 7.00001 0.125ZM7.00001 8.5625C6.555 8.5625 6.11998 8.43054 5.74997 8.18331C5.37996 7.93607 5.09157 7.58467 4.92128 7.17354C4.75098 6.7624 4.70642 6.31 4.79324 5.87355C4.88006 5.43709 5.09435 5.03618 5.40902 4.72151C5.72368 4.40684 6.1246 4.19255 6.56105 4.10573C6.99751 4.01892 7.44991 4.06347 7.86104 4.23377C8.27218 4.40407 8.62358 4.69246 8.87081 5.06247C9.11805 5.43248 9.25001 5.86749 9.25001 6.3125C9.24926 6.90901 9.01197 7.48087 8.59017 7.90267C8.16838 8.32446 7.59652 8.56176 7.00001 8.5625Z\" fill=\"white\"/>
-			</svg>
-			{$cityName}
-		</div>
-
-		<img id=\"weather__image\" width=70 height=70 src=\"{$iconUrl}\" alt=\"{$description}\" />
-		<div id=\"weather__time\"><br />$M6_e</div>
-		<br />
-		<div class=\"weather__location\">
-			<a href=## onclick=weatherWeek('$x','$y') rel=\"noopener noreferrer\">$daysfuture</a>
-		</div><br />
-
-		<div id=\"weather-week\"></div>
-	</section>";
-
-	echo $weatherLayout;
-	}
-	fetchWeather($x, $y);
-
-	if(Auth::check() && Auth::user()->id == 72372396) {
-		$end_time = microtime(true);
-		$execution_time = $end_time - $s_time;
-		echo "<br >погода " . $execution_time . " секунд";
-	}
-
-}
-
-
 @endphp
+
+@auth
+    {{-- Раніше тут був синхронний file_get_contents() до OpenWeatherMap прямо в рендері
+         сторінки (блокував відповідь на весь час зовнішнього запиту). Тепер лише каркас,
+         а сама погода довантажується асинхронно через /weather_now (weatherNowInit() в
+         allcities23.js), за тим самим принципом, що й 5-денний прогноз (weatherWeek). --}}
+    <section id="weather" class="fcom0 city-block" data-x="{{$x}}" data-y="{{$y}}"></section>
+@endauth
 
 @guest
     <section id="weather" class="fcom0 city-block">

@@ -849,6 +849,63 @@ class LoadController extends Controller
 	weatherForFive($x,$y);
     }
 
+    // Поточна погода для сторінки населеного пункту — винесено з синхронного рендеру
+    // c.blade.php (там був блокуючий file_get_contents() до OpenWeatherMap прямо в шаблоні).
+    // Довантажується асинхронно після показу сторінки (weatherNowInit() в allcities23.js),
+    // так само як і weatherForFive() вище для 5-денного прогнозу.
+    public function weather_now(Request $request)
+    {
+        $x = $request['x'];
+        $y = $request['y'];
+
+        $apiKey = "6e0df8e82af781ce5f5883bfecde10de";
+        $url = "https://api.openweathermap.org/data/2.5/weather?lat=$y&lon=$x&appid=$apiKey";
+        $response = @file_get_contents($url);
+
+        if ($response === false) {
+            return "";
+        }
+
+        $data = json_decode($response, true);
+        if (!isset($data['name'], $data['main']['temp'], $data['weather'][0])) {
+            return "";
+        }
+
+        $cityName = $data['name'];
+        $temperature = round($data['main']['temp'] - 273.15);
+        $cloud = $data['weather'][0]['main'];
+        $description = $data['weather'][0]['description'];
+        $iconCode = $data['weather'][0]['icon'];
+        $iconUrl = "https://openweathermap.org/img/wn/$iconCode@2x.png";
+
+        $M6_e = weather_date();
+        $weather = __('messages.weather');
+        $daysfuture = __('messages.5days');
+
+        return "
+        <h3>$weather</h3>
+        <div id=\"weather__degree\">{$temperature}&#186;</div>
+
+        <div id=\"weather__cloud\">
+            {$cloud}
+        </div>
+        <div class=\"weather__location\">
+            <svg width=\"18\" height=\"23\" viewBox=\"0 0 14 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">
+                <path d=\"M7.00001 0.125C5.35957 0.126935 3.78688 0.779452 2.62692 1.93941C1.46696 3.09938 0.814442 4.67207 0.812507 6.3125C0.810542 7.65306 1.24843 8.95725 2.05901 10.025C2.05901 10.025 2.22776 10.2472 2.25532 10.2793L7.00001 15.875L11.7469 10.2764C11.7717 10.2466 11.941 10.025 11.941 10.025L11.9416 10.0233C12.7517 8.95603 13.1894 7.65245 13.1875 6.3125C13.1856 4.67207 12.5331 3.09938 11.3731 1.93941C10.2131 0.779452 8.64044 0.126935 7.00001 0.125ZM7.00001 8.5625C6.555 8.5625 6.11998 8.43054 5.74997 8.18331C5.37996 7.93607 5.09157 7.58467 4.92128 7.17354C4.75098 6.7624 4.70642 6.31 4.79324 5.87355C4.88006 5.43709 5.09435 5.03618 5.40902 4.72151C5.72368 4.40684 6.1246 4.19255 6.56105 4.10573C6.99751 4.01892 7.44991 4.06347 7.86104 4.23377C8.27218 4.40407 8.62358 4.69246 8.87081 5.06247C9.11805 5.43248 9.25001 5.86749 9.25001 6.3125C9.24926 6.90901 9.01197 7.48087 8.59017 7.90267C8.16838 8.32446 7.59652 8.56176 7.00001 8.5625Z\" fill=\"white\"/>
+            </svg>
+            {$cityName}
+        </div>
+
+        <img id=\"weather__image\" width=70 height=70 src=\"{$iconUrl}\" alt=\"{$description}\" />
+        <div id=\"weather__time\"><br />$M6_e</div>
+        <br />
+        <div class=\"weather__location\">
+            <a href=## onclick=weatherWeek('$x','$y') rel=\"noopener noreferrer\">$daysfuture</a>
+        </div><br />
+
+        <div id=\"weather-week\"></div>";
+    }
+
 }
 
 
