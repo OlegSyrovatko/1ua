@@ -67,7 +67,15 @@ class questions_in_forum extends Command
                     ->where('id', $id)
                     ->update(['questions' => $questionin]);
 
-                $Md = date('Y-n-j-H-i-s');
+                // Дата самого питання (коли його реально задали), а не часу запуску цієї команди —
+                // раніше $que[2] читалось і одразу губилось, у Memory.Md писався поточний момент.
+                // Формат при створенні питання (question_inc/question_inp): date('Y-m-d-H-i-s').
+                $Md = date('Y-m-d H:i:s');
+                $questionDateParts = explode('-', $que[2] ?? '');
+                if (count($questionDateParts) === 6) {
+                    [$qY, $qM, $qD, $qH, $qI, $qS] = $questionDateParts;
+                    $Md = "$qY-$qM-$qD $qH:$qI:$qS";
+                }
                 $ans = "<b>%^&@#</b> - $q <br /><b>&@#%^</b> -";
                 DB::table('Memory')
                     ->insert(['id' => $id, 'obl' => $obl, 'City' => $City, 'City2' => $City2, 'Aboutec' => $ans, 'Md' => $Md]);

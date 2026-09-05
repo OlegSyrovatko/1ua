@@ -3025,12 +3025,12 @@ class AddScriptController extends Controller
 			if (preg_match("/<[^<]+>/", $ctrl_hss2)) {exit;}
             if(!$Aboutec){
                 $mem_add0 = __('messages.mem_add0');
-                $mem_add0 = "<table><tr><td>$mem_add0</td></tr></table>";
+                $mem_add0 = "s235*64@75<table><tr><td>$mem_add0</td></tr></table>";
                 return $mem_add0;
             }
             else if(substr_count($Aboutec,"youtu")>1){
                 $one_youtube = __('messages.one_youtube');
-                $one_youtube = "<table><tr><td>$one_youtube</td></tr></table>";
+                $one_youtube = "s235*64@75<table><tr><td>$one_youtube</td></tr></table>";
                 return $one_youtube;
             }
             else{
@@ -3368,12 +3368,12 @@ class AddScriptController extends Controller
 			if (preg_match("/<[^<]+>/", $ctrl_hss2)) {exit;}
             if(!$Aboutec){
                 $mem_add0 = __('messages.mem_add0');
-                $mem_add0 = "<table><tr><td>$mem_add0</td></tr></table>";
+                $mem_add0 = "s235*64@75<table><tr><td>$mem_add0</td></tr></table>";
                 return $mem_add0;
             }
             else if(substr_count($Aboutec,"youtu")>1){
                 $one_youtube = __('messages.one_youtube');
-                $one_youtube = "<table><tr><td>$one_youtube</td></tr></table>";
+                $one_youtube = "s235*64@75<table><tr><td>$one_youtube</td></tr></table>";
                 return $one_youtube;
             }
             else{
@@ -3745,7 +3745,7 @@ class AddScriptController extends Controller
                     }
                     else{
                         $ask_err = __('messages.for_block');
-                        echo"<table><tr><td align=center><p style=\" color:red; margin: 8px 0px 8px 0px; \">$ask_err</p></td></tr></table>";
+                        echo"s235*64@75<table><tr><td align=center><p style=\" color:red; margin: 8px 0px 8px 0px; \">$ask_err</p></td></tr></table>";
                     }
 
                 }
@@ -6953,7 +6953,11 @@ class AddScriptController extends Controller
         if($lan=="en"){
             $in_ad = " in $City11";
         }
+        // Нові питання (idq < 0) показуються першими (у випадковому порядку між собою),
+        // і лише після того, як усі вони вже задані в межах сесії (from_history), підключається
+        // звичайний пул 1..79 — теж випадково, як і раніше.
         $Allc = DB::table('questions')->select('idq',$q_a)->
+        orderByRaw('idq >= 0')->
         inRandomOrder()->
         get();
         $q_count = $Allc->count();
@@ -7330,7 +7334,9 @@ class AddScriptController extends Controller
             }
 
             $qw = "";
+            // Нові питання (idq < 0) — першими, той самий принцип, що й у top_ask() для questions.
             $Allc = DB::table('questionsp')->select('idq', $q_a)->
+            orderByRaw('idq >= 0')->
             inRandomOrder()->
             get();
 
