@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('Create_domen_for_users')->cron('*/5 * * * *');
 
         $schedule->command('delseeffile')->cron('* * * * *');
+        $schedule->command('protection:analyze')->cron('* * * * *')->withoutOverlapping();
         // $schedule->command('delseeffile')
         //     ->everyMinute()
         //     ->appendOutputTo(storage_path('logs/delseeffile.log'));

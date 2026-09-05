@@ -39,42 +39,11 @@ class delseeffile extends Command
      */
     public function handle()
     {
-        
-
-        // $memory_ips = Storage::disk('public')->get('ip.txt');
-        // $nip=substr_count($memory_ips, " ");
-        // $nip_google=substr_count($memory_ips, "66.249.");
-        // $txt = "nip $nip nip_google $nip_google#";
-        // Storage::disk('public')->put('ip.txt', $txt);
-
-        $filename = storage_path('app/public/ip.txt');
-
-        $fp = fopen($filename, 'c+');
-
-        if ($fp) {
-
-            flock($fp, LOCK_EX);
-
-            rewind($fp);
-            $memory_ips = stream_get_contents($fp);
-
-            $nip = substr_count($memory_ips, " ");
-            $nip_google = substr_count($memory_ips, "66.249.");
-
-            $txt = "nip $nip nip_google $nip_google#";
-
-            ftruncate($fp, 0);
-            rewind($fp);
-            fwrite($fp, $txt);
-
-            fflush($fp);
-
-            flock($fp, LOCK_UN);
-            fclose($fp);
-        }
-
+        // Ротацію/обнулення ip.txt (nip/nip_google) з 2026-09 виконує
+        // protection:analyze (App\Services\TrafficAnalyzer::rotateIpLog()) —
+        // той самий атомарний read+truncate, але з повним аналізом трафіку
+        // для Cloudflare protection. Лишати цю логіку тут теж означало б два
+        // процеси, що одночасно truncate'ять один файл щохвилини.
         Storage::disk('public')->put('delseeffile.txt', 'aaa');
-
-
     }
 }

@@ -97,6 +97,13 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'cloudflare-protection' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/cloudflare-protection.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
