@@ -578,6 +578,13 @@ return [
     'abuse_ban'       => 'Nothing works. Try not to use obscene words',
     'limit_lenf'       => 'already exists in the database. Thank you for your activity.',
     'no_coord'       => 'Photos without gps coordinates are added on the pages of settlements',
+    'no_coord_tips'  => 'Could not detect the location of this photo. Try:<br>
+        • turning on GPS (location) on your phone;<br>
+        • granting the camera app permission to access location;<br>
+        • checking that the location mode is set to "High accuracy";<br>
+        • taking a new photo outdoors (not near a window) and waiting a moment before shooting so GPS can get a fix;<br>
+        • if the photo comes from Google Photos — turning off "Remove geo-location data" in sharing settings;<br>
+        • if nothing helps — try uploading the photo from a different folder (e.g. "Downloads") instead of straight from the camera folder.',
     'no_ukraine'       => 'The photo is outside Ukraine',
     'Add_foto_main'       => 'Photos added to album',
     'del_foto'       => 'Photo deleted',
@@ -781,6 +788,7 @@ return [
     'share-vb'       => 'Share on Viber',
     'share-tt'       => 'Share on Twitter',
     'share-wu'       => 'Share on WhatsApp',
+    'about-info'       => 'About',
     'latest-photo'       => 'Latest photos',
     'selected-photo'       => 'Selected photos',
     'mmap'       => 'map of the area',
