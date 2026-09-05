@@ -6,6 +6,10 @@
 <div align="center">
 
 <script type="text/javascript">
+	// jQuery підключається з defer (layouts/app.blade.php), а цей інлайн-скрипт виконується
+	// одразу під час парсингу — РАНІШЕ, ніж відпрацює defer-скрипт jQuery, і "$" тут ще не
+	// існує. DOMContentLoaded настає вже ПІСЛЯ виконання всіх defer-скриптів.
+	document.addEventListener('DOMContentLoaded', function () {
 	$(document).ready(function (e) {
 		$.ajaxSetup({
 			headers: {
@@ -43,6 +47,7 @@
 				}
 			}
 		});
+	});
 	});
 
 </script>

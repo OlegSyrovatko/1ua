@@ -2628,6 +2628,7 @@ class AddFotoController extends Controller
             $limit_lenf = __('messages.limit_lenf');
             $abuse_ban = __('messages.abuse_ban');
             $no_coord = __('messages.no_coord');
+            $no_coord_tips = __('messages.no_coord_tips');
             $no_ukraine = __('messages.no_ukraine');
             $aff = "";
             $aff2 = "";
@@ -2695,8 +2696,10 @@ class AddFotoController extends Controller
                             }
 
                             if($y==0 && $x==0 && $id==0){
-                                echo"<table class=fcom><tr><td align=center><p style=\" color:red; margin: 8px 8px 8px 8px;\">
-                                        $no_coord</p></td></tr></table><br />";
+                                echo"<table class=fcom><tr><td align=left style=\"padding: 8px 8px 8px 8px;\">
+                                        <p style=\"color:red; margin: 0 0 8px 0;\"><b>$no_coord</b></p>
+                                        <p style=\"margin: 0;\">$no_coord_tips</p>
+                                        </td></tr></table><br />";
                             }
                             else {
 

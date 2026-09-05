@@ -277,6 +277,11 @@ $ob_user2 = __('messages.Region3');
 
         @auth
             <script type="text/javascript">
+                // jQuery підключається з defer (шаром layouts/app.blade.php), а цей інлайн-скрипт
+                // виконується одразу під час парсингу сторінки — тобто РАНІШЕ, ніж відпрацює
+                // defer-скрипт jQuery, і "$" тут ще не існує. DOMContentLoaded гарантовано настає
+                // вже ПІСЛЯ виконання всіх defer-скриптів, тому чекаємо саме на нього.
+                document.addEventListener('DOMContentLoaded', function () {
                 $(document).ready(function (e) {
                     $.ajaxSetup({
                         headers: {
@@ -324,6 +329,7 @@ $ob_user2 = __('messages.Region3');
                         }
                     });
                 });
+                });
                 function displayFileName(input) {
                     var fileNames = [];
 
@@ -345,7 +351,11 @@ $ob_user2 = __('messages.Region3');
             <form class="fcom0 margin-top" id='fsearch' method="POST" action="javascript:void(0)" accept-charset="utf-8" enctype="multipart/form-data">
                 @csrf
                 <label for="files" class="custom-file-input">{{ __('messages.ch-photo') }}</label>
-                <input type="file" id="files" name="files[]" class="un-display" onchange="displayFileName(this)" accept="image/jpeg" placeholder="Choose files" multiple>
+                {{-- Без accept="image/jpeg": на Android з цим атрибутом Chrome відкриває системний
+                     Photo Picker, який вирізає GPS з EXIF для приватності. Без accept частіше
+                     показується класичний діалог із пунктом "Файли", що не чіпає метадані.
+                     Тип файлу все одно перевіряється на сервері (mimes:jpg,jpeg). --}}
+                <input type="file" id="files" name="files[]" class="un-display" onchange="displayFileName(this)" placeholder="Choose files" multiple>
 
                 <span class="file-name margin-file" id="file-name"></span>
                 <div id="load_hid" class="margin-top">
