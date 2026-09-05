@@ -4,7 +4,9 @@
 $title = __('messages.blogall_tit');
 $description = __('messages.blogall_des');
 $keywords = __('messages.gps_key');
-$index_go="index,follow";
+// Список тих самих шаблонних life-статей для 25 855 населених пунктів — та сама
+// причина noindex, що й на самих статтях (life.blade.php).
+$index_go="noindex,follow";
 $lan = App::currentLocale();
 
 if(isset($_POST['npass1'])){$npass1 = $_REQUEST['npass1'];}
@@ -288,7 +290,7 @@ else{
             $content2 = "|$content";
             $ntag2=substr_count($content2, '|');
             $words = explode("|", $content2);
-            $zn=rand(1,$ntag2);
+            $zn=1;
             $word=$words[$zn];
             $contentr="{"; $contentr.=$content; $contentr.="}";
             $ua = str_replace("$contentr", "$word", $ua);
@@ -337,7 +339,7 @@ else{
             $content2 = "|$content";
             $ntag2=substr_count($content2, '|');
             $words = explode("|", $content2);
-            $zn=rand(1,$ntag2);
+            $zn=1;
             $word=$words[$zn];
             $contentr="{"; $contentr.=$content; $contentr.="}";
             $ua = str_replace("$contentr", "$word", $ua);

@@ -3,7 +3,10 @@
 @php
 
 $description = __('messages.lifeall_des');
-$index_go="index,follow";
+// Шаблонні статті: той самий текст для 25 855 населених пунктів, з підстановкою назви
+// міста/відмінка — Google це не індексує (перевірено: 0 результатів на кілька slug'ів),
+// тож noindex прибирає ризик "scaled content abuse", контент лишається доступним людям.
+$index_go="noindex,follow";
 $lan = App::currentLocale();
 
 if(isset($_POST['topic'])){$topic = $_REQUEST['topic'];}
@@ -289,7 +292,7 @@ else if(isset($domen)){}else {$domen = "";}
                 $content2 = "|$content";
                 $ntag2=substr_count($content2, '|');
                 $words = explode("|", $content2);
-                $zn=rand(1,$ntag2);
+                $zn=1;
                 $word=$words[$zn];
                 $contentr="{"; $contentr.=$content; $contentr.="}";
                 $ua = str_replace("$contentr", "$word", $ua);
@@ -326,7 +329,7 @@ else if(isset($domen)){}else {$domen = "";}
                     $content2 = "|".$content;
                     $ntag2 = substr_count($content2, '|');
                     $words = explode("|", $content2);
-                    $zn = rand(1, $ntag2);
+                    $zn=1;
                     $word = $words[$zn];
 
                     $contentr = "{".$content."}";
@@ -382,7 +385,7 @@ else if(isset($domen)){}else {$domen = "";}
                 $content2 = "|$content";
                 $ntag2=substr_count($content2, '|');
                 $words = explode("|", $content2);
-                $zn=rand(1,$ntag2);
+                $zn=1;
                 $word=$words[$zn];
                 $contentr="{"; $contentr.=$content; $contentr.="}";
                 $ua = str_replace("$contentr", "$word", $ua);
@@ -422,7 +425,7 @@ else if(isset($domen)){}else {$domen = "";}
                     $content2 = "|".$content;
                     $ntag2 = substr_count($content2, '|');
                     $words = explode("|", $content2);
-                    $zn = rand(1, $ntag2);
+                    $zn=1;
                     $word = $words[$zn];
 
                     $contentr = "{".$content."}";
@@ -794,7 +797,7 @@ for($ntag0=1;$ntag0<=$ntag;$ntag0++){
     $content2 = "|$content";
     $ntag2=substr_count($content2, '|');
     $words = explode("|", $content2);
-    $zn=rand(1,$ntag2);
+    $zn=1;
     $word=$words[$zn];
     $contentr="{"; $contentr.=$content; $contentr.="}";
     $ua = str_replace("$contentr", "$word", $ua);
