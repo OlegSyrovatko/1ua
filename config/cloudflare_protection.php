@@ -40,6 +40,13 @@ return [
         // Одноразовий екстремальний score, що вмикає ATTACK одразу, без очікування
         // послідовних циклів (для дуже сильного одномоментного сплеску).
         'attack_score_immediate' => (int) env('CLOUDFLARE_PROTECTION_ATTACK_SCORE_IMMEDIATE', 92),
+        // Незалежний від attack score "запобіжник": load5 понад це значення сам по
+        // собі одразу вмикає ATTACK (Under Attack Mode), навіть якщо score низький.
+        // load5 (не load1 — надто шумний, не load15 — надто повільний) як компроміс
+        // між швидкістю реакції та стійкістю до одноразових сплесків. На відміну від
+        // anomaly-складової load15 в AttackDetectionService (яка не спрацьовує без
+        // інших сигналів), це прямий поріг місткості сервера.
+        'load_attack_threshold' => (float) env('CLOUDFLARE_PROTECTION_LOAD_ATTACK_THRESHOLD', 6),
     ],
 
     // Гістерезис: скільки послідовних циклів (~1 хв кожен) потрібно провести на певному

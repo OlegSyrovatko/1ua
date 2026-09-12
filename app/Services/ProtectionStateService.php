@@ -62,13 +62,20 @@ class ProtectionStateService
         $calmStreak = (int) ($stored['calm_streak'] ?? 0);
         $enteredAt = (int) ($stored['entered_at'] ?? now()->timestamp);
 
+        $loadOverride = ($snapshot['load5'] ?? 0) >= $this->thresholds['load_attack_threshold'];
+
         $attackStreak = $score >= $this->thresholds['attack_score'] ? $attackStreak + 1 : 0;
         $suspiciousStreak = $score >= $this->thresholds['suspicious_score'] ? $suspiciousStreak + 1 : 0;
-        $calmStreak = $score < $this->thresholds['suspicious_score'] ? $calmStreak + 1 : 0;
+        // Поки loadOverride активний, ми НЕ "спокійні", навіть якщо attack score
+        // низький — інакше calmStreak тихо накопичується під час реального
+        // навантаження і на першому ж циклі, де load на мить провалюється нижче
+        // порогу, стан встигає вискочити в NORMAL і одразу назад — зайві переходи
+        // (і Telegram-сповіщення) без реальної зміни ситуації.
+        $calmStreak = ($score < $this->thresholds['suspicious_score'] && !$loadOverride) ? $calmStreak + 1 : 0;
 
         $newState = $currentState;
 
-        if ($score >= $this->thresholds['attack_score_immediate']) {
+        if ($score >= $this->thresholds['attack_score_immediate'] || $loadOverride) {
             $newState = 'ATTACK';
         } elseif ($currentState === 'NORMAL') {
             if ($attackStreak >= $this->hysteresis['attack_enter_cycles']) {
@@ -115,13 +122,14 @@ class ProtectionStateService
 
         if ($transitioned) {
             $this->cloudflare->applyState($newState);
-            $this->notifyTransition($currentState, $newState, $score, $snapshot, $enteredAt);
+            $this->notifyTransition($currentState, $newState, $score, $snapshot, $enteredAt, $loadOverride);
         }
 
         return [
             'state' => $newState,
             'previous_state' => $currentState,
             'transitioned' => $transitioned,
+            'load_override' => $loadOverride,
         ];
     }
 
@@ -130,13 +138,14 @@ class ProtectionStateService
         string $to,
         int $score,
         array $snapshot,
-        int $enteredAt
+        int $enteredAt,
+        bool $loadOverride = false
     ): void {
         if (!$this->telegramNotify || !config('services.telegram.bot_token')) {
             return;
         }
 
-        $text = $this->buildTelegramText($from, $to, $score, $snapshot, $enteredAt);
+        $text = $this->buildTelegramText($from, $to, $score, $snapshot, $enteredAt, $loadOverride);
 
         try {
             Http::asForm()->timeout(10)->post(
@@ -151,15 +160,23 @@ class ProtectionStateService
         }
     }
 
-    private function buildTelegramText(string $from, string $to, int $score, array $snapshot, int $enteredAt): string
-    {
+    private function buildTelegramText(
+        string $from,
+        string $to,
+        int $score,
+        array $snapshot,
+        int $enteredAt,
+        bool $loadOverride = false
+    ): string {
         $requestsPerMin = $snapshot['total_requests'];
         $uniqueIps = $snapshot['unique_ips'];
         $topIpShare = round(($snapshot['top_ip_share'] ?? 0) * 100);
         $load = $snapshot['load15'] ?? 0;
 
         if ($to === 'ATTACK') {
+            $trigger = $loadOverride ? "Trigger: load5 ≥ threshold (capacity breaker)\n\n" : '';
             return "🔴 Cloudflare protection activated\n\n"
+                . $trigger
                 . "Attack score: {$score}\n\n"
                 . "Requests/min: {$requestsPerMin}\n"
                 . "Unique IP: {$uniqueIps}\n"

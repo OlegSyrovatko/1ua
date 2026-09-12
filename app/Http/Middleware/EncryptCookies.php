@@ -12,6 +12,6 @@ class EncryptCookies extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        \App\Http\Middleware\MarkAuthenticatedCookie::COOKIE_NAME,
     ];
 }

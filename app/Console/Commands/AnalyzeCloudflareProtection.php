@@ -200,6 +200,9 @@ class AnalyzeCloudflareProtection extends Command
             $action = $monitorOnly
                 ? 'would ' . ($decision['state'] === 'NORMAL' ? 'restore normal Cloudflare settings' : 'enable Cloudflare protection')
                 : ($decision['state'] === 'NORMAL' ? 'restored normal Cloudflare settings' : 'enabled Cloudflare protection');
+            if ($decision['load_override'] ?? false) {
+                $action .= ' (load5 capacity breaker)';
+            }
             $log->warning($line . " | ACTION: {$action}", $context);
         } else {
             $log->info($line, $context);
